@@ -30,6 +30,9 @@
               }
             ],
             "styles": [
+              "src/styles/theme.css",
+              "src/styles/global.scss",
+              "src/styles/animations.scss",
               "src/styles.scss"
             ]
           },
