@@ -1,0 +1,21 @@
+:host { display: block; }
+
+.form-field {
+  &--textarea {
+    .form-field__label {
+      top: var(--spacing-3);
+      transform: none;
+    }
+  }
+
+  &__input {
+    &--textarea {
+      height: auto;
+      min-height: 96px;
+      padding: var(--spacing-6) var(--spacing-4) var(--spacing-3);
+      resize: vertical;
+      line-height: var(--line-height-normal);
+      font-family: var(--font-family);
+    }
+  }
+}

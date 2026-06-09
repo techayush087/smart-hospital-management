@@ -1,0 +1,43 @@
+<div class="dynamic-form" [formGroup]="form()">
+  @for (field of config(); track field.key) {
+    @switch (field.type) {
+      @case ('text') {
+        <app-form-field-text
+          [control]="ctrl(field.key)"
+          [label]="field.label"
+          [fieldKey]="field.key" />
+      }
+      @case ('textarea') {
+        <app-form-field-textarea
+          [control]="ctrl(field.key)"
+          [label]="field.label"
+          [fieldKey]="field.key" />
+      }
+      @case ('select') {
+        <app-form-field-select
+          [control]="ctrl(field.key)"
+          [label]="field.label"
+          [fieldKey]="field.key"
+          [options]="field.options ?? []" />
+      }
+      @case ('date') {
+        <app-form-field-date
+          [control]="ctrl(field.key)"
+          [label]="field.label"
+          [fieldKey]="field.key" />
+      }
+      @case ('number') {
+        <app-form-field-number
+          [control]="ctrl(field.key)"
+          [label]="field.label"
+          [fieldKey]="field.key" />
+      }
+      @case ('checkbox') {
+        <app-form-field-checkbox
+          [control]="ctrl(field.key)"
+          [label]="field.label"
+          [fieldKey]="field.key" />
+      }
+    }
+  }
+</div>

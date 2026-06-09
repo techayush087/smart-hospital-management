@@ -1,0 +1,22 @@
+<div class="form-field form-field--select">
+  <label class="form-field__label form-field__label--static" [attr.for]="fieldKey()">
+    {{ label() }}
+  </label>
+  <select
+    class="form-field__select"
+    [id]="fieldKey()"
+    [attr.data-cy]="fieldKey()"
+    [formControl]="control()">
+    <option value="" disabled>Select…</option>
+    @for (o of options(); track o.value) {
+      <option [value]="o.value">{{ o.label }}</option>
+    }
+  </select>
+
+  @if (showError()) {
+    <span class="form-field__error">
+      <span class="material-icons-round" aria-hidden="true">error</span>
+      {{ errorMessage() }}
+    </span>
+  }
+</div>

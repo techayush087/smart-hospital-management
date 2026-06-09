@@ -1,0 +1,26 @@
+:host { display: block; }
+
+.form-field {
+  &--checkbox {
+    margin-bottom: var(--spacing-5);
+  }
+
+  &__checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    cursor: pointer;
+  }
+
+  &__checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  &__checkbox-text {
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+  }
+}
