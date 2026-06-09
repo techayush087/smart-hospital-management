@@ -1,0 +1,20 @@
+<div class="app-search-bar">
+  <span class="material-icons-round app-search-bar__icon">search</span>
+  <input
+    #input
+    type="text"
+    class="app-search-bar__input"
+    data-cy="search-input"
+    [placeholder]="placeholder()"
+    [value]="currentValue()"
+    (input)="onInput(input.value)" />
+  @if (currentValue()) {
+    <button
+      type="button"
+      class="app-search-bar__clear"
+      aria-label="Clear search"
+      (click)="onClear()">
+      <span class="material-icons-round">close</span>
+    </button>
+  }
+</div>

@@ -1,0 +1,18 @@
+<div class="app-notification-toast" role="status" aria-live="polite">
+  @for (toast of toasts(); track toast.id) {
+    <article class="app-notification-toast__item {{ borderClass(toast.type) }}">
+      <div class="app-notification-toast__content">
+        <p class="app-notification-toast__title">{{ toast.title }}</p>
+        <p class="app-notification-toast__message">{{ toast.message }}</p>
+      </div>
+      <button
+        type="button"
+        class="app-notification-toast__close"
+        aria-label="Dismiss notification"
+        (click)="dismiss(toast.id)">
+        <span class="material-icons-round">close</span>
+      </button>
+      <span class="app-notification-toast__progress" aria-hidden="true"></span>
+    </article>
+  }
+</div>

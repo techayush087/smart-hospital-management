@@ -1,0 +1,29 @@
+<header class="app-page-header">
+  <div class="app-page-header__lead">
+    @if (showBack()) {
+      <button
+        type="button"
+        class="app-page-header__back"
+        aria-label="Back"
+        (click)="back.emit()">
+        <span class="material-icons-round">arrow_back</span>
+      </button>
+    }
+    <div class="app-page-header__text">
+      @if (breadcrumbs().length) {
+        <nav class="app-page-header__breadcrumbs" aria-label="Breadcrumb">
+          @for (crumb of breadcrumbs(); track $index; let last = $last) {
+            <span class="app-page-header__crumb">{{ crumb }}</span>
+            @if (!last) {
+              <span class="app-page-header__separator" aria-hidden="true">/</span>
+            }
+          }
+        </nav>
+      }
+      <h1 class="app-page-header__title">{{ title() }}</h1>
+    </div>
+  </div>
+  <div class="app-page-header__actions">
+    <ng-content></ng-content>
+  </div>
+</header>

@@ -32,6 +32,7 @@
   --color-border:           #DDE3EE;
   --color-border-focus:     #1A6FE8;
   --color-divider:          #EDF0F7;
+  --color-overlay-scrim:    rgba(20, 28, 46, 0.48);
 
   /* ── Text Colors ── */
   --color-text-primary:     #141C2E;

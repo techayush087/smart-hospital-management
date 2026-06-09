@@ -1,0 +1,12 @@
+<div class="app-empty-state">
+  <span class="material-icons-round app-empty-state__icon">{{ icon() }}</span>
+  <h3 class="app-empty-state__title">{{ title() }}</h3>
+  @if (description()) {
+    <p class="app-empty-state__description">{{ description() }}</p>
+  }
+  @if (actionLabel()) {
+    <div class="app-empty-state__action">
+      <app-button [label]="actionLabel()" (clicked)="action.emit()" />
+    </div>
+  }
+</div>

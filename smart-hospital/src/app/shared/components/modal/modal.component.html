@@ -1,0 +1,25 @@
+@if (open()) {
+  <div class="app-modal__backdrop" (click)="close()">
+    <div
+      class="app-modal__panel"
+      role="dialog"
+      aria-modal="true"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      (click)="$event.stopPropagation()">
+      <div class="app-modal__header">
+        <h2 class="app-modal__title">{{ title() }}</h2>
+        <button
+          type="button"
+          class="app-modal__close"
+          aria-label="Close"
+          (click)="close()">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="app-modal__body">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+}
