@@ -1,3 +1,20 @@
 import { Routes } from '@angular/router';
+// import { authGuard } from './core/guards/auth.guard';
+// import { roleGuard } from './core/guards/role.guard';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
+  // TODO(task-15): enable auth route when auth feature lands
+  // { path: 'auth', loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES) },
+  // TODO(day-2): enable when doctors feature lands
+  // { path: 'doctors', canActivate: [authGuard], loadChildren: () => import('./features/doctors/doctors.routes').then(m => m.DOCTORS_ROUTES) },
+  // TODO(day-2): enable when appointment feature lands
+  // { path: 'appointments', canActivate: [authGuard], loadChildren: () => import('./features/appointment/appointment.routes').then(m => m.APPOINTMENT_ROUTES) },
+  // TODO(day-3): enable when patient feature lands
+  // { path: 'patient', canActivate: [authGuard, roleGuard], data: { roles: ['customer'] }, loadChildren: () => import('./features/patient/patient.routes').then(m => m.PATIENT_ROUTES) },
+  // TODO(day-4): enable when admin feature lands
+  // { path: 'admin', canActivate: [authGuard, roleGuard], data: { roles: ['admin'] }, loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES) },
+  // TODO(day-3): enable when notifications feature lands
+  // { path: 'notifications', canActivate: [authGuard], loadChildren: () => import('./features/notifications/notifications.routes').then(m => m.NOTIFICATIONS_ROUTES) },
+  { path: '**', loadComponent: () => import('./shared/components/not-found/not-found.component').then(m => m.NotFoundComponent) }
+];
