@@ -25,17 +25,17 @@
 
       <form class="login__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
         <div class="form-field">
+          <label class="form-field__label" for="login-email">Email address</label>
           <input
             id="login-email"
             class="form-field__input"
             type="email"
-            placeholder=" "
+            placeholder="you@example.com"
             autocomplete="email"
             formControlName="email"
             data-cy="email"
             aria-describedby="login-email-error"
           />
-          <label class="form-field__label" for="login-email">Email address</label>
           @if (form.get('email')?.touched && form.get('email')?.invalid) {
             <p class="form-field__error" id="login-email-error">
               <span class="material-icons-round" aria-hidden="true">error</span>
@@ -49,17 +49,17 @@
         </div>
 
         <div class="form-field">
+          <label class="form-field__label" for="login-password">Password</label>
           <input
             id="login-password"
             class="form-field__input"
             type="password"
-            placeholder=" "
+            placeholder="Enter your password"
             autocomplete="current-password"
             formControlName="password"
             data-cy="password"
             aria-describedby="login-password-error"
           />
-          <label class="form-field__label" for="login-password">Password</label>
           @if (form.get('password')?.touched && form.get('password')?.invalid) {
             <p class="form-field__error" id="login-password-error">
               <span class="material-icons-round" aria-hidden="true">error</span>

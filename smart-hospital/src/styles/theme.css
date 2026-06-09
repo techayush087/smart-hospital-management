@@ -125,4 +125,20 @@
   --z-modal:                400;
   --z-toast:                500;
   --z-tooltip:              600;
+
+  /* ── Depth & richness (visual-refresh tokens) ──
+     Layered on top of the base palette to add warmth and depth so surfaces
+     don't read as a flat white-on-grey template. */
+  --gradient-brand:         linear-gradient(135deg, #1A6FE8 0%, #0DADA3 100%);
+  --gradient-brand-soft:    linear-gradient(135deg, #1A6FE8 0%, #1358C4 100%);
+  --gradient-surface:       linear-gradient(180deg, #FFFFFF 0%, #FBFCFE 100%);
+  --gradient-feature:       linear-gradient(135deg, #E6F7F6 0%, #EEF4FD 100%);
+
+  --color-card-border:      #E6EBF4;
+  --color-ring:             rgba(26, 111, 232, 0.12);
+  --color-white-overlay:    rgba(255, 255, 255, 0.08);
+
+  --shadow-ring:            0 0 0 1px var(--color-card-border);
+  --shadow-elevated:        0 1px 2px rgba(20, 28, 46, 0.04), 0 8px 24px rgba(20, 28, 46, 0.08);
+  --shadow-soft:            0 1px 3px rgba(20, 28, 46, 0.06), 0 1px 2px rgba(20, 28, 46, 0.04);
 }

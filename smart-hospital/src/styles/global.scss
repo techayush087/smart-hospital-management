@@ -40,51 +40,86 @@ a, button, [role='button'], input, select, textarea { touch-action: manipulation
   }
 }
 
-/* Shared float-label form field pattern (DESIGN.md §12). */
+/* Shared form field pattern — top-aligned label (clear, never overlaps the value).
+   The label sits ABOVE the input; this is robust against autofill, programmatic
+   value setting, and email :valid quirks that broke the old float-label approach. */
 .form-field {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
   margin-bottom: var(--spacing-5);
 }
+.form-field__label {
+  order: -1;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
 .form-field__input,
-.form-field__select {
+.form-field__select,
+.form-field__textarea {
   width: 100%;
-  height: 52px;
-  padding: var(--spacing-5) var(--spacing-4) var(--spacing-2);
+  height: 48px;
+  padding: 0 var(--spacing-4);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   font-size: var(--font-size-base);
+  font-family: inherit;
   color: var(--color-text-primary);
   background: var(--color-surface);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+  &::placeholder { color: var(--color-text-tertiary); }
+}
+.form-field__textarea {
+  height: auto;
+  min-height: 96px;
+  padding: var(--spacing-3) var(--spacing-4);
+  resize: vertical;
+  line-height: var(--line-height-normal);
 }
 .form-field__input:focus,
-.form-field__select:focus {
+.form-field__select:focus,
+.form-field__textarea:focus {
   outline: none;
   border-color: var(--color-border-focus);
   box-shadow: var(--shadow-input-focus);
 }
 .form-field__input.ng-invalid.ng-touched,
-.form-field__select.ng-invalid.ng-touched {
+.form-field__select.ng-invalid.ng-touched,
+.form-field__textarea.ng-invalid.ng-touched {
   border-color: var(--color-danger);
 }
-.form-field__label {
-  position: absolute;
-  top: 50%;
-  left: var(--spacing-4);
-  transform: translateY(-50%);
-  font-size: var(--font-size-base);
-  color: var(--color-text-tertiary);
-  pointer-events: none;
-  transition: top var(--transition-fast), font-size var(--transition-fast), color var(--transition-fast);
+
+/* Native date input — polish the field + calendar trigger (the OS popup itself
+   is not themable, but a clean field makes it feel intentional). */
+.form-field__input[type='date'] {
+  cursor: pointer;
+
+  &::-webkit-calendar-picker-indicator {
+    width: 20px;
+    height: 20px;
+    padding: var(--spacing-1);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity var(--transition-fast), background var(--transition-fast);
+  }
+  &::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+    background: var(--color-primary-light);
+  }
 }
-.form-field__input:focus ~ .form-field__label,
-.form-field__input:not(:placeholder-shown) ~ .form-field__label,
-.form-field__select:focus ~ .form-field__label,
-.form-field__select:valid ~ .form-field__label {
-  top: var(--spacing-2);
-  transform: none;
-  font-size: var(--font-size-xs);
-  color: var(--color-primary);
+
+/* Native select — add a chevron and remove the default OS arrow inconsistency. */
+.form-field__select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%234E5E7A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-3) center;
+  padding-right: var(--spacing-10);
 }
 .form-field__error {
   display: flex;

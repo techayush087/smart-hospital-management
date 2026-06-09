@@ -1,5 +1,5 @@
-<div class="app-loader" [class.app-loader--fullscreen]="fullscreen()">
-  <div class="app-loader__pulse" aria-hidden="true"></div>
+<div class="app-loader" [class.app-loader--fullscreen]="fullscreen()" aria-live="polite">
+  <ng-lottie class="app-loader__animation" [options]="options" width="96px" height="96px" />
   @if (message()) {
     <p class="app-loader__message">{{ message() }}</p>
   }

@@ -7,15 +7,32 @@
   background: var(--color-background);
 
   &__brand {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: var(--spacing-12);
-    background: var(--color-primary);
+    background: var(--gradient-brand);
     color: var(--color-text-inverse);
+    overflow: hidden;
+
+    /* Soft decorative glow so the panel has depth, not a flat fill. */
+    &::after {
+      content: '';
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      right: -120px;
+      bottom: -140px;
+      border-radius: var(--radius-full);
+      background: var(--color-white-overlay);
+      pointer-events: none;
+    }
   }
 
   &__brand-content {
+    position: relative;
+    z-index: var(--z-raised);
     max-width: 26rem;
   }
 
