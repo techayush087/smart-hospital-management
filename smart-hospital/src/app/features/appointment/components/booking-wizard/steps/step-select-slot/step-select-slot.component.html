@@ -1,0 +1,39 @@
+<section class="step-select-slot" data-cy="step-select-slot">
+  <label class="step-select-slot__field">
+    <span class="step-select-slot__label">Choose a date</span>
+    <input
+      type="date"
+      class="step-select-slot__date"
+      data-cy="slot-date"
+      [value]="selectedDate()"
+      (change)="onDateChange($any($event.target).value)" />
+  </label>
+
+  @if (slotsLoading()) {
+    <div class="step-select-slot__grid">
+      @for (s of [0, 1, 2, 3, 4, 5]; track s) {
+        <div class="step-select-slot__slot skeleton"></div>
+      }
+    </div>
+  } @else if (selectedDate() && slots().length === 0) {
+    <p class="step-select-slot__empty">No slots available for this date.</p>
+  } @else if (slots().length > 0) {
+    <div class="step-select-slot__grid">
+      @for (slot of slots(); track slot.id) {
+        <button
+          type="button"
+          data-cy="slot"
+          class="step-select-slot__slot"
+          [class.step-select-slot__slot--available]="slot.isAvailable"
+          [class.step-select-slot__slot--selected]="selectedSlot()?.id === slot.id"
+          [class.step-select-slot__slot--unavailable]="!slot.isAvailable"
+          [disabled]="!slot.isAvailable"
+          (click)="onSelectSlot(slot)">
+          {{ slot.startTime | timeSlot: slot.endTime }}
+        </button>
+      }
+    </div>
+  } @else {
+    <p class="step-select-slot__empty">Select a date to see available slots.</p>
+  }
+</section>

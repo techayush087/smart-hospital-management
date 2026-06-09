@@ -6,8 +6,7 @@ export const routes: Routes = [
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
   { path: 'auth', loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES) },
   { path: 'doctors', canActivate: [authGuard], loadChildren: () => import('./features/doctors/doctors.routes').then(m => m.DOCTORS_ROUTES) },
-  // TODO(day-2): enable when appointment feature lands
-  // { path: 'appointments', canActivate: [authGuard], loadChildren: () => import('./features/appointment/appointment.routes').then(m => m.APPOINTMENT_ROUTES) },
+  { path: 'appointments', canActivate: [authGuard], loadChildren: () => import('./features/appointment/appointment.routes').then(m => m.APPOINTMENT_ROUTES) },
   // TODO(day-3): enable when patient feature lands
   // { path: 'patient', canActivate: [authGuard, roleGuard], data: { roles: ['customer'] }, loadChildren: () => import('./features/patient/patient.routes').then(m => m.PATIENT_ROUTES) },
   // TODO(day-4): enable when admin feature lands

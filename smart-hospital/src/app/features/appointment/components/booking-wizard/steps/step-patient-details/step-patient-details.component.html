@@ -1,0 +1,61 @@
+<section class="step-patient-details" data-cy="step-patient-details">
+  @if (selectedSlot(); as slot) {
+    <div class="step-patient-details__summary">
+      <span class="step-patient-details__summary-label">Selected slot</span>
+      <span class="step-patient-details__summary-value">
+        {{ slot.startTime | timeSlot: slot.endTime }}
+      </span>
+    </div>
+  }
+
+  <form class="step-patient-details__form" [formGroup]="form()">
+    @for (field of fields; track field.key) {
+      <div class="step-patient-details__field">
+        <label class="step-patient-details__label" [attr.for]="field.key">
+          {{ field.label }}
+          @if (field.required) {
+            <span class="step-patient-details__required" aria-hidden="true">*</span>
+          }
+        </label>
+
+        @switch (field.type) {
+          @case ('textarea') {
+            <textarea
+              class="step-patient-details__input step-patient-details__input--textarea"
+              [id]="field.key"
+              [attr.data-cy]="field.key === 'reason' ? 'reason' : null"
+              [formControlName]="field.key"
+              [class.step-patient-details__input--invalid]="isInvalid(field.key)"
+              rows="3"></textarea>
+          }
+          @case ('select') {
+            <select
+              class="step-patient-details__input step-patient-details__input--select"
+              [id]="field.key"
+              [attr.data-cy]="field.key === 'reason' ? 'reason' : null"
+              [formControlName]="field.key"
+              [class.step-patient-details__input--invalid]="isInvalid(field.key)">
+              <option value="" disabled>Select…</option>
+              @for (opt of field.options; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          }
+          @default {
+            <input
+              class="step-patient-details__input"
+              [type]="field.type"
+              [id]="field.key"
+              [attr.data-cy]="field.key === 'reason' ? 'reason' : null"
+              [formControlName]="field.key"
+              [class.step-patient-details__input--invalid]="isInvalid(field.key)" />
+          }
+        }
+
+        @if (isInvalid(field.key)) {
+          <span class="step-patient-details__error">{{ field.label }} is required.</span>
+        }
+      </div>
+    }
+  </form>
+</section>

@@ -1,0 +1,60 @@
+<section class="booking-wizard" data-cy="booking-wizard">
+  <header class="booking-wizard__header">
+    <h1 class="booking-wizard__title">Book Appointment</h1>
+    @if (doctor(); as d) {
+      <p class="booking-wizard__doctor">
+        with <strong>{{ d.name }}</strong> · {{ d.specialization }}
+      </p>
+    }
+  </header>
+
+  <ol class="booking-wizard__stepper">
+    @for (step of steps; track step.index) {
+      <li
+        class="booking-wizard__step"
+        [class.booking-wizard__step--active]="currentStep() === step.index"
+        [class.booking-wizard__step--complete]="currentStep() > step.index">
+        <span class="booking-wizard__step-circle">
+          @if (currentStep() > step.index) {
+            <span class="material-icons-round booking-wizard__step-check">check</span>
+          } @else {
+            {{ step.index }}
+          }
+        </span>
+        <span class="booking-wizard__step-label">{{ step.label }}</span>
+      </li>
+    }
+  </ol>
+
+  <div class="booking-wizard__body">
+    @switch (currentStep()) {
+      @case (1) {
+        <app-step-select-slot [doctorId]="doctorId" />
+      }
+      @case (2) {
+        <app-step-patient-details [form]="form" />
+      }
+      @case (3) {
+        <app-step-confirmation [doctor]="doctor()" [form]="form" />
+      }
+    }
+  </div>
+
+  <footer class="booking-wizard__footer">
+    @if (currentStep() > 1) {
+      <app-button
+        data-cy="wizard-back"
+        label="Back"
+        variant="secondary"
+        (clicked)="back()" />
+    }
+    @if (currentStep() < 3) {
+      <app-button
+        data-cy="wizard-next"
+        label="Next"
+        variant="primary"
+        [disabled]="!canAdvance()"
+        (clicked)="next()" />
+    }
+  </footer>
+</section>

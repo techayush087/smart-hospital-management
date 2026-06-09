@@ -1,0 +1,39 @@
+<section class="step-confirmation" data-cy="step-confirmation">
+  @if (doctor(); as d) {
+    <div class="step-confirmation__block">
+      <span class="step-confirmation__block-label">Doctor</span>
+      <span class="step-confirmation__block-value">{{ d.name }}</span>
+      <span class="step-confirmation__block-meta">
+        {{ d.specialization }} · {{ d.experience }} yrs exp
+      </span>
+    </div>
+  }
+
+  @if (selectedSlot(); as slot) {
+    <div class="step-confirmation__block">
+      <span class="step-confirmation__block-label">Time slot</span>
+      <span class="step-confirmation__block-value">
+        {{ slot.startTime | timeSlot: slot.endTime }}
+      </span>
+    </div>
+  }
+
+  <dl class="step-confirmation__details">
+    @for (entry of entries(); track entry.label) {
+      <div class="step-confirmation__detail">
+        <dt class="step-confirmation__detail-label">{{ entry.label }}</dt>
+        <dd class="step-confirmation__detail-value">{{ entry.value }}</dd>
+      </div>
+    }
+  </dl>
+
+  <div class="step-confirmation__action">
+    <app-button
+      data-cy="confirm-booking"
+      label="Confirm Booking"
+      variant="primary"
+      size="lg"
+      [loading]="bookingInProgress()"
+      (clicked)="onConfirm()" />
+  </div>
+</section>
