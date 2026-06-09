@@ -1,0 +1,94 @@
+<app-page-header
+  title="Patient Records"
+  [breadcrumbs]="['Admin', 'Records']" />
+
+<section class="records">
+  <div class="records__toolbar">
+    <app-search-bar
+      placeholder="Search by name or email"
+      (search)="onSearch($event)"
+      (clear)="onClearSearch()" />
+  </div>
+
+  @if (updatedMessage()) {
+    <p class="records__updated" data-cy="status-updated" role="status">
+      {{ updatedMessage() }}
+    </p>
+  }
+
+  @if (loading()) {
+    <p class="records__loading">Loading patient records…</p>
+  } @else if (records().length === 0) {
+    <app-empty-state
+      icon="groups"
+      title="No patients found"
+      description="No patient records match the current search." />
+  } @else {
+    <div class="records__table-wrap">
+      <table class="records__table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Date of birth</th>
+            <th>Blood group</th>
+            <th>Active conditions</th>
+            <th>Update status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (record of paged(); track record.id) {
+            <tr class="records__row" data-cy="patient-row">
+              <td class="records__name">{{ record.fullName }}</td>
+              <td>{{ record.email }}</td>
+              <td>{{ record.phone }}</td>
+              <td>{{ record.dateOfBirth | relativeDate }}</td>
+              <td>{{ record.bloodGroup || '—' }}</td>
+              <td>
+                @if (record.activeConditions.length) {
+                  {{ record.activeConditions.join(', ') }}
+                } @else {
+                  <span class="records__muted">None</span>
+                }
+              </td>
+              <td>
+                <select
+                  class="records__status"
+                  data-cy="status-select"
+                  (change)="onStatusChange(record, $any($event.target).value)">
+                  <option value="">Set status…</option>
+                  @for (status of statuses; track status) {
+                    <option [value]="status">{{ status | appointmentStatus }}</option>
+                  }
+                </select>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="records__pagination">
+        <app-button
+          label="Previous"
+          variant="secondary"
+          size="sm"
+          data-cy="page-prev"
+          [disabled]="page() === 1"
+          (clicked)="prevPage()" />
+        <span class="records__page-info" data-cy="page-info">
+          Page {{ page() }} of {{ totalPages() }}
+        </span>
+        <app-button
+          label="Next"
+          variant="secondary"
+          size="sm"
+          data-cy="page-next"
+          [disabled]="page() === totalPages()"
+          (clicked)="nextPage()" />
+      </div>
+    }
+  }
+</section>

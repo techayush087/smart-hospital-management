@@ -1,0 +1,133 @@
+<app-page-header
+  title="Schedule Manager"
+  [breadcrumbs]="['Admin', 'Schedules']" />
+
+<section class="schedule">
+  <app-card title="Select doctor & date" subtitle="Choose who and when to manage">
+    <div class="selector">
+      <label class="selector__field">
+        <span class="selector__label">Doctor</span>
+        <select
+          class="selector__input"
+          data-cy="doctor-select"
+          [value]="doctorId()"
+          (change)="onDoctorChange($any($event.target).value)">
+          <option value="">Select a doctor</option>
+          @for (doctor of doctors(); track doctor.id) {
+            <option [value]="doctor.id">{{ doctor.name }}</option>
+          }
+        </select>
+      </label>
+      <label class="selector__field">
+        <span class="selector__label">Date</span>
+        <input
+          type="date"
+          class="selector__input"
+          data-cy="date-input"
+          [value]="date()"
+          (input)="onDateChange($any($event.target).value)" />
+      </label>
+    </div>
+  </app-card>
+
+  <app-card title="Add slot" subtitle="Create a new availability slot">
+    <div class="add-form">
+      <label class="add-form__field">
+        <span class="selector__label">Start time</span>
+        <input
+          type="time"
+          class="selector__input"
+          data-cy="slot-start"
+          [value]="startTime()"
+          (input)="onStartTimeChange($any($event.target).value)" />
+      </label>
+      <label class="add-form__field">
+        <span class="selector__label">End time</span>
+        <input
+          type="time"
+          class="selector__input"
+          data-cy="slot-end"
+          [value]="endTime()"
+          (input)="onEndTimeChange($any($event.target).value)" />
+      </label>
+      <label class="add-form__field">
+        <span class="selector__label">Type</span>
+        <select
+          class="selector__input"
+          data-cy="slot-type"
+          [value]="slotType()"
+          (change)="onTypeChange($any($event.target).value)">
+          <option value="in-person">In-person</option>
+          <option value="virtual">Virtual</option>
+        </select>
+      </label>
+      <app-button
+        label="Add Slot"
+        variant="primary"
+        data-cy="add-slot"
+        [loading]="creating()"
+        [disabled]="!canAdd()"
+        (clicked)="addSlot()" />
+    </div>
+    @if (formError()) {
+      <p class="add-form__error" data-cy="slot-error">{{ formError() }}</p>
+    }
+  </app-card>
+
+  <app-card title="Slots" subtitle="Availability for the selection">
+    @if (loadingSlots()) {
+      <p class="schedule__loading">Loading slots…</p>
+    } @else if (!canQuery()) {
+      <app-empty-state
+        icon="event"
+        title="Pick a doctor and date"
+        description="Choose a doctor and date to manage their availability." />
+    } @else if (slots().length === 0) {
+      <app-empty-state
+        icon="event_busy"
+        title="No slots"
+        description="There are no slots for this doctor on the selected date." />
+    } @else {
+      <ul class="slots">
+        @for (slot of slots(); track slot.id) {
+          <li class="slots__row" data-cy="slot-row">
+            <span class="slots__time">{{ slot.startTime | timeSlot: slot.endTime }}</span>
+            <span class="slots__type">{{ slot.type }}</span>
+            <app-badge
+              [text]="slot.isAvailable ? 'Available' : 'Booked'"
+              [status]="slot.isAvailable ? 'confirmed' : 'cancelled'" />
+            <app-button
+              label="Delete"
+              variant="danger"
+              size="sm"
+              data-cy="delete-slot"
+              (clicked)="requestDelete(slot)" />
+          </li>
+        }
+      </ul>
+    }
+  </app-card>
+</section>
+
+<app-modal
+  title="Delete this slot?"
+  [open]="pendingDelete() !== null"
+  (closed)="cancelDelete()">
+  <div class="confirm">
+    <p class="confirm__text">
+      This will permanently remove the slot. This action cannot be undone.
+    </p>
+    <div class="confirm__actions">
+      <app-button
+        label="Cancel"
+        variant="ghost"
+        (clicked)="cancelDelete()" />
+      <app-button
+        label="Delete"
+        variant="danger"
+        data-cy="confirm-delete-slot"
+        [loading]="deleting()"
+        (clicked)="confirmDelete()" />
+    </div>
+  </div>
+</app-modal>
