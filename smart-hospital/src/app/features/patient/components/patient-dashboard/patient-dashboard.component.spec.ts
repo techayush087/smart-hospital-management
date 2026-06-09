@@ -1,0 +1,119 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { PatientDashboardComponent } from './patient-dashboard.component';
+import { Appointment } from '../../../../core/models';
+import { AuthService } from '../../../../core/services/auth.service';
+import {
+  appointmentAdapter,
+  initialAppointmentCatalogState,
+} from '../../../../store/appointment-catalog';
+import { environment } from '../../../../../environments/environment';
+
+function makeAppointment(overrides: Partial<Appointment> = {}): Appointment {
+  return {
+    id: 'a1',
+    patientId: 'u1',
+    doctorId: 'd1',
+    scheduledAt: '2030-07-01T10:00:00.000Z',
+    duration: 30,
+    type: 'in-person',
+    status: 'confirmed',
+    reason: 'Annual checkup',
+    createdAt: '2026-06-01T10:00:00.000Z',
+    updatedAt: '2026-06-01T10:00:00.000Z',
+    ...overrides,
+  };
+}
+
+const authStub = {
+  getCurrentUser: () => () => ({ id: 'u1', role: 'customer' }),
+};
+
+describe('PatientDashboardComponent', () => {
+  let fixture: ComponentFixture<PatientDashboardComponent>;
+  let httpMock: HttpTestingController;
+
+  beforeEach(async () => {
+    const state = appointmentAdapter.setAll(
+      [makeAppointment({ id: 'up1', reason: 'Upcoming visit' })],
+      initialAppointmentCatalogState,
+    );
+
+    await TestBed.configureTestingModule({
+      imports: [PatientDashboardComponent],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideMockStore({ initialState: { appointmentCatalog: state } }),
+        { provide: AuthService, useValue: authStub },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(PatientDashboardComponent);
+    httpMock = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  function flushRecords(visits = 3, prescriptions = 2): void {
+    const visitReq = httpMock.expectOne(
+      (r) => r.url === `${environment.apiUrl}/visits`,
+    );
+    visitReq.flush(
+      Array.from({ length: visits }, (_, i) => ({ id: `v${i}` })),
+    );
+
+    const presReq = httpMock.expectOne(
+      (r) => r.url === `${environment.apiUrl}/prescriptions`,
+    );
+    presReq.flush(
+      Array.from({ length: prescriptions }, (_, i) => ({ id: `p${i}` })),
+    );
+    fixture.detectChanges();
+  }
+
+  it('renders the 4 stat cards once records load', () => {
+    flushRecords();
+    const cards = fixture.nativeElement.querySelectorAll('.stat-card');
+    expect(cards.length).toBe(4);
+
+    const text: string = fixture.nativeElement.textContent;
+    expect(text).toContain('Next Appointment');
+    expect(text).toContain('Total Visits');
+    expect(text).toContain('Active Prescriptions');
+    expect(text).toContain('Notifications');
+  });
+
+  it('shows visit count, prescription count and notification stat', () => {
+    flushRecords(3, 2);
+    const text: string = fixture.nativeElement.textContent;
+    // Total visits = 3, Active prescriptions = 2
+    expect(text).toContain('3');
+    expect(text).toContain('2');
+
+    const notifStat = fixture.nativeElement.querySelector(
+      '[data-cy="notification-stat"]',
+    );
+    expect(notifStat).toBeTruthy();
+    expect(notifStat.textContent.trim()).toBe('0');
+  });
+
+  it('renders the upcoming appointment and quick actions', () => {
+    flushRecords();
+    const text: string = fixture.nativeElement.textContent;
+    expect(text).toContain('Upcoming visit');
+    expect(text).toContain('Book New');
+    expect(text).toContain('View History');
+    expect(text).toContain('View Prescriptions');
+  });
+});

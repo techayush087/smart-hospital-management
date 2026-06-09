@@ -1,0 +1,95 @@
+<app-page-header title="Dashboard" />
+
+<div class="dashboard">
+  @if (loading()) {
+    <div class="dashboard__stats" aria-hidden="true">
+      @for (s of [1, 2, 3, 4]; track s) {
+        <div class="stat-card stat-card--skeleton">
+          <span class="skeleton stat-card__skeleton-line"></span>
+          <span class="skeleton stat-card__skeleton-line stat-card__skeleton-line--lg"></span>
+        </div>
+      }
+    </div>
+  } @else {
+    <section class="dashboard__stats" aria-label="Overview">
+      <article class="stat-card stat-card--feature">
+        <div class="stat-card__head">
+          <span class="material-icons-round stat-card__icon">event_available</span>
+          <span class="stat-card__label">Next Appointment</span>
+        </div>
+        @if (nextAppointment(); as next) {
+          <p class="stat-card__value stat-card__value--sm">
+            {{ next.doctor?.name || next.reason }}
+          </p>
+          <p class="stat-card__meta">{{ next.scheduledAt | relativeDate }}</p>
+        } @else {
+          <p class="stat-card__value stat-card__value--sm">None scheduled</p>
+          <p class="stat-card__meta">Book a visit to get started</p>
+        }
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-card__head">
+          <span class="material-icons-round stat-card__icon">history</span>
+          <span class="stat-card__label">Total Visits</span>
+        </div>
+        <p class="stat-card__value">{{ totalVisits() }}</p>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-card__head">
+          <span class="material-icons-round stat-card__icon">medication</span>
+          <span class="stat-card__label">Active Prescriptions</span>
+        </div>
+        <p class="stat-card__value">{{ activePrescriptions() }}</p>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-card__head">
+          <span class="material-icons-round stat-card__icon">notifications</span>
+          <span class="stat-card__label">Notifications</span>
+        </div>
+        <p class="stat-card__value" data-cy="notification-stat">{{ unreadCount() }}</p>
+      </article>
+    </section>
+
+    <section class="dashboard__section" aria-label="Upcoming appointments">
+      <h2 class="dashboard__heading">Upcoming appointments</h2>
+      @if (upcoming().length) {
+        <ul class="upcoming">
+          @for (a of upcoming(); track a.id) {
+            <li class="upcoming__row">
+              <div class="upcoming__main">
+                <span class="upcoming__when">{{ a.scheduledAt | relativeDate }}</span>
+                <span class="upcoming__doctor">{{ a.doctor?.name || a.reason }}</span>
+              </div>
+              <app-badge
+                [text]="a.status | appointmentStatus"
+                [status]="a.status" />
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="dashboard__empty">No upcoming appointments.</p>
+      }
+    </section>
+
+    <section class="dashboard__section" aria-label="Quick actions">
+      <h2 class="dashboard__heading">Quick actions</h2>
+      <div class="quick-actions">
+        <a class="quick-action" routerLink="/doctors">
+          <span class="material-icons-round quick-action__icon">add</span>
+          <span class="quick-action__label">Book New</span>
+        </a>
+        <a class="quick-action" routerLink="/patient/history">
+          <span class="material-icons-round quick-action__icon">history</span>
+          <span class="quick-action__label">View History</span>
+        </a>
+        <a class="quick-action" routerLink="/patient/prescriptions">
+          <span class="material-icons-round quick-action__icon">medication</span>
+          <span class="quick-action__label">View Prescriptions</span>
+        </a>
+      </div>
+    </section>
+  }
+</div>

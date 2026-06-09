@@ -1,0 +1,61 @@
+<app-page-header title="Visit History" />
+
+<div class="visit-history">
+  @if (loading()) {
+    <div class="visit-history__skeletons" aria-hidden="true">
+      @for (s of [1, 2, 3, 4, 5]; track s) {
+        <div class="skeleton visit-history__skeleton-row"></div>
+      }
+    </div>
+  } @else if (visits().length) {
+    <div class="visit-table" role="table" aria-label="Visit history">
+      <div class="visit-table__head" role="row">
+        <span class="visit-table__cell" role="columnheader">Date</span>
+        <span class="visit-table__cell" role="columnheader">Doctor</span>
+        <span class="visit-table__cell" role="columnheader">Specialization</span>
+        <span class="visit-table__cell" role="columnheader">Type</span>
+        <span class="visit-table__cell" role="columnheader">Status</span>
+      </div>
+      @for (v of paged(); track v.id) {
+        <div class="visit-table__row" role="row">
+          <span class="visit-table__cell visit-table__cell--strong" role="cell">
+            {{ v.visitDate | relativeDate }}
+          </span>
+          <span class="visit-table__cell" role="cell">{{ v.doctorName }}</span>
+          <span class="visit-table__cell" role="cell">{{ v.specialization }}</span>
+          <span class="visit-table__cell visit-table__cell--type" role="cell">
+            {{ v.type }}
+          </span>
+          <span class="visit-table__cell" role="cell">
+            <app-badge [text]="v.status | appointmentStatus" [status]="v.status" />
+          </span>
+        </div>
+      }
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="visit-history__pagination">
+        <app-button
+          label="Previous"
+          variant="secondary"
+          size="sm"
+          [disabled]="page() === 1"
+          (clicked)="prev()" />
+        <span class="visit-history__page-info">
+          Page {{ page() }} of {{ totalPages() }}
+        </span>
+        <app-button
+          label="Next"
+          variant="secondary"
+          size="sm"
+          [disabled]="page() === totalPages()"
+          (clicked)="next()" />
+      </div>
+    }
+  } @else {
+    <app-empty-state
+      title="No visit history"
+      description="Your past visits will appear here once you have completed an appointment."
+      icon="history" />
+  }
+</div>
