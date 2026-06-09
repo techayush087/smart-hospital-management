@@ -22,6 +22,11 @@ export class LoginComponent {
   readonly form = this.authForm.buildLoginForm();
   readonly loading = signal(false);
   readonly error = signal('');
+  readonly showPassword = signal(false);
+
+  togglePassword(): void {
+    this.showPassword.update((v) => !v);
+  }
 
   onSubmit(): void {
     this.error.set('');

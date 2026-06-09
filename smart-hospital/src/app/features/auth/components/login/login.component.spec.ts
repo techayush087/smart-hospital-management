@@ -33,7 +33,7 @@ describe('LoginComponent', () => {
   it('surfaces required errors after an invalid submit', () => {
     fixture.componentInstance.onSubmit();
     fixture.detectChanges();
-    const errors = fixture.nativeElement.querySelectorAll('.form-field__error');
+    const errors = fixture.nativeElement.querySelectorAll('.field__error');
     expect(errors.length).toBeGreaterThan(0);
   });
 

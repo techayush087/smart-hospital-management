@@ -91,7 +91,7 @@ describe('PatientRecordsAdminComponent', () => {
     expect(rows.length).toBe(1);
   });
 
-  it('PATCHes the appointment status when a row status select changes', () => {
+  it('resolves the patient latest appointment and PATCHes its status', () => {
     flushUsers([makeUser({ id: 'u1' })]);
 
     const select: HTMLSelectElement = fixture.nativeElement.querySelector(
@@ -101,10 +101,20 @@ describe('PatientRecordsAdminComponent', () => {
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
 
-    const req = httpMock.expectOne(`${api}/appointments/u1`);
-    expect(req.request.method).toBe('PATCH');
-    expect(req.request.body.status).toBe('completed');
-    req.flush({});
+    // First it looks up the patient's appointments...
+    const lookup = httpMock.expectOne(
+      (r) => r.url === `${api}/appointments` && r.params.get('patientId') === 'u1',
+    );
+    expect(lookup.request.method).toBe('GET');
+    lookup.flush([
+      { id: 'a9', patientId: 'u1', doctorId: 'd1', scheduledAt: '2026-06-15T10:00:00.000Z', duration: 30, type: 'in-person', status: 'confirmed', reason: 'x', createdAt: '', updatedAt: '' },
+    ]);
+
+    // ...then PATCHes the resolved appointment id (a9), not the user id.
+    const patch = httpMock.expectOne(`${api}/appointments/a9`);
+    expect(patch.request.method).toBe('PATCH');
+    expect(patch.request.body.status).toBe('completed');
+    patch.flush({});
     fixture.detectChanges();
 
     expect(

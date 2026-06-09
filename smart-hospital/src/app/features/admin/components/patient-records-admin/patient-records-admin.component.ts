@@ -12,8 +12,16 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
 import { AppButtonComponent } from '../../../../shared/components/button/button.component';
 import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
 import { AppointmentStatusPipe } from '../../../../shared/pipes/appointment-status.pipe';
+import { switchMap } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
 import { AdminService } from '../../services/admin.service';
-import { ConsultationStatus, PatientFilter, PatientRecord } from '../../../../core/models';
+import { ApiService } from '../../../../core/services/api.service';
+import {
+  Appointment,
+  ConsultationStatus,
+  PatientFilter,
+  PatientRecord,
+} from '../../../../core/models';
 
 @Component({
   selector: 'app-patient-records-admin',
@@ -32,6 +40,7 @@ import { ConsultationStatus, PatientFilter, PatientRecord } from '../../../../co
 })
 export class PatientRecordsAdminComponent implements OnInit {
   private adminService = inject(AdminService);
+  private api = inject(ApiService);
 
   protected readonly filter = signal<PatientFilter>({});
   protected readonly records = signal<PatientRecord[]>([]);
@@ -84,10 +93,26 @@ export class PatientRecordsAdminComponent implements OnInit {
   }
 
   protected onStatusChange(record: PatientRecord, status: string): void {
-    // NOTE: PatientRecord carries no appointment id. For this mock-admin demo we
-    // PATCH /appointments/:id using the patient record id as a pragmatic stand-in.
-    this.adminService
-      .updateConsultationStatus(record.id, status as ConsultationStatus)
+    // Resolve the patient's most recent appointment and update THAT (the record id
+    // is a user id, not an appointment id — patching it 404s). If the patient has
+    // no appointments, surface a clear message instead of a failed request.
+    this.api
+      .get<Appointment[]>('/appointments', new HttpParams().set('patientId', record.id))
+      .pipe(
+        switchMap((appts) => {
+          const latest = [...appts].sort(
+            (a, b) => new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime(),
+          )[0];
+          if (!latest) {
+            this.updatedMessage.set(`${record.fullName} has no appointments to update.`);
+            return [];
+          }
+          return this.adminService.updateConsultationStatus(
+            latest.id,
+            status as ConsultationStatus,
+          );
+        }),
+      )
       .subscribe(() => {
         this.updatedMessage.set(`Updated ${record.fullName}`);
       });
