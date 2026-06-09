@@ -1,4 +1,6 @@
 :host { display: inline-block; }
+:host(.app-button-host--block) { display: block; width: 100%; }
+:host(.app-button-host--block) .app-button { width: 100%; }
 
 .app-button {
   display: inline-flex;

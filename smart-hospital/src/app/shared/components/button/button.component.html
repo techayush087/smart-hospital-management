@@ -1,5 +1,6 @@
 <button
   class="app-button"
+  [attr.type]="type()"
   [class.app-button--primary]="variant() === 'primary'"
   [class.app-button--secondary]="variant() === 'secondary'"
   [class.app-button--danger]="variant() === 'danger'"

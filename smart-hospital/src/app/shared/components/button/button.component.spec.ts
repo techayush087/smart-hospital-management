@@ -40,4 +40,23 @@ describe('AppButtonComponent', () => {
     fixture.componentInstance.onClick();
     expect(spy).not.toHaveBeenCalled();
   });
+
+  it('defaults the native button type to "button" so it never auto-submits a form', () => {
+    fixture.detectChanges();
+    const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    expect(button.getAttribute('type')).toBe('button');
+  });
+
+  it('sets type="submit" when requested', () => {
+    fixture.componentRef.setInput('type', 'submit');
+    fixture.detectChanges();
+    const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    expect(button.getAttribute('type')).toBe('submit');
+  });
+
+  it('adds the full-width host class when fullWidth is true', () => {
+    fixture.componentRef.setInput('fullWidth', true);
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).classList).toContain('app-button-host--block');
+  });
 });
