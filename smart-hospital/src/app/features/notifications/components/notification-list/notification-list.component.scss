@@ -1,0 +1,13 @@
+:host { display: block; }
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+
+  &__items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+}

@@ -10,7 +10,6 @@ export const routes: Routes = [
   { path: 'patient', canActivate: [authGuard, roleGuard], data: { roles: ['customer'] }, loadChildren: () => import('./features/patient/patient.routes').then(m => m.PATIENT_ROUTES) },
   // TODO(day-4): enable when admin feature lands
   // { path: 'admin', canActivate: [authGuard, roleGuard], data: { roles: ['admin'] }, loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES) },
-  // TODO(day-3): enable when notifications feature lands
-  // { path: 'notifications', canActivate: [authGuard], loadChildren: () => import('./features/notifications/notifications.routes').then(m => m.NOTIFICATIONS_ROUTES) },
+  { path: 'notifications', canActivate: [authGuard], loadChildren: () => import('./features/notifications/notifications.routes').then(m => m.NOTIFICATIONS_ROUTES) },
   { path: '**', loadComponent: () => import('./shared/components/not-found/not-found.component').then(m => m.NotFoundComponent) }
 ];

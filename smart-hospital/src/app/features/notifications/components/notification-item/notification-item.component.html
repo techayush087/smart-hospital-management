@@ -1,0 +1,16 @@
+<button
+  type="button"
+  class="notification-item"
+  [class.notification-item--unread]="!notification().read"
+  data-cy="notification-item"
+  (click)="onClick()">
+  <span class="material-icons-round notification-item__icon">{{ icon() }}</span>
+  <span class="notification-item__body">
+    <span class="notification-item__title">{{ notification().title }}</span>
+    <span class="notification-item__message">{{ notification().message }}</span>
+    <span class="notification-item__time">{{ notification().createdAt | relativeDate }}</span>
+  </span>
+  @if (!notification().read) {
+    <span class="notification-item__dot" aria-hidden="true"></span>
+  }
+</button>
