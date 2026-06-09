@@ -1,0 +1,36 @@
+<article class="doctor-card" data-cy="doctor-card">
+  <app-avatar
+    class="doctor-card__avatar"
+    [src]="doctor().avatar"
+    [name]="doctor().name"
+    size="lg" />
+
+  <div class="doctor-card__body">
+    <h3 class="doctor-card__name">{{ doctor().name }}</h3>
+    <p class="doctor-card__meta">
+      {{ doctor().specialization }} · {{ doctor().experience }} yrs exp
+    </p>
+    <p class="doctor-card__location">
+      <span class="material-icons-round doctor-card__location-icon">location_on</span>
+      {{ doctor().location }}
+    </p>
+    <div class="doctor-card__badges">
+      @for (label of consultationLabels(); track label) {
+        <app-badge [text]="label" />
+      }
+    </div>
+  </div>
+
+  <div class="doctor-card__aside">
+    <p class="doctor-card__rating">
+      <span class="material-icons-round doctor-card__rating-icon">star</span>
+      {{ doctor().rating }}
+    </p>
+    <app-button
+      data-cy="book-doctor"
+      label="Book Appointment"
+      variant="primary"
+      size="sm"
+      (clicked)="onBook()" />
+  </div>
+</article>

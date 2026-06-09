@@ -1,0 +1,92 @@
+@if (doctor(); as d) {
+  <article class="doctor-detail" data-cy="doctor-detail">
+    <header class="doctor-detail__header">
+      <app-avatar [src]="d.avatar" [name]="d.name" size="lg" />
+      <div class="doctor-detail__heading">
+        <h1 class="doctor-detail__name">{{ d.name }}</h1>
+        <p class="doctor-detail__meta">
+          {{ d.specialization }} · {{ d.experience }} yrs exp
+        </p>
+        <p class="doctor-detail__sub">
+          <span class="doctor-detail__rating">
+            <span class="material-icons-round doctor-detail__rating-icon">star</span>
+            {{ d.rating }}
+          </span>
+          <span class="doctor-detail__sub-item">
+            <span class="material-icons-round doctor-detail__sub-icon">location_on</span>
+            {{ d.location }}
+          </span>
+        </p>
+      </div>
+      <div class="doctor-detail__action">
+        <app-button
+          data-cy="book-doctor"
+          label="Book Appointment"
+          variant="primary"
+          (clicked)="onBook()" />
+      </div>
+    </header>
+
+    <section class="doctor-detail__section">
+      <h2 class="doctor-detail__section-title">About</h2>
+      <p class="doctor-detail__bio">{{ d.bio }}</p>
+    </section>
+
+    <section class="doctor-detail__section doctor-detail__facts">
+      <div class="doctor-detail__fact">
+        <span class="doctor-detail__fact-label">Consultation fee</span>
+        <span class="doctor-detail__fact-value">{{ d.consultationFee }}</span>
+      </div>
+      <div class="doctor-detail__fact">
+        <span class="doctor-detail__fact-label">Languages</span>
+        <div class="doctor-detail__badges">
+          @for (lang of d.languages; track lang) {
+            <app-badge [text]="lang" />
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="doctor-detail__section">
+      <h2 class="doctor-detail__section-title">Available slots</h2>
+      <input
+        type="date"
+        class="doctor-detail__date"
+        data-cy="slot-date"
+        [value]="selectedDate()"
+        (change)="onDateChange($any($event.target).value)" />
+
+      @if (slotsLoading()) {
+        <div class="doctor-detail__slots">
+          @for (s of [0, 1, 2, 3, 4, 5]; track s) {
+            <div class="doctor-detail__slot skeleton"></div>
+          }
+        </div>
+      } @else if (selectedDate() && slots().length === 0) {
+        <p class="doctor-detail__empty">No slots available for this date.</p>
+      } @else if (slots().length > 0) {
+        <div class="doctor-detail__slots" data-cy="slot-grid">
+          @for (slot of slots(); track slot.id) {
+            <button
+              type="button"
+              class="doctor-detail__slot"
+              [class.doctor-detail__slot--available]="slot.isAvailable"
+              [class.doctor-detail__slot--selected]="selectedSlotId() === slot.id"
+              [class.doctor-detail__slot--unavailable]="!slot.isAvailable"
+              [disabled]="!slot.isAvailable"
+              (click)="onSelectSlot(slot)">
+              {{ slot.startTime | timeSlot: slot.endTime }}
+            </button>
+          }
+        </div>
+      } @else {
+        <p class="doctor-detail__empty">Select a date to see available slots.</p>
+      }
+    </section>
+  </article>
+} @else {
+  <div class="doctor-detail doctor-detail--loading" data-cy="doctor-detail-loading">
+    <div class="doctor-detail__skeleton-header skeleton"></div>
+    <div class="doctor-detail__skeleton-body skeleton"></div>
+  </div>
+}

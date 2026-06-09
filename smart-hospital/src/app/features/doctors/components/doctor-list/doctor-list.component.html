@@ -1,0 +1,35 @@
+<section class="doctor-list" data-cy="doctor-list">
+  <aside class="doctor-list__sidebar">
+    <app-doctor-filter
+      [specializations]="specializations()"
+      (filtersChange)="onFiltersChange($event)" />
+  </aside>
+
+  <div class="doctor-list__results">
+    <header class="doctor-list__search">
+      <app-search-bar
+        placeholder="Search doctors by name or specialty"
+        (search)="onSearch($event)"
+        (clear)="onSearch('')" />
+    </header>
+
+    @if (loading()) {
+      <div class="doctor-list__grid">
+        @for (s of skeletons; track s) {
+          <div class="doctor-list__skeleton skeleton"></div>
+        }
+      </div>
+    } @else if (filtered().length === 0) {
+      <app-empty-state
+        title="No doctors found"
+        description="Try adjusting your filters or search terms."
+        icon="search" />
+    } @else {
+      <div class="doctor-list__grid">
+        @for (d of filtered(); track d.id) {
+          <app-doctor-card [doctor]="d" (book)="onBook(d)" />
+        }
+      </div>
+    }
+  </div>
+</section>

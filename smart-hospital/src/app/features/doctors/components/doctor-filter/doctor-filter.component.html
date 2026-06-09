@@ -1,0 +1,68 @@
+<aside class="doctor-filter" data-cy="doctor-filter">
+  <div class="doctor-filter__header">
+    <h2 class="doctor-filter__title">Filters</h2>
+    <button
+      type="button"
+      class="doctor-filter__clear"
+      data-cy="clear-filters"
+      (click)="clearAll()">
+      Clear all
+    </button>
+  </div>
+
+  <div class="doctor-filter__group">
+    <label class="doctor-filter__label" for="filter-specialization">Specialization</label>
+    <select
+      id="filter-specialization"
+      class="doctor-filter__select"
+      data-cy="filter-specialization"
+      [value]="activeFilters().specialization ?? ''"
+      (change)="onSpecializationChange($any($event.target).value)">
+      <option value="">All specializations</option>
+      @for (s of specializations(); track s) {
+        <option [value]="s">{{ s }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="doctor-filter__group">
+    <label class="doctor-filter__label" for="filter-location">Location</label>
+    <input
+      id="filter-location"
+      type="text"
+      class="doctor-filter__input"
+      data-cy="filter-location"
+      placeholder="Any location"
+      [value]="activeFilters().location ?? ''"
+      (input)="onLocationChange($any($event.target).value)" />
+  </div>
+
+  <div class="doctor-filter__group">
+    <span class="doctor-filter__label">Consultation type</span>
+    <div class="doctor-filter__toggle" role="group" aria-label="Consultation type">
+      @for (opt of consultationOptions; track opt.value) {
+        <button
+          type="button"
+          class="doctor-filter__toggle-btn"
+          [class.doctor-filter__toggle-btn--active]="consultationToggle() === opt.value"
+          (click)="onConsultationChange(opt.value)">
+          {{ opt.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="doctor-filter__group">
+    <label class="doctor-filter__label" for="filter-rating">Minimum rating</label>
+    <select
+      id="filter-rating"
+      class="doctor-filter__select"
+      data-cy="filter-rating"
+      [value]="activeFilters().minRating ?? 0"
+      (change)="onMinRatingChange($any($event.target).value)">
+      @for (opt of ratingOptions; track opt.value) {
+        <option [value]="opt.value">{{ opt.label }}</option>
+      }
+    </select>
+  </div>
+</aside>

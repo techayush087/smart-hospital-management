@@ -1,12 +1,11 @@
 import { Routes } from '@angular/router';
-// import { authGuard } from './core/guards/auth.guard';
+import { authGuard } from './core/guards/auth.guard';
 // import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
   { path: 'auth', loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES) },
-  // TODO(day-2): enable when doctors feature lands
-  // { path: 'doctors', canActivate: [authGuard], loadChildren: () => import('./features/doctors/doctors.routes').then(m => m.DOCTORS_ROUTES) },
+  { path: 'doctors', canActivate: [authGuard], loadChildren: () => import('./features/doctors/doctors.routes').then(m => m.DOCTORS_ROUTES) },
   // TODO(day-2): enable when appointment feature lands
   // { path: 'appointments', canActivate: [authGuard], loadChildren: () => import('./features/appointment/appointment.routes').then(m => m.APPOINTMENT_ROUTES) },
   // TODO(day-3): enable when patient feature lands
