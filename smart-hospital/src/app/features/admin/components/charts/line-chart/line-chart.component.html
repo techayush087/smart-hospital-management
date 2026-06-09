@@ -1,0 +1,21 @@
+@if (isEmpty()) {
+  <p class="line-chart__empty">No trend data available.</p>
+} @else {
+  <svg
+    class="line-chart__svg"
+    [attr.viewBox]="'0 0 ' + viewWidth + ' ' + viewHeight"
+    preserveAspectRatio="none"
+    role="img"
+    aria-label="Appointments trend line chart"
+  >
+    <polyline class="line-chart__path" [attr.points]="polylinePoints()" />
+    @for (point of points(); track point.label) {
+      <circle class="line-chart__dot" [attr.cx]="point.x" [attr.cy]="point.y" r="2.5" />
+    }
+  </svg>
+  <ul class="line-chart__labels">
+    @for (point of points(); track point.label) {
+      <li class="line-chart__label">{{ point.label }}</li>
+    }
+  </ul>
+}

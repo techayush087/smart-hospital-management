@@ -1,0 +1,105 @@
+:host {
+  display: block;
+}
+
+.donut {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-5);
+
+  &__svg {
+    display: block;
+    flex: 0 0 auto;
+    width: 8rem;
+    height: 8rem;
+  }
+
+  &__slice {
+    fill: none;
+    stroke-width: 16;
+
+    &--0 {
+      stroke: var(--color-primary);
+    }
+
+    &--1 {
+      stroke: var(--color-secondary);
+    }
+
+    &--2 {
+      stroke: var(--color-warning);
+    }
+
+    &--3 {
+      stroke: var(--color-success);
+    }
+
+    &--4 {
+      stroke: var(--color-info);
+    }
+  }
+
+  &__legend {
+    flex: 1 1 auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  &__legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+  }
+
+  &__swatch {
+    flex: 0 0 auto;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: var(--radius-sm);
+
+    &--0 {
+      background: var(--color-primary);
+    }
+
+    &--1 {
+      background: var(--color-secondary);
+    }
+
+    &--2 {
+      background: var(--color-warning);
+    }
+
+    &--3 {
+      background: var(--color-success);
+    }
+
+    &--4 {
+      background: var(--color-info);
+    }
+  }
+
+  &__legend-label {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &__legend-count {
+    flex: 0 0 auto;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+  }
+
+  &__empty {
+    margin: 0;
+    padding: var(--spacing-4);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-align: center;
+  }
+}
