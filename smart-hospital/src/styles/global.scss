@@ -1,5 +1,6 @@
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; height: 100%; }
+html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-family);
   font-size: var(--font-size-base);
@@ -7,11 +8,37 @@ body {
   color: var(--color-text-primary);
   background: var(--color-background);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: var(--font-weight-semibold); line-height: var(--line-height-tight); }
 a { color: var(--color-text-link); text-decoration: none; }
 a:hover { color: var(--color-text-link-hover); }
 button { font-family: inherit; }
+
+/* ── Global accessibility + interaction baseline ──
+   One consistent focus ring across every interactive element (a11y §1 focus-states),
+   so individual components don't each reinvent (or forget) focus styling. */
+:where(a, button, input, select, textarea, [tabindex], [role='button'], [role='menuitem']):focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']) { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+/* Faster tap response on touch (removes the 300ms delay). */
+a, button, [role='button'], input, select, textarea { touch-action: manipulation; }
+
+/* Respect the OS "reduce motion" setting — disable transitions/animations app-wide
+   (a11y §1 reduced-motion, §7). Content stays readable immediately. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
 /* Shared float-label form field pattern (DESIGN.md §12). */
 .form-field {
