@@ -1,2 +1,51 @@
-<!-- TODO(day-3 task-5): build full medical timeline -->
-<p class="medical-timeline__placeholder">Medical timeline coming soon.</p>
+<app-page-header title="Medical Timeline" />
+
+<div class="timeline">
+  @if (loading()) {
+    <div class="timeline__skeletons" aria-hidden="true">
+      @for (s of [1, 2, 3, 4]; track s) {
+        <div class="skeleton timeline__skeleton-row"></div>
+      }
+    </div>
+  } @else if (events().length) {
+    <ol class="timeline__list">
+      @for (e of events(); track e.id) {
+        <li class="timeline-event">
+          <span
+            class="timeline-event__dot"
+            [class.timeline-event__dot--pending]="e.status === 'pending'"
+            [class.timeline-event__dot--confirmed]="e.status === 'confirmed'"
+            [class.timeline-event__dot--completed]="e.status === 'completed'"
+            [class.timeline-event__dot--cancelled]="e.status === 'cancelled'"
+            [class.timeline-event__dot--rescheduled]="e.status === 'rescheduled'"
+            [class.timeline-event__dot--no-show]="e.status === 'no-show'"
+            aria-hidden="true"></span>
+
+          <div class="timeline-event__body">
+            <span class="timeline-event__date">{{ e.date | relativeDate }}</span>
+            <div class="timeline-event__heading">
+              <span class="timeline-event__doctor">{{ e.doctorName }}</span>
+              <app-badge
+                [text]="e.status | appointmentStatus"
+                [status]="e.status" />
+            </div>
+            <span class="timeline-event__specialization">
+              {{ e.specialization }}
+            </span>
+            <p class="timeline-event__title">{{ e.title }}</p>
+            @if (e.prescriptionSummary) {
+              <p class="timeline-event__prescription">
+                {{ e.prescriptionSummary }}
+              </p>
+            }
+          </div>
+        </li>
+      }
+    </ol>
+  } @else {
+    <app-empty-state
+      title="No medical history"
+      description="Your visits and prescriptions will build your timeline here."
+      icon="history" />
+  }
+</div>

@@ -1,9 +1,151 @@
 :host { display: block; }
 
-.prescription-view {
-  &__placeholder {
-    margin: 0;
-    color: var(--color-text-secondary);
+.prescriptions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+
+  &__skeletons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  &__skeleton-card {
+    height: var(--spacing-16);
+    width: 100%;
+  }
+
+  &__toolbar {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-5);
+  }
+}
+
+.prescription {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-6);
+  }
+
+  &__dates {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+  }
+
+  &__date-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-text-tertiary);
+  }
+
+  &__date-value {
     font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+  }
+
+  &__instructions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    padding: var(--spacing-3) var(--spacing-4);
+    background: var(--color-surface-alt);
+    border-radius: var(--radius-md);
+  }
+
+  &__instructions-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-text-tertiary);
+  }
+
+  &__instructions-text {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+    color: var(--color-text-secondary);
+  }
+}
+
+.medications {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  &__head,
+  &__row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-2) var(--spacing-4);
+  }
+
+  &__head {
+    background: var(--color-surface-alt);
+  }
+
+  &__col {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-text-tertiary);
+  }
+
+  &__row {
+    border-top: 1px solid var(--color-divider);
+  }
+
+  &__name {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+  }
+
+  &__cell {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+}
+
+@media print {
+  :host {
+    color: var(--color-text-primary);
+  }
+
+  .prescriptions__toolbar,
+  .prescriptions__skeletons {
+    display: none;
+  }
+
+  .prescriptions__list {
+    gap: var(--spacing-4);
+  }
+
+  .prescription {
+    break-inside: avoid;
   }
 }

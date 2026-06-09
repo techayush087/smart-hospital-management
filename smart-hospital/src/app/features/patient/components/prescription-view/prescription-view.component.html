@@ -1,2 +1,73 @@
-<!-- TODO(day-3 task-5): build full prescription view -->
-<p class="prescription-view__placeholder">Prescriptions coming soon.</p>
+<app-page-header title="Prescriptions" />
+
+<div class="prescriptions">
+  @if (loading()) {
+    <div class="prescriptions__skeletons" aria-hidden="true">
+      @for (s of [1, 2, 3]; track s) {
+        <div class="skeleton prescriptions__skeleton-card"></div>
+      }
+    </div>
+  } @else if (prescriptions().length) {
+    <div class="prescriptions__toolbar">
+      <app-button
+        label="Print"
+        variant="secondary"
+        size="sm"
+        (clicked)="print()" />
+    </div>
+
+    <div class="prescriptions__list">
+      @for (p of prescriptions(); track p.id) {
+        <app-card>
+          <article class="prescription">
+            <header class="prescription__header">
+              <div class="prescription__dates">
+                <span class="prescription__date-label">Issued</span>
+                <span class="prescription__date-value">
+                  {{ p.issuedAt | relativeDate }}
+                </span>
+              </div>
+              @if (p.validUntil) {
+                <div class="prescription__dates">
+                  <span class="prescription__date-label">Valid until</span>
+                  <span class="prescription__date-value">
+                    {{ p.validUntil | relativeDate }}
+                  </span>
+                </div>
+              }
+            </header>
+
+            <dl class="medications" aria-label="Prescribed medications">
+              <div class="medications__head" aria-hidden="true">
+                <span class="medications__col">Medication</span>
+                <span class="medications__col">Dosage</span>
+                <span class="medications__col">Frequency</span>
+                <span class="medications__col">Duration</span>
+              </div>
+              @for (m of p.medications; track m.name) {
+                <div class="medications__row">
+                  <dt class="medications__name">{{ m.name }}</dt>
+                  <dd class="medications__cell">{{ m.dosage }}</dd>
+                  <dd class="medications__cell">{{ m.frequency }}</dd>
+                  <dd class="medications__cell">{{ m.duration }}</dd>
+                </div>
+              }
+            </dl>
+
+            @if (p.instructions) {
+              <div class="prescription__instructions">
+                <span class="prescription__instructions-label">Instructions</span>
+                <p class="prescription__instructions-text">{{ p.instructions }}</p>
+              </div>
+            }
+          </article>
+        </app-card>
+      }
+    </div>
+  } @else {
+    <app-empty-state
+      title="No prescriptions"
+      description="Prescriptions issued by your doctors will appear here."
+      icon="medication" />
+  }
+</div>
