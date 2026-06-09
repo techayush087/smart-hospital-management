@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, catchError, of } from 'rxjs';
 import { ApiService } from './api.service';
 import { SessionService } from './session.service';
 import { User, LoginDto, RegisterDto, AuthResponse } from '../models';
@@ -41,5 +41,38 @@ export class AuthService {
 
   getCurrentUser() {
     return this.currentUser.asReadonly();
+  }
+
+  /**
+   * Restore the signed-in user from a persisted token on app start (e.g. after a
+   * page refresh). Decodes the JWT for the user id, then fetches the full record so
+   * the shell can render role-based nav + the user menu. No token → no-op.
+   */
+  restoreSession(): Observable<User | null> {
+    const token = this.session.getToken();
+    if (!token) return of(null);
+    const userId = this.decodeUserId(token);
+    if (!userId) {
+      this.session.clear();
+      return of(null);
+    }
+    return this.api.get<User>(`/users/${userId}`).pipe(
+      tap((user) => this.currentUser.set(user)),
+      catchError(() => {
+        this.session.clear();
+        return of(null);
+      }),
+    );
+  }
+
+  private decodeUserId(token: string): string | null {
+    try {
+      const payload = token.split('.')[1];
+      const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+      const claims = JSON.parse(json) as { sub?: string };
+      return claims.sub ?? null;
+    } catch {
+      return null;
+    }
   }
 }

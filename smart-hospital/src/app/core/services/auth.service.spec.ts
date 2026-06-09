@@ -112,4 +112,22 @@ describe('AuthService', () => {
     expect(service.getCurrentUser()()).toBeNull();
     expect(session.getToken()).toBeNull();
   });
+
+  it('restoreSession decodes the token and loads the user', () => {
+    // JWT with payload { sub: 'u1' } — header.payload.signature (signature unused by the decoder)
+    const payload = btoa(JSON.stringify({ sub: 'u1' })).replace(/=+$/, '');
+    session.setToken(`header.${payload}.sig`);
+
+    service.restoreSession().subscribe();
+    httpMock.expectOne(`${environment.apiUrl}/users/u1`).flush(mockUser);
+
+    expect(service.isAuthenticated()).toBe(true);
+    expect(service.getCurrentUser()()).toEqual(mockUser);
+  });
+
+  it('restoreSession is a no-op with no token', () => {
+    service.restoreSession().subscribe();
+    httpMock.expectNone(`${environment.apiUrl}/users/u1`);
+    expect(service.isAuthenticated()).toBe(false);
+  });
 });

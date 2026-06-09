@@ -1,0 +1,83 @@
+<div class="shell">
+  <!-- Top bar -->
+  <header class="shell__topbar">
+    <button
+      type="button"
+      class="shell__menu-btn"
+      aria-label="Toggle navigation menu"
+      (click)="toggleSidebar()">
+      <span class="material-icons-round">menu</span>
+    </button>
+
+    <a class="shell__brand" routerLink="/">
+      <span class="material-icons-round shell__brand-icon">local_hospital</span>
+      <span class="shell__brand-name">SHAPMS</span>
+    </a>
+
+    <div class="shell__topbar-spacer"></div>
+
+    <button
+      type="button"
+      class="shell__icon-btn"
+      aria-label="Notifications"
+      (click)="goToNotifications()">
+      <span class="material-icons-round">notifications</span>
+      @if (unreadCount() > 0) {
+        <span class="shell__badge" aria-hidden="true">{{ unreadCount() }}</span>
+      }
+    </button>
+
+    <div class="shell__user">
+      <button
+        type="button"
+        class="shell__user-btn"
+        aria-haspopup="menu"
+        [attr.aria-expanded]="userMenuOpen()"
+        (click)="toggleUserMenu()">
+        <span class="shell__avatar">{{ userInitials() }}</span>
+        <span class="shell__user-name">{{ userName() }}</span>
+        <span class="material-icons-round shell__caret">expand_more</span>
+      </button>
+
+      @if (userMenuOpen()) {
+        <div class="shell__menu" role="menu">
+          <button type="button" class="shell__menu-item" role="menuitem" (click)="goToProfile()">
+            <span class="material-icons-round">person</span> Profile
+          </button>
+          <div class="shell__menu-divider"></div>
+          <button type="button" class="shell__menu-item shell__menu-item--danger" role="menuitem" (click)="logout()">
+            <span class="material-icons-round">logout</span> Sign out
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  <div class="shell__body">
+    <!-- Sidebar -->
+    <aside class="shell__sidebar" [class.shell__sidebar--open]="sidebarOpen()">
+      <nav class="shell__nav" aria-label="Primary">
+        @for (item of navItems(); track item.route) {
+          <a
+            class="shell__nav-link"
+            [routerLink]="item.route"
+            routerLinkActive="shell__nav-link--active"
+            (click)="closeSidebar()">
+            <span class="material-icons-round shell__nav-icon">{{ item.icon }}</span>
+            <span class="shell__nav-label">{{ item.label }}</span>
+          </a>
+        }
+      </nav>
+    </aside>
+
+    <!-- Mobile backdrop -->
+    @if (sidebarOpen()) {
+      <div class="shell__backdrop" (click)="closeSidebar()" aria-hidden="true"></div>
+    }
+
+    <!-- Main content -->
+    <main class="shell__main">
+      <router-outlet />
+    </main>
+  </div>
+</div>
