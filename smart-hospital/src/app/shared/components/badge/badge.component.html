@@ -4,6 +4,7 @@
   [class.app-badge--confirmed]="status() === 'confirmed'"
   [class.app-badge--completed]="status() === 'completed'"
   [class.app-badge--cancelled]="status() === 'cancelled'"
-  [class.app-badge--rescheduled]="status() === 'rescheduled'">
+  [class.app-badge--rescheduled]="status() === 'rescheduled'"
+  [class.app-badge--no-show]="status() === 'no-show'">
   {{ text() }}
 </span>

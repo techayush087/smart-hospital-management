@@ -13,4 +13,5 @@
   &--completed   { background: var(--color-surface-alt); color: var(--color-text-secondary); }
   &--cancelled   { background: var(--color-danger-bg); color: var(--color-status-cancelled); }
   &--rescheduled { background: var(--color-primary-light); color: var(--color-status-rescheduled); }
+  &--no-show     { background: var(--color-danger-bg); color: var(--color-status-cancelled); }
 }
