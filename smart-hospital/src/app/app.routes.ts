@@ -4,8 +4,7 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
-  // TODO(task-15): enable auth route when auth feature lands
-  // { path: 'auth', loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES) },
+  { path: 'auth', loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES) },
   // TODO(day-2): enable when doctors feature lands
   // { path: 'doctors', canActivate: [authGuard], loadChildren: () => import('./features/doctors/doctors.routes').then(m => m.DOCTORS_ROUTES) },
   // TODO(day-2): enable when appointment feature lands

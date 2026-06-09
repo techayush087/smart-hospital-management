@@ -1,0 +1,95 @@
+<div class="login">
+  <aside class="login__brand">
+    <div class="login__brand-content">
+      <span class="material-icons-round login__brand-mark" aria-hidden="true">local_hospital</span>
+      <h1 class="login__brand-name">SHAPMS</h1>
+      <p class="login__brand-tagline">
+        Smart Hospital Appointment &amp; Patient Management. Care that starts with clarity.
+      </p>
+    </div>
+  </aside>
+
+  <section class="login__panel">
+    <div class="login__form-wrap">
+      <header class="login__header">
+        <h2 class="login__title">Welcome back</h2>
+        <p class="login__subtitle">Sign in to manage your appointments and care.</p>
+      </header>
+
+      @if (error()) {
+        <div class="login__alert" role="alert">
+          <span class="material-icons-round" aria-hidden="true">error</span>
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      <form class="login__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-field">
+          <input
+            id="login-email"
+            class="form-field__input"
+            type="email"
+            placeholder=" "
+            autocomplete="email"
+            formControlName="email"
+            data-cy="email"
+            aria-describedby="login-email-error"
+          />
+          <label class="form-field__label" for="login-email">Email address</label>
+          @if (form.get('email')?.touched && form.get('email')?.invalid) {
+            <p class="form-field__error" id="login-email-error">
+              <span class="material-icons-round" aria-hidden="true">error</span>
+              @if (form.get('email')?.errors?.['required']) {
+                Email is required.
+              } @else {
+                Enter a valid email address.
+              }
+            </p>
+          }
+        </div>
+
+        <div class="form-field">
+          <input
+            id="login-password"
+            class="form-field__input"
+            type="password"
+            placeholder=" "
+            autocomplete="current-password"
+            formControlName="password"
+            data-cy="password"
+            aria-describedby="login-password-error"
+          />
+          <label class="form-field__label" for="login-password">Password</label>
+          @if (form.get('password')?.touched && form.get('password')?.invalid) {
+            <p class="form-field__error" id="login-password-error">
+              <span class="material-icons-round" aria-hidden="true">error</span>
+              Password is required.
+            </p>
+          }
+        </div>
+
+        <div class="login__row">
+          <label class="login__remember">
+            <input type="checkbox" formControlName="rememberMe" />
+            <span>Remember me</span>
+          </label>
+          <a class="login__link" href="#" (click)="$event.preventDefault()">Forgot password?</a>
+        </div>
+
+        <app-button
+          class="login__submit"
+          label="Sign In"
+          variant="primary"
+          size="lg"
+          [loading]="loading()"
+          data-cy="submit"
+        />
+      </form>
+
+      <p class="login__footer">
+        New here?
+        <a class="login__link" routerLink="/auth/register">Create an account</a>
+      </p>
+    </div>
+  </section>
+</div>

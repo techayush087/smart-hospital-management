@@ -1,0 +1,247 @@
+<section class="register">
+  <div class="register__card">
+    <header class="register__header">
+      <h1 class="register__title">Create your account</h1>
+      <p class="register__subtitle">Join SHAPMS to book and manage your care in minutes.</p>
+    </header>
+
+    @if (error()) {
+      <div class="register__alert" role="alert">
+        <span class="material-icons-round" aria-hidden="true">error</span>
+        <span>{{ error() }}</span>
+      </div>
+    }
+
+    <form class="register__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <fieldset class="register__section">
+        <legend class="register__legend">Account</legend>
+
+        <div class="register__grid">
+          <div class="form-field">
+            <input
+              id="reg-firstName"
+              class="form-field__input"
+              type="text"
+              placeholder=" "
+              formControlName="firstName"
+              data-cy="firstName"
+            />
+            <label class="form-field__label" for="reg-firstName">First name</label>
+            @if (form.get('firstName')?.touched && form.get('firstName')?.invalid) {
+              <p class="form-field__error">
+                <span class="material-icons-round" aria-hidden="true">error</span>
+                @if (form.get('firstName')?.errors?.['minlength']) {
+                  First name must be at least 2 characters.
+                } @else {
+                  First name is required.
+                }
+              </p>
+            }
+          </div>
+
+          <div class="form-field">
+            <input
+              id="reg-lastName"
+              class="form-field__input"
+              type="text"
+              placeholder=" "
+              formControlName="lastName"
+              data-cy="lastName"
+            />
+            <label class="form-field__label" for="reg-lastName">Last name</label>
+            @if (form.get('lastName')?.touched && form.get('lastName')?.invalid) {
+              <p class="form-field__error">
+                <span class="material-icons-round" aria-hidden="true">error</span>
+                Last name is required.
+              </p>
+            }
+          </div>
+        </div>
+
+        <div class="form-field">
+          <input
+            id="reg-email"
+            class="form-field__input"
+            type="email"
+            placeholder=" "
+            autocomplete="email"
+            formControlName="email"
+            data-cy="email"
+          />
+          <label class="form-field__label" for="reg-email">Email address</label>
+          @if (form.get('email')?.touched && form.get('email')?.invalid) {
+            <p class="form-field__error">
+              <span class="material-icons-round" aria-hidden="true">error</span>
+              @if (form.get('email')?.errors?.['required']) {
+                Email is required.
+              } @else {
+                Enter a valid email address.
+              }
+            </p>
+          }
+        </div>
+
+        <div class="register__grid">
+          <div class="form-field">
+            <input
+              id="reg-password"
+              class="form-field__input"
+              type="password"
+              placeholder=" "
+              autocomplete="new-password"
+              formControlName="password"
+              data-cy="password"
+            />
+            <label class="form-field__label" for="reg-password">Password</label>
+            @if (form.get('password')?.touched && form.get('password')?.invalid) {
+              <p class="form-field__error">
+                <span class="material-icons-round" aria-hidden="true">error</span>
+                @if (form.get('password')?.errors?.['minlength']) {
+                  Password must be at least 8 characters.
+                } @else {
+                  Password is required.
+                }
+              </p>
+            }
+          </div>
+
+          <div class="form-field">
+            <input
+              id="reg-confirmPassword"
+              class="form-field__input"
+              type="password"
+              placeholder=" "
+              autocomplete="new-password"
+              formControlName="confirmPassword"
+              data-cy="confirmPassword"
+            />
+            <label class="form-field__label" for="reg-confirmPassword">Confirm password</label>
+            @if (
+              form.get('confirmPassword')?.touched &&
+              (form.get('confirmPassword')?.invalid || form.errors?.['passwordMismatch'])
+            ) {
+              <p class="form-field__error">
+                <span class="material-icons-round" aria-hidden="true">error</span>
+                @if (form.errors?.['passwordMismatch']) {
+                  Passwords do not match.
+                } @else {
+                  Please confirm your password.
+                }
+              </p>
+            }
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="register__section">
+        <legend class="register__legend">Personal</legend>
+
+        <div class="register__grid">
+          <div class="form-field">
+            <input
+              id="reg-dateOfBirth"
+              class="form-field__input"
+              type="date"
+              placeholder=" "
+              formControlName="dateOfBirth"
+              data-cy="dateOfBirth"
+            />
+            <label class="form-field__label" for="reg-dateOfBirth">Date of birth</label>
+            @if (form.get('dateOfBirth')?.touched && form.get('dateOfBirth')?.invalid) {
+              <p class="form-field__error">
+                <span class="material-icons-round" aria-hidden="true">error</span>
+                @if (form.get('dateOfBirth')?.errors?.['ageRestriction']) {
+                  You must be at least 18 years old to register.
+                } @else {
+                  Date of birth is required.
+                }
+              </p>
+            }
+          </div>
+
+          <div class="form-field">
+            <input
+              id="reg-phone"
+              class="form-field__input"
+              type="tel"
+              placeholder=" "
+              autocomplete="tel"
+              formControlName="phone"
+              data-cy="phone"
+            />
+            <label class="form-field__label" for="reg-phone">Phone number</label>
+            @if (form.get('phone')?.touched && form.get('phone')?.invalid) {
+              <p class="form-field__error">
+                <span class="material-icons-round" aria-hidden="true">error</span>
+                @if (form.get('phone')?.errors?.['required']) {
+                  Phone number is required.
+                } @else {
+                  Enter a valid phone number (10–15 digits).
+                }
+              </p>
+            }
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="register__section">
+        <legend class="register__legend">Medical (optional)</legend>
+
+        <div class="form-field">
+          <select
+            id="reg-bloodGroup"
+            class="form-field__select"
+            formControlName="bloodGroup"
+            data-cy="bloodGroup"
+          >
+            <option value="">Not specified</option>
+            @for (group of bloodGroups; track group) {
+              <option [value]="group">{{ group }}</option>
+            }
+          </select>
+          <label class="form-field__label" for="reg-bloodGroup">Blood group</label>
+        </div>
+
+        <div class="form-field">
+          <input
+            id="reg-allergies"
+            class="form-field__input"
+            type="text"
+            placeholder=" "
+            formControlName="allergies"
+            data-cy="allergies"
+          />
+          <label class="form-field__label" for="reg-allergies">Allergies (comma-separated)</label>
+        </div>
+
+        <div class="form-field">
+          <input
+            id="reg-existingConditions"
+            class="form-field__input"
+            type="text"
+            placeholder=" "
+            formControlName="existingConditions"
+            data-cy="existingConditions"
+          />
+          <label class="form-field__label" for="reg-existingConditions">
+            Existing conditions (comma-separated)
+          </label>
+        </div>
+      </fieldset>
+
+      <app-button
+        class="register__submit"
+        label="Create Account"
+        variant="primary"
+        size="lg"
+        [loading]="loading()"
+        data-cy="submit"
+      />
+    </form>
+
+    <p class="register__footer">
+      Already have an account?
+      <a class="register__link" routerLink="/auth/login">Sign in</a>
+    </p>
+  </div>
+</section>
