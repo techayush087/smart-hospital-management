@@ -1,0 +1,16 @@
+<button
+  class="app-button"
+  [class.app-button--primary]="variant() === 'primary'"
+  [class.app-button--secondary]="variant() === 'secondary'"
+  [class.app-button--danger]="variant() === 'danger'"
+  [class.app-button--ghost]="variant() === 'ghost'"
+  [class.app-button--sm]="size() === 'sm'"
+  [class.app-button--lg]="size() === 'lg'"
+  [disabled]="disabled() || loading()"
+  (click)="onClick()">
+  @if (loading()) {
+    <mat-progress-spinner diameter="18" mode="indeterminate" />
+  } @else {
+    {{ label() }}
+  }
+</button>

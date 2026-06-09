@@ -1,0 +1,16 @@
+:host { display: inline-block; }
+
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+
+  &--pending     { background: var(--color-warning-bg); color: var(--color-status-pending); }
+  &--confirmed   { background: var(--color-success-bg); color: var(--color-status-confirmed); }
+  &--completed   { background: var(--color-surface-alt); color: var(--color-text-secondary); }
+  &--cancelled   { background: var(--color-danger-bg); color: var(--color-status-cancelled); }
+  &--rescheduled { background: var(--color-primary-light); color: var(--color-status-rescheduled); }
+}

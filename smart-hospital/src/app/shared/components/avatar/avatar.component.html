@@ -1,0 +1,10 @@
+<span
+  class="app-avatar"
+  [class.app-avatar--sm]="size() === 'sm'"
+  [class.app-avatar--lg]="size() === 'lg'">
+  @if (src()) {
+    <img class="app-avatar__img" [src]="src()" [alt]="name()" />
+  } @else {
+    <span class="app-avatar__initials">{{ initials() }}</span>
+  }
+</span>

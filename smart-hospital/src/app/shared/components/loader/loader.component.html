@@ -1,0 +1,6 @@
+<div class="app-loader" [class.app-loader--fullscreen]="fullscreen()">
+  <div class="app-loader__pulse" aria-hidden="true"></div>
+  @if (message()) {
+    <p class="app-loader__message">{{ message() }}</p>
+  }
+</div>

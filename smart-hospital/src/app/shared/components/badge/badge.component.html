@@ -1,0 +1,9 @@
+<span
+  class="app-badge"
+  [class.app-badge--pending]="status() === 'pending'"
+  [class.app-badge--confirmed]="status() === 'confirmed'"
+  [class.app-badge--completed]="status() === 'completed'"
+  [class.app-badge--cancelled]="status() === 'cancelled'"
+  [class.app-badge--rescheduled]="status() === 'rescheduled'">
+  {{ text() }}
+</span>

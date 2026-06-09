@@ -1,0 +1,15 @@
+<div class="app-card" [class.app-card--elevated]="elevated()">
+  @if (title() || subtitle()) {
+    <header class="app-card__header">
+      @if (title()) {
+        <h3 class="app-card__title">{{ title() }}</h3>
+      }
+      @if (subtitle()) {
+        <p class="app-card__subtitle">{{ subtitle() }}</p>
+      }
+    </header>
+  }
+  <div class="app-card__body">
+    <ng-content />
+  </div>
+</div>
