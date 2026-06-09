@@ -10,7 +10,7 @@
   </app-page-header>
 
   @if (notifications().length) {
-    <div class="notification-list__items">
+    <div class="notification-list__items" aria-live="polite">
       @for (n of notifications(); track n.id) {
         <app-notification-item [notification]="n" (read)="onRead(n.id)" />
       }

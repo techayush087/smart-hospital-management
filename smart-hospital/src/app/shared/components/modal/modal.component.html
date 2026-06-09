@@ -4,11 +4,12 @@
       class="app-modal__panel"
       role="dialog"
       aria-modal="true"
+      aria-labelledby="app-modal-title"
       cdkTrapFocus
       [cdkTrapFocusAutoCapture]="true"
       (click)="$event.stopPropagation()">
       <div class="app-modal__header">
-        <h2 class="app-modal__title">{{ title() }}</h2>
+        <h2 id="app-modal-title" class="app-modal__title">{{ title() }}</h2>
         <button
           type="button"
           class="app-modal__close"

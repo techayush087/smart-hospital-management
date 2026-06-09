@@ -5,7 +5,7 @@
       (filtersChange)="onFiltersChange($event)" />
   </aside>
 
-  <div class="doctor-list__results">
+  <div class="doctor-list__results" aria-live="polite" [attr.aria-busy]="loading()">
     <header class="doctor-list__search">
       <app-search-bar
         placeholder="Search doctors by name or specialty"

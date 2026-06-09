@@ -1,6 +1,6 @@
 <app-page-header title="Dashboard" />
 
-<div class="dashboard">
+<div class="dashboard" [attr.aria-busy]="loading()">
   @if (loading()) {
     <div class="dashboard__stats" aria-hidden="true">
       @for (s of [1, 2, 3, 4]; track s) {

@@ -25,10 +25,11 @@
             placeholder=" "
             formControlName="firstName"
             data-cy="profileFirstName"
+            [attr.aria-describedby]="profileForm.get('firstName')?.touched && profileForm.get('firstName')?.invalid ? 'profile-firstName-error' : null"
           />
           <label class="form-field__label" for="profile-firstName">First name</label>
           @if (profileForm.get('firstName')?.touched && profileForm.get('firstName')?.invalid) {
-            <p class="form-field__error">
+            <p class="form-field__error" id="profile-firstName-error">
               <span class="material-icons-round" aria-hidden="true">error</span>
               First name is required.
             </p>
@@ -136,10 +137,11 @@
           #leadTime="ngModel"
           [(ngModel)]="preferences.reminderLeadTime"
           data-cy="reminderLeadTime"
+          [attr.aria-describedby]="leadTime.touched && leadTime.invalid ? 'profile-leadTime-error' : null"
         />
         <label class="form-field__label" for="profile-leadTime">Reminder lead time (hours)</label>
         @if (leadTime.touched && leadTime.invalid) {
-          <p class="form-field__error">
+          <p class="form-field__error" id="profile-leadTime-error">
             <span class="material-icons-round" aria-hidden="true">error</span>
             Enter a value between 1 and 72 hours.
           </p>

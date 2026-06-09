@@ -6,6 +6,7 @@
     class="form-field__select"
     [id]="fieldKey()"
     [attr.data-cy]="fieldKey()"
+    [attr.aria-describedby]="showError() ? fieldKey() + '-error' : null"
     [formControl]="control()">
     <option value="" disabled>Select…</option>
     @for (o of options(); track o.value) {
@@ -14,7 +15,7 @@
   </select>
 
   @if (showError()) {
-    <span class="form-field__error">
+    <span class="form-field__error" [id]="fieldKey() + '-error'">
       <span class="material-icons-round" aria-hidden="true">error</span>
       {{ errorMessage() }}
     </span>

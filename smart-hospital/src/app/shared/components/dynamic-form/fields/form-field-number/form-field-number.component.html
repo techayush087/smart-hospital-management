@@ -5,11 +5,12 @@
     placeholder=" "
     [id]="fieldKey()"
     [attr.data-cy]="fieldKey()"
+    [attr.aria-describedby]="showError() ? fieldKey() + '-error' : null"
     [formControl]="control()" />
   <label class="form-field__label" [attr.for]="fieldKey()">{{ label() }}</label>
 
   @if (showError()) {
-    <span class="form-field__error">
+    <span class="form-field__error" [id]="fieldKey() + '-error'">
       <span class="material-icons-round" aria-hidden="true">error</span>
       {{ errorMessage() }}
     </span>

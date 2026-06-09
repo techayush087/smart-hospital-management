@@ -25,10 +25,11 @@
               placeholder=" "
               formControlName="firstName"
               data-cy="firstName"
+              [attr.aria-describedby]="form.get('firstName')?.touched && form.get('firstName')?.invalid ? 'reg-firstName-error' : null"
             />
             <label class="form-field__label" for="reg-firstName">First name</label>
             @if (form.get('firstName')?.touched && form.get('firstName')?.invalid) {
-              <p class="form-field__error">
+              <p class="form-field__error" id="reg-firstName-error">
                 <span class="material-icons-round" aria-hidden="true">error</span>
                 @if (form.get('firstName')?.errors?.['minlength']) {
                   First name must be at least 2 characters.
@@ -47,10 +48,11 @@
               placeholder=" "
               formControlName="lastName"
               data-cy="lastName"
+              [attr.aria-describedby]="form.get('lastName')?.touched && form.get('lastName')?.invalid ? 'reg-lastName-error' : null"
             />
             <label class="form-field__label" for="reg-lastName">Last name</label>
             @if (form.get('lastName')?.touched && form.get('lastName')?.invalid) {
-              <p class="form-field__error">
+              <p class="form-field__error" id="reg-lastName-error">
                 <span class="material-icons-round" aria-hidden="true">error</span>
                 Last name is required.
               </p>
@@ -67,10 +69,11 @@
             autocomplete="email"
             formControlName="email"
             data-cy="email"
+            [attr.aria-describedby]="form.get('email')?.touched && form.get('email')?.invalid ? 'reg-email-error' : null"
           />
           <label class="form-field__label" for="reg-email">Email address</label>
           @if (form.get('email')?.touched && form.get('email')?.invalid) {
-            <p class="form-field__error">
+            <p class="form-field__error" id="reg-email-error">
               <span class="material-icons-round" aria-hidden="true">error</span>
               @if (form.get('email')?.errors?.['required']) {
                 Email is required.
@@ -91,10 +94,11 @@
               autocomplete="new-password"
               formControlName="password"
               data-cy="password"
+              [attr.aria-describedby]="form.get('password')?.touched && form.get('password')?.invalid ? 'reg-password-error' : null"
             />
             <label class="form-field__label" for="reg-password">Password</label>
             @if (form.get('password')?.touched && form.get('password')?.invalid) {
-              <p class="form-field__error">
+              <p class="form-field__error" id="reg-password-error">
                 <span class="material-icons-round" aria-hidden="true">error</span>
                 @if (form.get('password')?.errors?.['minlength']) {
                   Password must be at least 8 characters.
@@ -114,13 +118,14 @@
               autocomplete="new-password"
               formControlName="confirmPassword"
               data-cy="confirmPassword"
+              [attr.aria-describedby]="form.get('confirmPassword')?.touched && (form.get('confirmPassword')?.invalid || form.errors?.['passwordMismatch']) ? 'reg-confirmPassword-error' : null"
             />
             <label class="form-field__label" for="reg-confirmPassword">Confirm password</label>
             @if (
               form.get('confirmPassword')?.touched &&
               (form.get('confirmPassword')?.invalid || form.errors?.['passwordMismatch'])
             ) {
-              <p class="form-field__error">
+              <p class="form-field__error" id="reg-confirmPassword-error">
                 <span class="material-icons-round" aria-hidden="true">error</span>
                 @if (form.errors?.['passwordMismatch']) {
                   Passwords do not match.
@@ -145,10 +150,11 @@
               placeholder=" "
               formControlName="dateOfBirth"
               data-cy="dateOfBirth"
+              [attr.aria-describedby]="form.get('dateOfBirth')?.touched && form.get('dateOfBirth')?.invalid ? 'reg-dateOfBirth-error' : null"
             />
             <label class="form-field__label" for="reg-dateOfBirth">Date of birth</label>
             @if (form.get('dateOfBirth')?.touched && form.get('dateOfBirth')?.invalid) {
-              <p class="form-field__error">
+              <p class="form-field__error" id="reg-dateOfBirth-error">
                 <span class="material-icons-round" aria-hidden="true">error</span>
                 @if (form.get('dateOfBirth')?.errors?.['ageRestriction']) {
                   You must be at least 18 years old to register.
@@ -168,10 +174,11 @@
               autocomplete="tel"
               formControlName="phone"
               data-cy="phone"
+              [attr.aria-describedby]="form.get('phone')?.touched && form.get('phone')?.invalid ? 'reg-phone-error' : null"
             />
             <label class="form-field__label" for="reg-phone">Phone number</label>
             @if (form.get('phone')?.touched && form.get('phone')?.invalid) {
-              <p class="form-field__error">
+              <p class="form-field__error" id="reg-phone-error">
                 <span class="material-icons-round" aria-hidden="true">error</span>
                 @if (form.get('phone')?.errors?.['required']) {
                   Phone number is required.
