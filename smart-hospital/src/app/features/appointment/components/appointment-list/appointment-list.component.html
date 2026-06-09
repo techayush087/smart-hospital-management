@@ -1,0 +1,85 @@
+<section class="appointment-list" data-cy="appointment-list">
+  @if (upcoming().length === 0 && past().length === 0) {
+    <app-empty-state
+      title="No appointments yet"
+      description="Book your first appointment to get started."
+      icon="calendar_today"
+      actionLabel="Book Appointment"
+      (action)="onBook()" />
+  } @else {
+    @if (upcoming().length > 0) {
+      <div class="appointment-list__group">
+        <h2 class="appointment-list__heading">Upcoming</h2>
+        <ul class="appointment-list__items">
+          @for (a of upcoming(); track a.id) {
+            <li class="appointment-list__row" data-cy="appointment-row">
+              <a
+                class="appointment-list__main"
+                [routerLink]="['/appointments', a.id]">
+                <div class="appointment-list__when">
+                  <span class="appointment-list__date">
+                    {{ a.scheduledAt | relativeDate }}
+                  </span>
+                  <app-badge
+                    [text]="a.status | appointmentStatus"
+                    [status]="a.status" />
+                </div>
+                <p class="appointment-list__reason">{{ a.reason }}</p>
+                <span class="appointment-list__type">{{ a.type }}</span>
+              </a>
+              @if (canManage(a)) {
+                <div class="appointment-list__actions">
+                  <app-button
+                    label="Reschedule"
+                    variant="secondary"
+                    size="sm"
+                    data-cy="reschedule-appointment"
+                    (clicked)="onReschedule(a)" />
+                  <app-button
+                    label="Cancel"
+                    variant="danger"
+                    size="sm"
+                    data-cy="cancel-appointment"
+                    (clicked)="onCancel(a)" />
+                </div>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    @if (past().length > 0) {
+      <div class="appointment-list__group">
+        <h2 class="appointment-list__heading">Past</h2>
+        <ul class="appointment-list__items">
+          @for (a of past(); track a.id) {
+            <li class="appointment-list__row" data-cy="appointment-row">
+              <a
+                class="appointment-list__main"
+                [routerLink]="['/appointments', a.id]">
+                <div class="appointment-list__when">
+                  <span class="appointment-list__date">
+                    {{ a.scheduledAt | relativeDate }}
+                  </span>
+                  <app-badge
+                    [text]="a.status | appointmentStatus"
+                    [status]="a.status" />
+                </div>
+                <p class="appointment-list__reason">{{ a.reason }}</p>
+                <span class="appointment-list__type">{{ a.type }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  }
+
+  @if (rescheduling(); as appt) {
+    <app-reschedule-modal
+      [appointment]="appt"
+      [open]="true"
+      (closed)="onRescheduleClosed()" />
+  }
+</section>

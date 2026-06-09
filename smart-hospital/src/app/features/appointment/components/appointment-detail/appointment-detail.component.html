@@ -1,0 +1,63 @@
+<section class="appointment-detail" data-cy="appointment-detail">
+  @if (appointment(); as a) {
+    <a class="appointment-detail__back" [routerLink]="['/appointments']">
+      <span class="material-icons-round">arrow_back</span>
+      <span>Back to appointments</span>
+    </a>
+
+    <header class="appointment-detail__header">
+      <h1 class="appointment-detail__title">{{ a.reason }}</h1>
+      <app-badge
+        [text]="a.status | appointmentStatus"
+        [status]="a.status" />
+    </header>
+
+    <dl class="appointment-detail__meta">
+      <div class="appointment-detail__field">
+        <dt class="appointment-detail__label">When</dt>
+        <dd class="appointment-detail__value">{{ formatWhen(a.scheduledAt) }}</dd>
+      </div>
+      <div class="appointment-detail__field">
+        <dt class="appointment-detail__label">Duration</dt>
+        <dd class="appointment-detail__value">{{ formatDuration(a.duration) }}</dd>
+      </div>
+      <div class="appointment-detail__field">
+        <dt class="appointment-detail__label">Type</dt>
+        <dd class="appointment-detail__value appointment-detail__value--cap">
+          {{ a.type }}
+        </dd>
+      </div>
+      @if (a.notes) {
+        <div class="appointment-detail__field appointment-detail__field--full">
+          <dt class="appointment-detail__label">Notes</dt>
+          <dd class="appointment-detail__value">{{ a.notes }}</dd>
+        </div>
+      }
+    </dl>
+
+    @if (canManage(a)) {
+      <div class="appointment-detail__actions">
+        <app-button
+          label="Reschedule"
+          variant="secondary"
+          data-cy="reschedule-appointment"
+          (clicked)="onReschedule()" />
+        <app-button
+          label="Cancel"
+          variant="danger"
+          data-cy="cancel-appointment"
+          (clicked)="onCancel(a)" />
+      </div>
+
+      <app-reschedule-modal
+        [appointment]="a"
+        [open]="rescheduling()"
+        (closed)="onRescheduleClosed()" />
+    }
+  } @else {
+    <app-empty-state
+      title="Appointment not found"
+      description="This appointment may have been removed or does not exist."
+      icon="event_busy" />
+  }
+</section>
