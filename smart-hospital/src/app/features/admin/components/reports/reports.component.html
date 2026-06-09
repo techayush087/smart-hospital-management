@@ -1,0 +1,70 @@
+<app-page-header title="Reports" [breadcrumbs]="['Admin', 'Reports']">
+  <app-button
+    label="Export"
+    variant="secondary"
+    [disabled]="true"
+    title="Coming soon" />
+</app-page-header>
+
+<section class="reports">
+  <app-card title="Appointment Report" subtitle="Filter by date range">
+    <div class="range">
+      <label class="range__field">
+        <span class="range__label">Start date</span>
+        <input
+          type="date"
+          class="range__input"
+          data-cy="report-range-start"
+          [value]="start()"
+          (input)="onStartChange($any($event.target).value)" />
+      </label>
+      <label class="range__field">
+        <span class="range__label">End date</span>
+        <input
+          type="date"
+          class="range__input"
+          data-cy="report-range-end"
+          [value]="end()"
+          (input)="onEndChange($any($event.target).value)" />
+      </label>
+      <app-button
+        label="Apply"
+        variant="primary"
+        data-cy="report-range-apply"
+        [loading]="loading()"
+        [disabled]="!canApply()"
+        (clicked)="apply()" />
+    </div>
+  </app-card>
+
+  @if (report(); as data) {
+    <app-card title="Results" [subtitle]="data.total + ' appointments in range'">
+      <div class="results">
+        <p class="results__total" data-cy="report-total">
+          <span class="results__total-value">{{ data.total }}</span>
+          <span class="results__total-label">total appointments</span>
+        </p>
+
+        @if (data.byStatus.length) {
+          <ul class="results__breakdown">
+            @for (row of data.byStatus; track row.status) {
+              <li class="results__row" [attr.data-cy]="'report-status-' + row.status">
+                <app-badge
+                  [text]="row.status | appointmentStatus"
+                  [status]="row.status" />
+                <span class="results__bar" aria-hidden="true">
+                  <span
+                    class="results__bar-fill"
+                    [style.width.%]="barWidth(row.count)"></span>
+                </span>
+                <span class="results__count">{{ row.count }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="results__empty">No appointments in the selected range.</p>
+        }
+      </div>
+    </app-card>
+  }
+</section>

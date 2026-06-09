@@ -1,0 +1,52 @@
+<app-page-header title="Admin Dashboard" [breadcrumbs]="['Admin', 'Dashboard']" />
+
+<section class="dashboard">
+  @if (loading()) {
+    <div class="dashboard__kpis" aria-hidden="true">
+      @for (s of skeletons; track s) {
+        <div class="dashboard__skeleton dashboard__skeleton--kpi"></div>
+      }
+    </div>
+    <div class="dashboard__charts" aria-hidden="true">
+      <div class="dashboard__skeleton dashboard__skeleton--chart"></div>
+      <div class="dashboard__skeleton dashboard__skeleton--chart"></div>
+    </div>
+  } @else if (stats(); as data) {
+    <div class="dashboard__kpis" data-cy="dashboard-kpis">
+      @for (kpi of kpis(data); track kpi.key) {
+        <article
+          class="kpi kpi--{{ kpi.variant }}"
+          [attr.data-cy]="'kpi-' + kpi.key">
+          <span class="kpi__icon material-icons-round" aria-hidden="true">{{
+            kpi.icon
+          }}</span>
+          <div class="kpi__body">
+            <p class="kpi__value">{{ kpi.value }}</p>
+            <p class="kpi__label">{{ kpi.label }}</p>
+          </div>
+        </article>
+      }
+    </div>
+
+    <div class="dashboard__charts">
+      <app-card title="Appointments Trend" subtitle="Bookings over time">
+        <app-line-chart [data]="data.appointmentsTrend" />
+      </app-card>
+      <app-card title="Specialty Distribution" subtitle="By specialization">
+        <app-donut-chart [data]="data.specialtyDistribution" />
+      </app-card>
+    </div>
+
+    <app-card title="Recent Activity" subtitle="Latest booking updates">
+      <div class="activity">
+        <div class="activity__header" role="row">
+          <span class="activity__col">Patient</span>
+          <span class="activity__col">Doctor</span>
+          <span class="activity__col">Status</span>
+          <span class="activity__col">When</span>
+        </div>
+        <p class="activity__empty">Activity feed coming soon.</p>
+      </div>
+    </app-card>
+  }
+</section>

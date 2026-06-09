@@ -1,0 +1,147 @@
+:host {
+  display: block;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+
+  &__kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-4);
+  }
+
+  &__charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-4);
+  }
+
+  &__skeleton {
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-alt);
+    animation: dashboard-pulse 1.4s ease-in-out infinite;
+
+    &--kpi {
+      height: 104px;
+    }
+
+    &--chart {
+      height: 220px;
+    }
+  }
+}
+
+.kpi {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-alt);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xl);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+  }
+
+  &__value {
+    margin: 0;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    line-height: var(--line-height-tight);
+  }
+
+  &__label {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  // The "Today's Appointments" card is the most prominent (teal accent).
+  &--feature {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-card-hover);
+
+    .kpi__icon {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+
+    .kpi__value {
+      color: var(--color-primary);
+    }
+  }
+
+  &--alert {
+    .kpi__icon {
+      background: var(--color-warning-bg);
+      color: var(--color-warning);
+    }
+  }
+
+  &--success {
+    .kpi__icon {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+    }
+  }
+}
+
+.activity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+
+  &__header {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-3);
+    padding-bottom: var(--spacing-2);
+    border-bottom: 1px solid var(--color-divider);
+  }
+
+  &__col {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-caps);
+    color: var(--color-text-tertiary);
+  }
+
+  &__empty {
+    margin: 0;
+    padding: var(--spacing-4) 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-align: center;
+  }
+}
+
+@keyframes dashboard-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
