@@ -17,8 +17,8 @@ import { Appointment } from '../../../../core/models';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { PatientRecordsService } from '../../services/patient-records.service';
-import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { AppBadgeComponent } from '../../../../shared/components/badge/badge.component';
+import { AppAvatarComponent } from '../../../../shared/components/avatar/avatar.component';
 import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
 import { AppointmentStatusPipe } from '../../../../shared/pipes/appointment-status.pipe';
 
@@ -27,8 +27,8 @@ import { AppointmentStatusPipe } from '../../../../shared/pipes/appointment-stat
   standalone: true,
   imports: [
     RouterLink,
-    PageHeaderComponent,
     AppBadgeComponent,
+    AppAvatarComponent,
     RelativeDatePipe,
     AppointmentStatusPipe,
   ],
@@ -54,7 +54,10 @@ export class PatientDashboardComponent implements OnInit {
   protected readonly unreadCount = this.notifications.unreadCount;
   protected readonly loading = signal(true);
 
-  private readonly patientId = this.auth.getCurrentUser()()?.id ?? '';
+  private readonly currentUser = this.auth.getCurrentUser();
+  protected readonly firstName = computed(() => this.currentUser()?.firstName ?? 'there');
+
+  private readonly patientId = this.currentUser()?.id ?? '';
 
   ngOnInit(): void {
     this.store.dispatch(loadAppointmentCatalog());

@@ -2,6 +2,68 @@
   display: block;
 }
 
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-5);
+  padding: var(--spacing-8);
+  border-radius: var(--radius-xl);
+  background: var(--gradient-brand);
+  color: var(--color-text-inverse);
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 20rem;
+    height: 20rem;
+    right: -6rem;
+    top: -10rem;
+    border-radius: var(--radius-full);
+    background: var(--color-white-overlay);
+  }
+
+  &__text { position: relative; z-index: var(--z-raised); }
+
+  &__eyebrow {
+    margin: 0 0 var(--spacing-1);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-text-on-brand);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-tight);
+  }
+
+  &__subtitle {
+    margin: var(--spacing-2) 0 0;
+    font-size: var(--font-size-base);
+    color: var(--color-text-on-brand);
+  }
+
+  &__glyph {
+    position: relative;
+    z-index: var(--z-raised);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-lg);
+    background: var(--color-white-overlay);
+
+    .material-icons-round { font-size: var(--font-size-3xl); }
+  }
+}
+
 .dashboard {
   display: flex;
   flex-direction: column;

@@ -1,95 +1,131 @@
-<app-page-header title="Dashboard" />
-
 <div class="dashboard" [attr.aria-busy]="loading()">
-  @if (loading()) {
-    <div class="dashboard__stats" aria-hidden="true">
-      @for (s of [1, 2, 3, 4]; track s) {
-        <div class="stat-card stat-card--skeleton">
-          <span class="skeleton stat-card__skeleton-line"></span>
-          <span class="skeleton stat-card__skeleton-line stat-card__skeleton-line--lg"></span>
+  <!-- Welcome hero with the featured next appointment -->
+  <section class="hero">
+    <div class="hero__greeting">
+      <p class="hero__eyebrow">Welcome back</p>
+      <h1 class="hero__title">Hi, {{ firstName() }} 👋</h1>
+      <p class="hero__subtitle">Here's an overview of your care today.</p>
+      <a class="hero__cta" routerLink="/doctors">
+        <span class="material-icons-round">add</span> Book an appointment
+      </a>
+    </div>
+
+    <div class="hero__next">
+      <div class="hero__next-head">
+        <span class="material-icons-round">event_available</span>
+        <span>Next appointment</span>
+      </div>
+      @if (nextAppointment(); as next) {
+        <div class="hero__next-body">
+          <app-avatar [name]="next.doctor?.name || 'Doctor'" size="md" />
+          <div class="hero__next-info">
+            <p class="hero__next-name">{{ next.doctor?.name || next.reason }}</p>
+            <p class="hero__next-when">
+              <span class="material-icons-round">schedule</span>
+              {{ next.scheduledAt | relativeDate }}
+            </p>
+          </div>
+          <app-badge [text]="next.status | appointmentStatus" [status]="next.status" />
+        </div>
+      } @else {
+        <div class="hero__next-empty">
+          <span class="material-icons-round">event_busy</span>
+          <p>No upcoming appointment. Book one to get started.</p>
         </div>
       }
     </div>
+  </section>
+
+  <!-- Stat strip -->
+  @if (loading()) {
+    <section class="stats" aria-hidden="true">
+      @for (s of [1, 2, 3]; track s) {
+        <div class="stat stat--skeleton">
+          <span class="skeleton stat__skeleton-icon"></span>
+          <span class="skeleton stat__skeleton-line"></span>
+        </div>
+      }
+    </section>
   } @else {
-    <section class="dashboard__stats" aria-label="Overview">
-      <article class="stat-card stat-card--feature">
-        <div class="stat-card__head">
-          <span class="material-icons-round stat-card__icon">event_available</span>
-          <span class="stat-card__label">Next Appointment</span>
+    <section class="stats" aria-label="Overview">
+      <article class="stat stat--blue">
+        <span class="material-icons-round stat__icon">history</span>
+        <div class="stat__body">
+          <p class="stat__value">{{ totalVisits() }}</p>
+          <p class="stat__label">Total Visits</p>
         </div>
-        @if (nextAppointment(); as next) {
-          <p class="stat-card__value stat-card__value--sm">
-            {{ next.doctor?.name || next.reason }}
-          </p>
-          <p class="stat-card__meta">{{ next.scheduledAt | relativeDate }}</p>
-        } @else {
-          <p class="stat-card__value stat-card__value--sm">None scheduled</p>
-          <p class="stat-card__meta">Book a visit to get started</p>
-        }
       </article>
-
-      <article class="stat-card">
-        <div class="stat-card__head">
-          <span class="material-icons-round stat-card__icon">history</span>
-          <span class="stat-card__label">Total Visits</span>
+      <article class="stat stat--teal">
+        <span class="material-icons-round stat__icon">medication</span>
+        <div class="stat__body">
+          <p class="stat__value">{{ activePrescriptions() }}</p>
+          <p class="stat__label">Active Prescriptions</p>
         </div>
-        <p class="stat-card__value">{{ totalVisits() }}</p>
       </article>
-
-      <article class="stat-card">
-        <div class="stat-card__head">
-          <span class="material-icons-round stat-card__icon">medication</span>
-          <span class="stat-card__label">Active Prescriptions</span>
+      <article class="stat stat--amber">
+        <span class="material-icons-round stat__icon">notifications</span>
+        <div class="stat__body">
+          <p class="stat__value" data-cy="notification-stat">{{ unreadCount() }}</p>
+          <p class="stat__label">Notifications</p>
         </div>
-        <p class="stat-card__value">{{ activePrescriptions() }}</p>
-      </article>
-
-      <article class="stat-card">
-        <div class="stat-card__head">
-          <span class="material-icons-round stat-card__icon">notifications</span>
-          <span class="stat-card__label">Notifications</span>
-        </div>
-        <p class="stat-card__value" data-cy="notification-stat">{{ unreadCount() }}</p>
       </article>
     </section>
+  }
 
-    <section class="dashboard__section" aria-label="Upcoming appointments">
-      <h2 class="dashboard__heading">Upcoming appointments</h2>
+  <!-- Main grid: upcoming + quick actions -->
+  <div class="dashboard__grid">
+    <section class="panel" aria-label="Upcoming appointments">
+      <header class="panel__head">
+        <h2 class="panel__title">Upcoming appointments</h2>
+        <a class="panel__link" routerLink="/appointments">View all</a>
+      </header>
       @if (upcoming().length) {
-        <ul class="upcoming">
+        <ul class="appt-list">
           @for (a of upcoming(); track a.id) {
-            <li class="upcoming__row">
-              <div class="upcoming__main">
-                <span class="upcoming__when">{{ a.scheduledAt | relativeDate }}</span>
-                <span class="upcoming__doctor">{{ a.doctor?.name || a.reason }}</span>
+            <li class="appt">
+              <app-avatar [name]="a.doctor?.name || 'Doctor'" size="sm" />
+              <div class="appt__info">
+                <p class="appt__doctor">{{ a.doctor?.name || a.reason }}</p>
+                <p class="appt__when">
+                  <span class="material-icons-round">schedule</span>
+                  {{ a.scheduledAt | relativeDate }}
+                </p>
               </div>
-              <app-badge
-                [text]="a.status | appointmentStatus"
-                [status]="a.status" />
+              <app-badge [text]="a.status | appointmentStatus" [status]="a.status" />
             </li>
           }
         </ul>
       } @else {
-        <p class="dashboard__empty">No upcoming appointments.</p>
+        <div class="panel__empty">
+          <span class="material-icons-round">calendar_today</span>
+          <p>No upcoming appointments yet.</p>
+          <a class="panel__link" routerLink="/doctors">Find a doctor</a>
+        </div>
       }
     </section>
 
-    <section class="dashboard__section" aria-label="Quick actions">
-      <h2 class="dashboard__heading">Quick actions</h2>
-      <div class="quick-actions">
-        <a class="quick-action" routerLink="/doctors">
-          <span class="material-icons-round quick-action__icon">add</span>
-          <span class="quick-action__label">Book New</span>
+    <section class="panel" aria-label="Quick actions">
+      <header class="panel__head">
+        <h2 class="panel__title">Quick actions</h2>
+      </header>
+      <div class="actions">
+        <a class="action action--blue" routerLink="/doctors">
+          <span class="material-icons-round action__icon">add</span>
+          <span class="action__label">Book New</span>
         </a>
-        <a class="quick-action" routerLink="/patient/history">
-          <span class="material-icons-round quick-action__icon">history</span>
-          <span class="quick-action__label">View History</span>
+        <a class="action action--teal" routerLink="/patient/history">
+          <span class="material-icons-round action__icon">history</span>
+          <span class="action__label">Visit History</span>
         </a>
-        <a class="quick-action" routerLink="/patient/prescriptions">
-          <span class="material-icons-round quick-action__icon">medication</span>
-          <span class="quick-action__label">View Prescriptions</span>
+        <a class="action action--violet" routerLink="/patient/prescriptions">
+          <span class="material-icons-round action__icon">medication</span>
+          <span class="action__label">Prescriptions</span>
+        </a>
+        <a class="action action--amber" routerLink="/patient/timeline">
+          <span class="material-icons-round action__icon">timeline</span>
+          <span class="action__label">Timeline</span>
         </a>
       </div>
     </section>
-  }
+  </div>
 </div>

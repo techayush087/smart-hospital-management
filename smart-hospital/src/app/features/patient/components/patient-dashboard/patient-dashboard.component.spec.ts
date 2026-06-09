@@ -82,13 +82,13 @@ describe('PatientDashboardComponent', () => {
     fixture.detectChanges();
   }
 
-  it('renders the 4 stat cards once records load', () => {
+  it('renders the stat strip + next appointment once records load', () => {
     flushRecords();
-    const cards = fixture.nativeElement.querySelectorAll('.stat-card');
-    expect(cards.length).toBe(4);
+    const stats = fixture.nativeElement.querySelectorAll('.stat');
+    expect(stats.length).toBe(3);
 
     const text: string = fixture.nativeElement.textContent;
-    expect(text).toContain('Next Appointment');
+    expect(text).toContain('Next appointment');
     expect(text).toContain('Total Visits');
     expect(text).toContain('Active Prescriptions');
     expect(text).toContain('Notifications');
@@ -108,12 +108,12 @@ describe('PatientDashboardComponent', () => {
     expect(notifStat.textContent.trim()).toBe('0');
   });
 
-  it('renders the upcoming appointment and quick actions', () => {
+  it('renders the upcoming appointments and quick actions', () => {
     flushRecords();
     const text: string = fixture.nativeElement.textContent;
-    expect(text).toContain('Upcoming visit');
+    expect(text).toContain('Upcoming appointments');
     expect(text).toContain('Book New');
-    expect(text).toContain('View History');
-    expect(text).toContain('View Prescriptions');
+    expect(text).toContain('Visit History');
+    expect(text).toContain('Prescriptions');
   });
 });

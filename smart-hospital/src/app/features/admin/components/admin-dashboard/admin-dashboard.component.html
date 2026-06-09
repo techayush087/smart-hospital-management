@@ -1,6 +1,16 @@
-<app-page-header title="Admin Dashboard" [breadcrumbs]="['Admin', 'Dashboard']" />
-
 <section class="dashboard">
+  <!-- Welcome hero -->
+  <header class="hero">
+    <div class="hero__text">
+      <p class="hero__eyebrow">Admin overview</p>
+      <h1 class="hero__title">Welcome back, {{ firstName() }}</h1>
+      <p class="hero__subtitle">Here's what's happening across the hospital today.</p>
+    </div>
+    <div class="hero__glyph" aria-hidden="true">
+      <span class="material-icons-round">monitoring</span>
+    </div>
+  </header>
+
   @if (loading()) {
     <div class="dashboard__kpis" aria-hidden="true">
       @for (s of skeletons; track s) {
@@ -29,15 +39,15 @@
     </div>
 
     <div class="dashboard__charts">
-      <app-card title="Appointments Trend" subtitle="Bookings over time">
+      <app-card title="Appointments Trend" subtitle="Bookings over time" [elevated]="true">
         <app-line-chart [data]="data.appointmentsTrend" />
       </app-card>
-      <app-card title="Specialty Distribution" subtitle="By specialization">
+      <app-card title="Specialty Distribution" subtitle="By specialization" [elevated]="true">
         <app-donut-chart [data]="data.specialtyDistribution" />
       </app-card>
     </div>
 
-    <app-card title="Recent Activity" subtitle="Latest booking updates">
+    <app-card title="Recent Activity" subtitle="Latest booking updates" [elevated]="true">
       <div class="activity">
         <div class="activity__header" role="row">
           <span class="activity__col">Patient</span>

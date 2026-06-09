@@ -1,9 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { AppCardComponent } from '../../../../shared/components/card/card.component';
 import { LineChartComponent } from '../charts/line-chart/line-chart.component';
 import { DonutChartComponent } from '../charts/donut-chart/donut-chart.component';
 import { AdminService } from '../../services/admin.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { DashboardStats } from '../../../../core/models';
 
 interface KpiCard {
@@ -18,21 +25,20 @@ interface KpiCard {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [
-    PageHeaderComponent,
-    AppCardComponent,
-    LineChartComponent,
-    DonutChartComponent,
-  ],
+  imports: [AppCardComponent, LineChartComponent, DonutChartComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
 })
 export class AdminDashboardComponent implements OnInit {
   private adminService = inject(AdminService);
+  private auth = inject(AuthService);
 
   protected readonly stats = signal<DashboardStats | null>(null);
   protected readonly loading = signal(true);
+  protected readonly firstName = computed(
+    () => this.auth.getCurrentUser()()?.firstName ?? 'Admin',
+  );
 
   /** Loading skeleton placeholders, one per KPI card. */
   protected readonly skeletons = [0, 1, 2, 3];
