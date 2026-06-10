@@ -1,7 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { NotificationApiService } from '../../../features/notifications/services/notification-api.service';
 import { initials } from '../../utils/string.utils';
 
 interface NavItem {
@@ -34,13 +42,21 @@ const ADMIN_NAV: NavItem[] = [
   templateUrl: './shell.component.html',
   styleUrl: './shell.component.scss',
 })
-export class ShellComponent {
+export class ShellComponent implements OnInit {
   private auth = inject(AuthService);
   private notifications = inject(NotificationService);
+  private notificationApi = inject(NotificationApiService);
   private router = inject(Router);
 
   readonly user = this.auth.getCurrentUser();
   readonly unreadCount = this.notifications.unreadCount;
+
+  ngOnInit(): void {
+    // Load persisted notifications once so the bell badge matches what the
+    // notifications page will show (a fresh user with none sees 0, consistently).
+    const userId = this.user()?.id;
+    if (userId) this.notificationApi.load(userId).subscribe();
+  }
 
   readonly sidebarOpen = signal(false);
   readonly userMenuOpen = signal(false);

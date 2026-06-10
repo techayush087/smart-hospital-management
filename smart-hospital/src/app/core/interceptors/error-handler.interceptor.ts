@@ -19,15 +19,21 @@ export const errorHandlerInterceptor: HttpInterceptorFn = (req, next) => {
       } else if (err.status === 403) {
         router.navigate(['/']);
       }
-      notify.addNotification({
-        id: `err-${Date.now()}`,
-        userId: '',
-        type: 'admin-alert',
-        title: 'Error',
-        message: handleApiError(err),
-        read: false,
-        createdAt: new Date().toISOString(),
-      });
+      // Auth endpoints surface errors inline on their own forms (login/register/reset);
+      // a global toast there is redundant and noisy.
+      const isAuthRequest = req.url.includes('/auth/');
+      if (!isAuthRequest) {
+        // Transient toast only — errors must NOT inflate the inbox/bell unread count.
+        notify.addTransient({
+          id: `err-${Date.now()}`,
+          userId: '',
+          type: 'admin-alert',
+          title: 'Something went wrong',
+          message: handleApiError(err),
+          read: true,
+          createdAt: new Date().toISOString(),
+        });
+      }
       return throwError(() => err);
     }),
   );

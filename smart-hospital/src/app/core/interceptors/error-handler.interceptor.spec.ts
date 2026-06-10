@@ -43,7 +43,7 @@ describe('errorHandlerInterceptor', () => {
     sessionStorage.clear();
   });
 
-  it('logs out and redirects to login on a 401, and records a notification', () => {
+  it('logs out and redirects to login on a 401, with a transient toast (not an inbox item)', () => {
     const logoutSpy = vi.spyOn(auth, 'logout');
 
     http.get('/api/secure').subscribe({
@@ -57,7 +57,10 @@ describe('errorHandlerInterceptor', () => {
 
     expect(logoutSpy).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/auth/login']);
-    expect(notify.getNotifications()().length).toBe(1);
+    // Error shows as a transient toast but must NOT inflate the inbox/bell.
+    expect(notify.getNotifications()().length).toBe(0);
+    expect(notify.unreadCount()).toBe(0);
+    expect(notify.toasts().length).toBe(1);
   });
 
   it('redirects to home on a 403 without logging out', () => {
@@ -74,10 +77,11 @@ describe('errorHandlerInterceptor', () => {
 
     expect(logoutSpy).not.toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/']);
-    expect(notify.getNotifications()().length).toBe(1);
+    expect(notify.unreadCount()).toBe(0);
+    expect(notify.toasts().length).toBe(1);
   });
 
-  it('records a notification for other errors without navigating', () => {
+  it('shows a transient toast for other errors without navigating', () => {
     http.get('/api/boom').subscribe({
       next: () => expect.fail('expected an error'),
       error: (err) => expect(err.status).toBe(500),
@@ -88,6 +92,20 @@ describe('errorHandlerInterceptor', () => {
       .flush(null, { status: 500, statusText: 'Server Error' });
 
     expect(router.navigate).not.toHaveBeenCalled();
-    expect(notify.getNotifications()().length).toBe(1);
+    expect(notify.unreadCount()).toBe(0);
+    expect(notify.toasts().length).toBe(1);
+  });
+
+  it('does NOT toast on auth endpoint errors (handled inline on the form)', () => {
+    http.post('/api/auth/login', {}).subscribe({
+      next: () => expect.fail('expected an error'),
+      error: (err) => expect(err.status).toBe(400),
+    });
+
+    httpMock
+      .expectOne('/api/auth/login')
+      .flush(null, { status: 400, statusText: 'Bad Request' });
+
+    expect(notify.toasts().length).toBe(0);
   });
 });
