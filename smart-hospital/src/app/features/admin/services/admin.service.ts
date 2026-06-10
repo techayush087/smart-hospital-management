@@ -12,6 +12,7 @@ import {
   ReportData,
   DateRange,
   Appointment,
+  AdminAppointment,
   Prescription,
   User,
   Doctor,
@@ -77,6 +78,36 @@ export class AdminService {
       status,
       updatedAt: new Date().toISOString(),
     });
+  }
+
+  /** Every appointment, newest first, enriched with patient + doctor names. */
+  getAllAppointments(): Observable<AdminAppointment[]> {
+    return forkJoin({
+      appointments: this.api.get<Appointment[]>('/appointments'),
+      users: this.api.get<User[]>('/users'),
+      doctors: this.api.get<Doctor[]>('/doctors'),
+    }).pipe(
+      map(({ appointments, users, doctors }) =>
+        [...appointments]
+          .sort(
+            (a, b) =>
+              new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime(),
+          )
+          .map((a) => {
+            const patient = users.find((u) => u.id === a.patientId);
+            const doctor = doctors.find((d) => d.id === a.doctorId);
+            return {
+              ...a,
+              patientName: patient
+                ? `${patient.firstName} ${patient.lastName}`
+                : 'Unknown patient',
+              patientEmail: patient?.email ?? '',
+              doctorName: doctor?.name ?? 'Unknown doctor',
+              specialization: doctor?.specialization ?? '',
+            };
+          }),
+      ),
+    );
   }
 
   getDashboardStats(): Observable<DashboardStats> {

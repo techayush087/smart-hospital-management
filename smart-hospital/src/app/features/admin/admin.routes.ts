@@ -9,6 +9,13 @@ export const ADMIN_ROUTES: Routes = [
       ),
   },
   {
+    path: 'appointments',
+    loadComponent: () =>
+      import('./components/appointments-admin/appointments-admin.component').then(
+        (m) => m.AppointmentsAdminComponent,
+      ),
+  },
+  {
     path: 'schedules',
     loadComponent: () =>
       import('./components/schedule-manager/schedule-manager.component').then(

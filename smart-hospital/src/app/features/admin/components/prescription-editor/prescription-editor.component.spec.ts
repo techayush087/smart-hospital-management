@@ -4,6 +4,7 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { PrescriptionEditorComponent } from './prescription-editor.component';
 import { environment } from '../../../../../environments/environment';
 
@@ -15,7 +16,7 @@ describe('PrescriptionEditorComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PrescriptionEditorComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
     fixture = TestBed.createComponent(PrescriptionEditorComponent);
     httpMock = TestBed.inject(HttpTestingController);

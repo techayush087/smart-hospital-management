@@ -47,7 +47,7 @@
       </app-card>
     </div>
 
-    <app-card title="Recent Activity" subtitle="Latest booking updates" [elevated]="true">
+    <app-card title="Recent Activity" subtitle="Latest bookings" [elevated]="true">
       <div class="activity">
         <div class="activity__header" role="row">
           <span class="activity__col">Patient</span>
@@ -55,7 +55,20 @@
           <span class="activity__col">Status</span>
           <span class="activity__col">When</span>
         </div>
-        <p class="activity__empty">Activity feed coming soon.</p>
+        @if (recent().length) {
+          @for (a of recent(); track a.id) {
+            <div class="activity__row" role="row" data-cy="activity-row">
+              <span class="activity__col activity__col--strong">{{ a.patientName }}</span>
+              <span class="activity__col">{{ a.doctorName }}</span>
+              <span class="activity__col">
+                <app-badge [text]="a.status | appointmentStatus" [status]="a.status" />
+              </span>
+              <span class="activity__col">{{ a.scheduledAt | relativeDate }}</span>
+            </div>
+          }
+        } @else {
+          <p class="activity__empty">No recent bookings yet.</p>
+        }
       </div>
     </app-card>
   }

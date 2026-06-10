@@ -88,8 +88,7 @@ describe('AdminDashboardComponent', () => {
 
   it('renders 4 KPI cards with computed numbers and both charts', () => {
     const today = toISODate(new Date());
-
-    httpMock.expectOne(`${api}/appointments`).flush([
+    const apptData = [
       makeAppointment({
         id: 'a1',
         doctorId: 'd1',
@@ -102,16 +101,22 @@ describe('AdminDashboardComponent', () => {
         status: 'confirmed',
         scheduledAt: '2026-05-01T09:00:00.000Z',
       }),
-    ]);
-    httpMock.expectOne(`${api}/users`).flush([
+    ];
+    const userData = [
       makeUser({ id: 'u1', role: 'customer' }),
       makeUser({ id: 'u2', role: 'customer' }),
       makeUser({ id: 'u3', role: 'admin' }),
-    ]);
-    httpMock.expectOne(`${api}/doctors`).flush([
+    ];
+    const doctorData = [
       makeDoctor({ id: 'd1', specialization: 'Cardiology' }),
       makeDoctor({ id: 'd2', specialization: 'Dermatology' }),
-    ]);
+    ];
+
+    // The dashboard makes TWO parallel forkJoins (stats + recent activity), so each
+    // resource is requested twice — flush every matching request.
+    httpMock.match(`${api}/appointments`).forEach((r) => r.flush(apptData));
+    httpMock.match(`${api}/users`).forEach((r) => r.flush(userData));
+    httpMock.match(`${api}/doctors`).forEach((r) => r.flush(doctorData));
 
     fixture.detectChanges();
 

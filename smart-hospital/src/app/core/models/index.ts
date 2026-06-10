@@ -19,3 +19,4 @@ export * from './report-data.model';
 export * from './consultation-status.model';
 export * from './patient-filter.model';
 export * from './auth.model';
+export * from './admin-appointment.model';

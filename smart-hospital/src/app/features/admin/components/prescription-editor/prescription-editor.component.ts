@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { switchMap } from 'rxjs';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
@@ -26,11 +27,15 @@ export class PrescriptionEditorComponent implements OnInit {
   private fb = inject(FormBuilder);
   private adminService = inject(AdminService);
   private notifyApi = inject(NotificationApiService);
+  private route = inject(ActivatedRoute);
 
   protected readonly patients = signal<PatientRecord[]>([]);
   protected readonly loading = signal(false);
   protected readonly savedMessage = signal('');
   protected readonly today = toISODate(new Date());
+
+  /** When opened from an appointment's "Prescribe" button, link the Rx to it. */
+  private linkedAppointmentId = '';
 
   protected readonly form = this.fb.group({
     patientId: ['', Validators.required],
@@ -45,6 +50,12 @@ export class PrescriptionEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.adminService.getPatientRecords().subscribe((list) => this.patients.set(list));
+
+    // Pre-fill when arriving from an appointment's "Prescribe" button.
+    const params = this.route.snapshot.queryParamMap;
+    const patientId = params.get('patientId');
+    this.linkedAppointmentId = params.get('appointmentId') ?? '';
+    if (patientId) this.form.patchValue({ patientId });
   }
 
   private newMedication() {
@@ -77,7 +88,7 @@ export class PrescriptionEditorComponent implements OnInit {
     const v = this.form.getRawValue();
     const patientId = v.patientId ?? '';
     const prescription: Omit<Prescription, 'id'> = {
-      appointmentId: '',
+      appointmentId: this.linkedAppointmentId,
       patientId,
       instructions: v.instructions ?? '',
       issuedAt: new Date().toISOString(),

@@ -11,7 +11,10 @@ import { LineChartComponent } from '../charts/line-chart/line-chart.component';
 import { DonutChartComponent } from '../charts/donut-chart/donut-chart.component';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { DashboardStats } from '../../../../core/models';
+import { AdminAppointment, DashboardStats } from '../../../../core/models';
+import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
+import { AppointmentStatusPipe } from '../../../../shared/pipes/appointment-status.pipe';
+import { AppBadgeComponent } from '../../../../shared/components/badge/badge.component';
 
 interface KpiCard {
   key: string;
@@ -25,7 +28,14 @@ interface KpiCard {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [AppCardComponent, LineChartComponent, DonutChartComponent],
+  imports: [
+    AppCardComponent,
+    LineChartComponent,
+    DonutChartComponent,
+    AppBadgeComponent,
+    RelativeDatePipe,
+    AppointmentStatusPipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
@@ -43,11 +53,17 @@ export class AdminDashboardComponent implements OnInit {
   /** Loading skeleton placeholders, one per KPI card. */
   protected readonly skeletons = [0, 1, 2, 3];
 
+  /** The five most recent bookings for the Recent Activity table. */
+  protected readonly recent = signal<AdminAppointment[]>([]);
+
   ngOnInit(): void {
     this.adminService.getDashboardStats().subscribe((stats) => {
       this.stats.set(stats);
       this.loading.set(false);
     });
+    this.adminService
+      .getAllAppointments()
+      .subscribe((list) => this.recent.set(list.slice(0, 5)));
   }
 
   /** Derives the four KPI cards from the loaded stats. */

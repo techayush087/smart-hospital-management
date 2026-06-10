@@ -1,0 +1,101 @@
+<app-page-header
+  title="Appointments"
+  [breadcrumbs]="['Admin', 'Appointments']" />
+
+<div class="appts">
+  @if (updatedMessage()) {
+    <div class="appts__banner" role="status" data-cy="appt-updated">
+      <span class="material-icons-round" aria-hidden="true">check_circle</span>
+      {{ updatedMessage() }}
+    </div>
+  }
+
+  <div class="appts__controls">
+    <app-search-bar
+      placeholder="Search by patient, doctor, or reason"
+      (search)="onSearch($event)"
+      (clear)="onClearSearch()" />
+
+    <div class="appts__filters" role="group" aria-label="Filter by status">
+      <button
+        type="button"
+        class="appts__filter"
+        [class.appts__filter--active]="statusFilter() === 'all'"
+        (click)="setStatusFilter('all')">
+        All
+      </button>
+      @for (s of statuses; track s) {
+        <button
+          type="button"
+          class="appts__filter"
+          [class.appts__filter--active]="statusFilter() === s"
+          (click)="setStatusFilter(s)">
+          {{ s | appointmentStatus }}
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="appts__list" aria-hidden="true">
+      @for (s of [1, 2, 3, 4]; track s) {
+        <div class="skeleton appts__skeleton"></div>
+      }
+    </div>
+  } @else if (filtered().length) {
+    <ul class="appts__list">
+      @for (a of filtered(); track a.id) {
+        <li class="appt-row" data-cy="appt-row">
+          <app-avatar [name]="a.patientName" size="md" />
+
+          <div class="appt-row__who">
+            <p class="appt-row__patient">{{ a.patientName }}</p>
+            <p class="appt-row__meta">
+              <span class="material-icons-round">medical_services</span>
+              {{ a.doctorName }} · {{ a.specialization }}
+            </p>
+          </div>
+
+          <div class="appt-row__when">
+            <p class="appt-row__date">{{ a.scheduledAt | relativeDate }}</p>
+            <p class="appt-row__time">{{ a.scheduledAt | timeSlot }}</p>
+          </div>
+
+          <div class="appt-row__reason" [title]="a.reason">{{ a.reason }}</div>
+
+          <app-badge
+            class="appt-row__badge"
+            [text]="a.status | appointmentStatus"
+            [status]="a.status" />
+
+          <div class="appt-row__actions">
+            <select
+              class="appt-row__status-select"
+              [value]="a.status"
+              data-cy="appt-status"
+              aria-label="Update status"
+              (change)="onStatusChange(a, $any($event.target).value)">
+              @for (s of statuses; track s) {
+                <option [value]="s">{{ s | appointmentStatus }}</option>
+              }
+            </select>
+
+            <button
+              type="button"
+              class="appt-row__prescribe"
+              data-cy="appt-prescribe"
+              (click)="prescribe(a)">
+              <span class="material-icons-round" aria-hidden="true">medication</span>
+              Prescribe
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  } @else {
+    <app-empty-state
+      title="No appointments found"
+      description="No bookings match your search or filter."
+      icon="event_busy" />
+  }
+</div>

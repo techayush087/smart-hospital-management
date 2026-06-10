@@ -30,6 +30,7 @@ const PATIENT_NAV: NavItem[] = [
 
 const ADMIN_NAV: NavItem[] = [
   { label: 'Dashboard', icon: 'dashboard', route: '/admin/dashboard' },
+  { label: 'Appointments', icon: 'calendar_today', route: '/admin/appointments' },
   { label: 'Schedules', icon: 'event_note', route: '/admin/schedules' },
   { label: 'Patient Records', icon: 'folder_shared', route: '/admin/records' },
   { label: 'Prescriptions', icon: 'medication', route: '/admin/prescriptions' },
