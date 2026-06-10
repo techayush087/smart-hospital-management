@@ -35,6 +35,16 @@ export class AuthService {
     this.currentUser.set(null);
   }
 
+  /** Step 1 of password reset — verify an account exists for the email. */
+  requestPasswordReset(email: string): Observable<{ email: string; message: string }> {
+    return this.api.post<{ email: string; message: string }>('/auth/forgot-password', { email });
+  }
+
+  /** Step 2 of password reset — set a new password for the verified email. */
+  resetPassword(email: string, password: string): Observable<{ message: string }> {
+    return this.api.post<{ message: string }>('/auth/reset-password', { email, password });
+  }
+
   hasRole(role: User['role']): boolean {
     return this.currentUser()?.role === role;
   }

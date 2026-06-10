@@ -80,6 +80,27 @@ server.post('/api/auth/register', (req, res) => {
   return res.status(201).json({ accessToken: signToken(user), user: stripPassword(user) });
 });
 
+// --- Auth: forgot password (step 1) — verify the email exists ---
+// A real app would email a reset link; with no mail service we confirm the account
+// exists so the UI can move to the "set a new password" step.
+server.post('/api/auth/forgot-password', (req, res) => {
+  const { email } = req.body || {};
+  if (!email) return res.status(400).json({ message: 'Email is required.' });
+  const user = db().get('users').find({ email }).value();
+  if (!user) return res.status(404).json({ message: 'No account found for that email.' });
+  return res.json({ email: user.email, message: 'Account verified. Set a new password.' });
+});
+
+// --- Auth: reset password (step 2) — set the new password ---
+server.post('/api/auth/reset-password', (req, res) => {
+  const { email, password } = req.body || {};
+  if (!email || !password) return res.status(400).json({ message: 'Email and new password are required.' });
+  const user = db().get('users').find({ email }).value();
+  if (!user) return res.status(404).json({ message: 'No account found for that email.' });
+  db().get('users').find({ email }).assign({ password: bcrypt.hashSync(password, 10) }).write();
+  return res.json({ message: 'Password updated. You can now sign in.' });
+});
+
 // Strip `password` from EVERY resource response (covers /users and any embedded user).
 // json-server calls router.render for all responses, so this catches every send path
 // regardless of how the body is written.
