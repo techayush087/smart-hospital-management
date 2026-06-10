@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -21,6 +22,7 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
 import { RescheduleModalComponent } from '../reschedule-modal/reschedule-modal.component';
 import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
 import { AppointmentStatusPipe } from '../../../../shared/pipes/appointment-status.pipe';
+import { PaginatorComponent } from '../../../../shared/components/paginator/paginator.component';
 
 @Component({
   selector: 'app-appointment-list',
@@ -33,6 +35,7 @@ import { AppointmentStatusPipe } from '../../../../shared/pipes/appointment-stat
     RescheduleModalComponent,
     RelativeDatePipe,
     AppointmentStatusPipe,
+    PaginatorComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './appointment-list.component.html',
@@ -50,6 +53,17 @@ export class AppointmentListComponent implements OnInit {
     this.store.select(selectPastAppointments),
     { initialValue: [] as Appointment[] },
   );
+
+  protected readonly pastPage = signal(1);
+  protected readonly pageSize = 10;
+  protected readonly pastPaged = computed(() => {
+    const start = (this.pastPage() - 1) * this.pageSize;
+    return this.past().slice(start, start + this.pageSize);
+  });
+
+  goToPastPage(p: number): void {
+    this.pastPage.set(p);
+  }
 
   protected readonly rescheduling = signal<Appointment | null>(null);
 

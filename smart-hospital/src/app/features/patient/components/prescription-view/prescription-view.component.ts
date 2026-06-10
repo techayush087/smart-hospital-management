@@ -15,6 +15,7 @@ import { AppCardComponent } from '../../../../shared/components/card/card.compon
 import { AppButtonComponent } from '../../../../shared/components/button/button.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
+import { PaginatorComponent } from '../../../../shared/components/paginator/paginator.component';
 
 @Component({
   selector: 'app-prescription-view',
@@ -26,6 +27,7 @@ import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
     EmptyStateComponent,
     RelativeDatePipe,
     DatePipe,
+    PaginatorComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './prescription-view.component.html',
@@ -49,6 +51,13 @@ export class PrescriptionViewComponent implements OnInit {
    *  formal Rx sheet is sent to the printer via the print stylesheet. */
   protected readonly printingId = signal<string | null>(null);
 
+  protected readonly page = signal(1);
+  protected readonly pageSize = 10;
+  protected readonly paged = computed(() => {
+    const start = (this.page() - 1) * this.pageSize;
+    return this.prescriptions().slice(start, start + this.pageSize);
+  });
+
   ngOnInit(): void {
     const patientId = this.user()?.id ?? '';
     if (!patientId) {
@@ -58,10 +67,15 @@ export class PrescriptionViewComponent implements OnInit {
     this.records.getPrescriptions(patientId).subscribe({
       next: (list) => {
         this.prescriptions.set(list);
+        this.page.set(1);
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  goToPage(p: number): void {
+    this.page.set(p);
   }
 
   /** Print a single prescription as a formal Rx sheet. */

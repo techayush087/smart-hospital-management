@@ -11,10 +11,15 @@
 
   @if (notifications().length) {
     <div class="notification-list__items" aria-live="polite">
-      @for (n of notifications(); track n.id) {
+      @for (n of paged(); track n.id) {
         <app-notification-item [notification]="n" (read)="onRead(n.id)" />
       }
     </div>
+    <app-paginator
+      [page]="page()"
+      [total]="notifications().length"
+      [pageSize]="pageSize"
+      (pageChange)="goToPage($event)" />
   } @else {
     <app-empty-state
       icon="notifications_none"

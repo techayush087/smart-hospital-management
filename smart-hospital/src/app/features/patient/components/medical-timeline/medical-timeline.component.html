@@ -9,7 +9,7 @@
     </div>
   } @else if (events().length) {
     <ol class="timeline__list">
-      @for (e of events(); track e.id) {
+      @for (e of paged(); track e.id) {
         <li class="timeline-event">
           <span
             class="timeline-event__dot"
@@ -42,6 +42,11 @@
         </li>
       }
     </ol>
+    <app-paginator
+      [page]="page()"
+      [total]="events().length"
+      [pageSize]="pageSize"
+      (pageChange)="goToPage($event)" />
   } @else {
     <app-empty-state
       title="No medical history"

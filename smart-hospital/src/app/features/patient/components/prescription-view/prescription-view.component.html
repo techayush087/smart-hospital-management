@@ -10,7 +10,7 @@
       </div>
     } @else if (prescriptions().length) {
       <div class="prescriptions__list">
-        @for (p of prescriptions(); track p.id) {
+        @for (p of paged(); track p.id) {
           <app-card>
             <article class="prescription">
               <header class="prescription__header">
@@ -59,6 +59,11 @@
           </app-card>
         }
       </div>
+      <app-paginator
+        [page]="page()"
+        [total]="prescriptions().length"
+        [pageSize]="pageSize"
+        (pageChange)="goToPage($event)" />
     } @else {
       <app-empty-state
         title="No prescriptions"

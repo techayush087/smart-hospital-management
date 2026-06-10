@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  computed,
   inject,
+  signal,
 } from '@angular/core';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -11,6 +13,7 @@ import { PageHeaderComponent } from '../../../../shared/components/page-header/p
 import { AppButtonComponent } from '../../../../shared/components/button/button.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { NotificationItemComponent } from '../notification-item/notification-item.component';
+import { PaginatorComponent } from '../../../../shared/components/paginator/paginator.component';
 
 @Component({
   selector: 'app-notification-list',
@@ -20,6 +23,7 @@ import { NotificationItemComponent } from '../notification-item/notification-ite
     AppButtonComponent,
     EmptyStateComponent,
     NotificationItemComponent,
+    PaginatorComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './notification-list.component.html',
@@ -32,6 +36,17 @@ export class NotificationListComponent implements OnInit {
 
   protected readonly notifications = this.store.getNotifications();
   protected readonly unreadCount = this.store.unreadCount;
+
+  protected readonly page = signal(1);
+  protected readonly pageSize = 10;
+  protected readonly paged = computed(() => {
+    const start = (this.page() - 1) * this.pageSize;
+    return this.notifications().slice(start, start + this.pageSize);
+  });
+
+  goToPage(p: number): void {
+    this.page.set(p);
+  }
 
   ngOnInit(): void {
     const userId = this.auth.getCurrentUser()()?.id ?? '';

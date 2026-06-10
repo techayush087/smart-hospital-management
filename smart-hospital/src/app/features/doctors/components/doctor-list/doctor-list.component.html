@@ -26,10 +26,15 @@
         icon="search" />
     } @else {
       <div class="doctor-list__grid">
-        @for (d of filtered(); track d.id) {
+        @for (d of paged(); track d.id) {
           <app-doctor-card [doctor]="d" (book)="onBook(d)" />
         }
       </div>
+      <app-paginator
+        [page]="page()"
+        [total]="filtered().length"
+        [pageSize]="pageSize"
+        (pageChange)="goToPage($event)" />
     }
   </div>
 </section>

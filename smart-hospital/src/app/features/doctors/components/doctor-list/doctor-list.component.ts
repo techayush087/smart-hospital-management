@@ -14,6 +14,7 @@ import { SearchBarComponent } from '../../../../shared/components/search-bar/sea
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { DoctorCardComponent } from '../doctor-card/doctor-card.component';
 import { DoctorFilterComponent } from '../doctor-filter/doctor-filter.component';
+import { PaginatorComponent } from '../../../../shared/components/paginator/paginator.component';
 
 @Component({
   selector: 'app-doctor-list',
@@ -23,6 +24,7 @@ import { DoctorFilterComponent } from '../doctor-filter/doctor-filter.component'
     EmptyStateComponent,
     DoctorCardComponent,
     DoctorFilterComponent,
+    PaginatorComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './doctor-list.component.html',
@@ -55,6 +57,13 @@ export class DoctorListComponent implements OnInit {
     );
   });
 
+  protected readonly page = signal(1);
+  protected readonly pageSize = 10;
+  protected readonly paged = computed(() => {
+    const start = (this.page() - 1) * this.pageSize;
+    return this.filtered().slice(start, start + this.pageSize);
+  });
+
   ngOnInit(): void {
     this.doctorService.getDoctors().subscribe((doctors) => {
       this.doctors.set(doctors);
@@ -64,10 +73,16 @@ export class DoctorListComponent implements OnInit {
 
   onSearch(term: string): void {
     this.searchTerm.set(term);
+    this.page.set(1);
   }
 
   onFiltersChange(filters: DoctorFilter): void {
     this.filters.set(filters);
+    this.page.set(1);
+  }
+
+  goToPage(p: number): void {
+    this.page.set(p);
   }
 
   onBook(doctor: Doctor): void {

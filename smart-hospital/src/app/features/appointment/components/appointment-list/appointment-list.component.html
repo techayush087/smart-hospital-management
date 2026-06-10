@@ -53,7 +53,7 @@
       <div class="appointment-list__group">
         <h2 class="appointment-list__heading">Past</h2>
         <ul class="appointment-list__items">
-          @for (a of past(); track a.id) {
+          @for (a of pastPaged(); track a.id) {
             <li class="appointment-list__row" data-cy="appointment-row">
               <a
                 class="appointment-list__main"
@@ -72,6 +72,11 @@
             </li>
           }
         </ul>
+        <app-paginator
+          [page]="pastPage()"
+          [total]="past().length"
+          [pageSize]="pageSize"
+          (pageChange)="goToPastPage($event)" />
       </div>
     }
   }
