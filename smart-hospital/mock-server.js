@@ -21,8 +21,12 @@ const crypto = require('crypto');
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, 'db.json');
-const SECRET = 'shapms-dev-secret-not-for-production';
-const PORT = 3000;
+// On a host, set JWT_SECRET in the environment. Falls back to a dev secret locally.
+const SECRET = process.env.JWT_SECRET || 'shapms-dev-secret-not-for-production';
+// Hosts (Render/Railway/Fly) inject PORT; default to 3000 for local dev.
+const PORT = process.env.PORT || 3000;
+// Comma-separated allowed origins (your Vercel URL in prod). '*' if unset (dev).
+const ALLOWED_ORIGINS = process.env.CORS_ORIGINS || '*';
 const EXPIRES_IN = '1h';
 const RESET_TOKEN_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
@@ -46,6 +50,22 @@ function timingSafeEqualHex(a, b) {
 const server = jsonServer.create();
 const router = jsonServer.router(DB_PATH);
 const middlewares = jsonServer.defaults();
+
+// CORS — allow the deployed frontend (Vercel) to call this API cross-origin.
+const allowList = ALLOWED_ORIGINS.split(',').map((o) => o.trim());
+server.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (ALLOWED_ORIGINS === '*') {
+    res.header('Access-Control-Allow-Origin', '*');
+  } else if (origin && allowList.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Vary', 'Origin');
+  }
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
 
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
@@ -163,6 +183,6 @@ router.render = (req, res) => {
 server.use('/api', router);
 
 server.listen(PORT, () => {
-  console.log(`SHAPMS mock API running at http://localhost:${PORT}/api`);
+  console.log(`SHAPMS mock API running on port ${PORT} (base path /api)`);
   console.log('Seed logins: patient@test.com / admin@test.com  (password: Password1!)');
 });

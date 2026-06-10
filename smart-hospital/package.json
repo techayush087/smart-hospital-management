@@ -11,7 +11,8 @@
     "dev": "concurrently -n ng,api -c blue,green \"npm:start\" \"npm:mock-api\"",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "e2e": "concurrently -k -s first -n ng,api,cy -c blue,green,magenta \"npm:start\" \"npm:mock-api\" \"npx wait-on http://localhost:4200 http://localhost:3000/api/doctors && cypress run\""
+    "e2e": "concurrently -k -s first -n ng,api,cy -c blue,green,magenta \"npm:start\" \"npm:mock-api\" \"npx wait-on http://localhost:4200 http://localhost:3000/api/doctors && cypress run\"",
+    "start:api": "node mock-server.js"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
