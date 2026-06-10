@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpParams } from '@angular/common/http';
 import { switchMap } from 'rxjs';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { AppButtonComponent } from '../../../../shared/components/button/button.component';
 import { DatePickerComponent } from '../../../../shared/components/date-picker/date-picker.component';
 import { AdminService } from '../../services/admin.service';
+import { ApiService } from '../../../../core/services/api.service';
 import { NotificationApiService } from '../../../notifications/services/notification-api.service';
-import { PatientRecord, Prescription } from '../../../../core/models';
+import { Appointment, Doctor, PatientRecord, Prescription } from '../../../../core/models';
 import { toISODate } from '../../../../shared/utils/date.utils';
 
 @Component({
@@ -26,10 +28,12 @@ import { toISODate } from '../../../../shared/utils/date.utils';
 export class PrescriptionEditorComponent implements OnInit {
   private fb = inject(FormBuilder);
   private adminService = inject(AdminService);
+  private api = inject(ApiService);
   private notifyApi = inject(NotificationApiService);
   private route = inject(ActivatedRoute);
 
   protected readonly patients = signal<PatientRecord[]>([]);
+  protected readonly doctors = signal<Doctor[]>([]);
   protected readonly loading = signal(false);
   protected readonly savedMessage = signal('');
   protected readonly today = toISODate(new Date());
@@ -39,6 +43,7 @@ export class PrescriptionEditorComponent implements OnInit {
 
   protected readonly form = this.fb.group({
     patientId: ['', Validators.required],
+    doctorId: ['', Validators.required],
     instructions: ['', Validators.required],
     validUntil: [''],
     medications: this.fb.array([this.newMedication()]),
@@ -50,12 +55,29 @@ export class PrescriptionEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.adminService.getPatientRecords().subscribe((list) => this.patients.set(list));
+    this.api.get<Doctor[]>('/doctors').subscribe((list) => this.doctors.set(list));
 
     // Pre-fill when arriving from an appointment's "Prescribe" button.
     const params = this.route.snapshot.queryParamMap;
     const patientId = params.get('patientId');
     this.linkedAppointmentId = params.get('appointmentId') ?? '';
     if (patientId) this.form.patchValue({ patientId });
+
+    // If we came from a specific appointment, auto-select its doctor.
+    if (this.linkedAppointmentId) {
+      this.api
+        .get<Appointment>(`/appointments/${this.linkedAppointmentId}`)
+        .subscribe((appt) => {
+          if (appt?.doctorId) this.form.patchValue({ doctorId: appt.doctorId });
+        });
+    }
+  }
+
+  protected doctorName(id: string): string {
+    return this.doctors().find((d) => d.id === id)?.name ?? '';
+  }
+  private doctorSpec(id: string): string {
+    return this.doctors().find((d) => d.id === id)?.specialization ?? '';
   }
 
   private newMedication() {
@@ -87,9 +109,13 @@ export class PrescriptionEditorComponent implements OnInit {
     }
     const v = this.form.getRawValue();
     const patientId = v.patientId ?? '';
+    const doctorId = v.doctorId ?? '';
     const prescription: Omit<Prescription, 'id'> = {
       appointmentId: this.linkedAppointmentId,
       patientId,
+      doctorId,
+      doctorName: this.doctorName(doctorId),
+      specialization: this.doctorSpec(doctorId),
       instructions: v.instructions ?? '',
       issuedAt: new Date().toISOString(),
       validUntil: v.validUntil || undefined,
@@ -131,7 +157,7 @@ export class PrescriptionEditorComponent implements OnInit {
   }
 
   private resetForm(): void {
-    this.form.reset({ patientId: '', instructions: '', validUntil: '' });
+    this.form.reset({ patientId: '', doctorId: '', instructions: '', validUntil: '' });
     this.medications.clear();
     this.medications.push(this.newMedication());
   }

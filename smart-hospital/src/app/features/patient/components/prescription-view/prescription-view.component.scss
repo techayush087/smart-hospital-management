@@ -142,29 +142,39 @@
 .rx-sheet__head {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  padding-bottom: var(--spacing-4);
-  border-bottom: 2px solid var(--color-primary);
+  align-items: center;
+  padding-bottom: var(--spacing-5);
+  border-bottom: 3px solid transparent;
+  border-image: var(--gradient-brand) 1;
 }
 
 .rx-sheet__brand {
   display: flex;
   align-items: center;
-  gap: var(--spacing-3);
+  gap: var(--spacing-4);
 }
 
-.rx-sheet__mark {
-  font-size: 2.4rem;
+/* Gradient ℞ badge — the medical prescription symbol as a proper logo mark. */
+.rx-sheet__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  background: var(--gradient-brand);
+  color: var(--color-text-inverse);
+  font-size: 2rem;
   font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
   line-height: 1;
 }
 
 .rx-sheet__clinic {
   margin: 0;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-tight);
 }
 .rx-sheet__clinic-sub {
   margin: 2px 0 0;
@@ -174,20 +184,10 @@
 
 .rx-sheet__meta {
   text-align: right;
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
 
-  p { margin: 0 0 2px; }
-  span { display: block; font-weight: var(--font-weight-semibold); color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); }
-}
-
-.rx-sheet__patient {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-6);
-  padding: var(--spacing-4) 0;
-  border-bottom: 1px solid var(--color-divider);
-
+  p { margin: 0 0 var(--spacing-1); }
   span {
     display: block;
     font-size: var(--font-size-xs);
@@ -198,6 +198,36 @@
   }
 }
 
+.rx-sheet__parties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-6);
+  padding: var(--spacing-5) 0;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.rx-sheet__party--right { text-align: right; }
+
+.rx-sheet__party-label {
+  margin: 0 0 var(--spacing-1);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+.rx-sheet__party-name {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+.rx-sheet__party-meta {
+  margin: 2px 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
 .rx-sheet__rx {
   position: relative;
   display: flex;
@@ -206,10 +236,12 @@
 }
 
 .rx-sheet__rx-symbol {
-  font-size: 2rem;
+  flex-shrink: 0;
+  font-size: 2.2rem;
   font-weight: var(--font-weight-bold);
   color: var(--color-primary);
-  line-height: 1.2;
+  line-height: 1;
+  opacity: 0.85;
 }
 
 .rx-sheet__table {
@@ -250,20 +282,53 @@
   }
 }
 
+.rx-sheet__valid {
+  margin: var(--spacing-4) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
 .rx-sheet__foot {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-top: var(--spacing-12);
+  margin-top: var(--spacing-16);
   padding-top: var(--spacing-4);
 }
 
-.rx-sheet__sign-line {
-  width: 12rem;
-  border-bottom: 1px solid var(--color-text-primary);
-  margin-bottom: var(--spacing-1);
+/* Styled handwritten-style signature with the doctor's actual name. */
+.rx-sheet__signature {
+  margin: 0;
+  font-family: 'Dancing Script', cursive;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
 }
-.rx-sheet__sign p { margin: 0; font-size: var(--font-size-xs); color: var(--color-text-secondary); }
+
+.rx-sheet__sign-line {
+  width: 14rem;
+  margin: var(--spacing-1) 0 var(--spacing-2);
+  border-bottom: 1px solid var(--color-text-primary);
+}
+
+.rx-sheet__sign-caption {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.rx-sheet__sign-stamp {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  margin: var(--spacing-1) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-success);
+
+  .material-icons-round { font-size: var(--font-size-sm); }
+}
 
 .rx-sheet__disclaimer {
   max-width: 18rem;
@@ -279,8 +344,15 @@
 
   .rx-sheet--active {
     display: block;
-    padding: var(--spacing-8);
+    padding: var(--spacing-10);
   }
 
-  .rx-sheet__table th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* Ensure the gradient badge, brand border, and colored accents actually print. */
+  .rx-sheet--active,
+  .rx-sheet__badge,
+  .rx-sheet__head,
+  .rx-sheet__table th {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }

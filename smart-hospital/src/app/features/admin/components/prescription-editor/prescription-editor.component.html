@@ -24,6 +24,16 @@
     </div>
 
     <div class="form-field">
+      <label class="form-field__label" for="rx-doctor">Prescribing doctor</label>
+      <select id="rx-doctor" class="form-field__select" formControlName="doctorId" data-cy="rx-doctor">
+        <option value="" disabled>Select a doctor</option>
+        @for (d of doctors(); track d.id) {
+          <option [value]="d.id">{{ d.name }} — {{ d.specialization }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="form-field">
       <label class="form-field__label" for="rx-instructions">Instructions</label>
       <textarea
         id="rx-instructions"

@@ -79,26 +79,33 @@
   <section class="rx-sheet" [class.rx-sheet--active]="printingId() === p.id" aria-hidden="true">
     <header class="rx-sheet__head">
       <div class="rx-sheet__brand">
-        <span class="rx-sheet__mark">℞</span>
+        <span class="rx-sheet__badge">℞</span>
         <div>
           <p class="rx-sheet__clinic">SHAPMS Medical Centre</p>
           <p class="rx-sheet__clinic-sub">Smart Hospital Appointment &amp; Patient Management</p>
         </div>
       </div>
       <div class="rx-sheet__meta">
-        <p><span>Prescription #</span> {{ p.id }}</p>
-        <p><span>Date</span> {{ p.issuedAt | date: 'longDate' }}</p>
+        <p><span>Prescription</span> {{ p.id }}</p>
+        <p><span>Date issued</span> {{ p.issuedAt | date: 'longDate' }}</p>
       </div>
     </header>
 
-    <div class="rx-sheet__patient">
-      <div><span>Patient</span> {{ patientName() }}</div>
-      @if (patientDob()) {
-        <div><span>Date of birth</span> {{ patientDob() | date: 'longDate' }}</div>
-      }
-      @if (p.validUntil) {
-        <div><span>Valid until</span> {{ p.validUntil | date: 'longDate' }}</div>
-      }
+    <div class="rx-sheet__parties">
+      <div class="rx-sheet__party">
+        <p class="rx-sheet__party-label">Patient</p>
+        <p class="rx-sheet__party-name">{{ patientName() }}</p>
+        @if (patientDob()) {
+          <p class="rx-sheet__party-meta">DOB: {{ patientDob() | date: 'longDate' }}</p>
+        }
+      </div>
+      <div class="rx-sheet__party rx-sheet__party--right">
+        <p class="rx-sheet__party-label">Prescribed by</p>
+        <p class="rx-sheet__party-name">{{ p.doctorName || 'Attending Physician' }}</p>
+        @if (p.specialization) {
+          <p class="rx-sheet__party-meta">{{ p.specialization }}</p>
+        }
+      </div>
     </div>
 
     <div class="rx-sheet__rx">
@@ -132,10 +139,20 @@
       </div>
     }
 
+    @if (p.validUntil) {
+      <p class="rx-sheet__valid">Valid until {{ p.validUntil | date: 'longDate' }}</p>
+    }
+
     <footer class="rx-sheet__foot">
       <div class="rx-sheet__sign">
+        <p class="rx-sheet__signature">{{ p.doctorName || 'SHAPMS' }}</p>
         <div class="rx-sheet__sign-line"></div>
-        <p>Doctor's signature</p>
+        <p class="rx-sheet__sign-caption">
+          {{ p.doctorName || 'Attending Physician' }}@if (p.specialization) {, {{ p.specialization }}}
+        </p>
+        <p class="rx-sheet__sign-stamp">
+          <span class="material-icons-round">verified</span> Digitally signed via SHAPMS
+        </p>
       </div>
       <p class="rx-sheet__disclaimer">
         This prescription was issued electronically via SHAPMS. Take medication strictly as directed.
