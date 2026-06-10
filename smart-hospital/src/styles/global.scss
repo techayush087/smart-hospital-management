@@ -40,6 +40,24 @@ a, button, [role='button'], input, select, textarea { touch-action: manipulation
   }
 }
 
+/* Print: hide the app shell (top bar, sidebar, toasts) so a printed prescription
+   sheet stands alone on the page. The prescription component opts its sheet back in. */
+@media print {
+  .shell__topbar,
+  .shell__sidebar,
+  .shell__backdrop,
+  app-notification-toast { display: none !important; }
+
+  .shell, .shell__body, .shell__main {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    box-shadow: none !important;
+    background: var(--color-white) !important;
+  }
+}
+
 /* Shared form field pattern — top-aligned label (clear, never overlaps the value).
    The label sits ABOVE the input; this is robust against autofill, programmatic
    value setting, and email :valid quirks that broke the old float-label approach. */

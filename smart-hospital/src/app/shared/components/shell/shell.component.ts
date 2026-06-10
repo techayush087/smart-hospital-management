@@ -9,6 +9,7 @@ import {
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { NotificationPollService } from '../../../core/services/notification-poll.service';
 import { NotificationApiService } from '../../../features/notifications/services/notification-api.service';
 import { initials } from '../../utils/string.utils';
 
@@ -31,6 +32,7 @@ const ADMIN_NAV: NavItem[] = [
   { label: 'Dashboard', icon: 'dashboard', route: '/admin/dashboard' },
   { label: 'Schedules', icon: 'event_note', route: '/admin/schedules' },
   { label: 'Patient Records', icon: 'folder_shared', route: '/admin/records' },
+  { label: 'Prescriptions', icon: 'medication', route: '/admin/prescriptions' },
   { label: 'Reports', icon: 'bar_chart', route: '/admin/reports' },
 ];
 
@@ -46,16 +48,23 @@ export class ShellComponent implements OnInit {
   private auth = inject(AuthService);
   private notifications = inject(NotificationService);
   private notificationApi = inject(NotificationApiService);
+  private notificationPoll = inject(NotificationPollService);
   private router = inject(Router);
 
   readonly user = this.auth.getCurrentUser();
   readonly unreadCount = this.notifications.unreadCount;
 
   ngOnInit(): void {
-    // Load persisted notifications once so the bell badge matches what the
-    // notifications page will show (a fresh user with none sees 0, consistently).
+    // Load persisted notifications once so the bell badge matches the page, then
+    // start smart polling (visible-tab only) so the user gets live popups for
+    // actions taken on them by someone else (e.g. an admin updating their booking).
     const userId = this.user()?.id;
-    if (userId) this.notificationApi.load(userId).subscribe();
+    if (userId) {
+      this.notificationApi.load(userId).subscribe({
+        next: () => this.notificationPoll.start(),
+        error: () => this.notificationPoll.start(),
+      });
+    }
   }
 
   readonly sidebarOpen = signal(false);

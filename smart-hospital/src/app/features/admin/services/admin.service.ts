@@ -12,6 +12,7 @@ import {
   ReportData,
   DateRange,
   Appointment,
+  Prescription,
   User,
   Doctor,
 } from '../../../core/models';
@@ -36,6 +37,11 @@ export class AdminService {
 
   deleteSlot(slotId: string): Observable<void> {
     return this.api.delete<void>(`/slots/${slotId}`);
+  }
+
+  /** Create a prescription for a patient (json-server assigns the id). */
+  createPrescription(prescription: Omit<Prescription, 'id'>): Observable<Prescription> {
+    return this.api.post<Prescription>('/prescriptions', prescription);
   }
 
   getPatientRecords(filters?: PatientFilter): Observable<PatientRecord[]> {

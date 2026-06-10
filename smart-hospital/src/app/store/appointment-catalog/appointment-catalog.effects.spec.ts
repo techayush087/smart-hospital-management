@@ -9,6 +9,7 @@ import { DoctorService } from '../../features/doctors/services/doctor.service';
 import { AppointmentService } from '../../features/appointment/services/appointment.service';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { NotificationApiService } from '../../features/notifications/services/notification-api.service';
 import { Appointment, TimeSlot, BookingRequest } from '../../core/models';
 
 const slot: TimeSlot = {
@@ -55,7 +56,8 @@ describe('AppointmentCatalogEffects', () => {
     cancelAppointment: ReturnType<typeof vi.fn>;
     rescheduleAppointment: ReturnType<typeof vi.fn>;
   };
-  let notify: { addNotification: ReturnType<typeof vi.fn> };
+  let notify: { addTransient: ReturnType<typeof vi.fn> };
+  let notifyApi: { create: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     doctorService = { getAvailableSlots: vi.fn(() => of([slot])) };
@@ -67,7 +69,8 @@ describe('AppointmentCatalogEffects', () => {
         of({ ...appointment, status: 'rescheduled' }),
       ),
     };
-    notify = { addNotification: vi.fn() };
+    notify = { addTransient: vi.fn() };
+    notifyApi = { create: vi.fn(() => of({})) };
 
     TestBed.configureTestingModule({
       providers: [
@@ -77,6 +80,7 @@ describe('AppointmentCatalogEffects', () => {
         { provide: AppointmentService, useValue: appointmentService },
         { provide: AuthService, useValue: { getCurrentUser: () => () => ({ id: 'u1' }) } },
         { provide: NotificationService, useValue: notify },
+        { provide: NotificationApiService, useValue: notifyApi },
       ],
     });
 
@@ -114,11 +118,14 @@ describe('AppointmentCatalogEffects', () => {
       effects.bookSlot$.subscribe((action) => {
         expect(action).toEqual(A.bookSlotSuccess({ appointment }));
         expect(appointmentService.bookAppointment).toHaveBeenCalledWith(booking);
-        expect(notify.addNotification).toHaveBeenCalledTimes(1);
-        expect(notify.addNotification.mock.calls[0][0]).toMatchObject({
+        // Instant toast to the actor...
+        expect(notify.addTransient).toHaveBeenCalledTimes(1);
+        expect(notify.addTransient.mock.calls[0][0]).toMatchObject({ type: 'confirmation' });
+        // ...and a persisted record for the recipient.
+        expect(notifyApi.create).toHaveBeenCalledTimes(1);
+        expect(notifyApi.create.mock.calls[0][0]).toMatchObject({
           type: 'confirmation',
-          userId: 'p1',
-          read: false,
+          userId: booking.patientId,
         });
         resolve();
       });
@@ -130,10 +137,9 @@ describe('AppointmentCatalogEffects', () => {
       effects.cancelAppointment$.subscribe((action) => {
         expect(action.type).toBe(A.cancelAppointmentSuccess.type);
         expect(appointmentService.cancelAppointment).toHaveBeenCalledWith('a1');
-        expect(notify.addNotification).toHaveBeenCalledTimes(1);
-        expect(notify.addNotification.mock.calls[0][0]).toMatchObject({
-          type: 'cancellation',
-        });
+        expect(notify.addTransient).toHaveBeenCalledTimes(1);
+        expect(notifyApi.create).toHaveBeenCalledTimes(1);
+        expect(notifyApi.create.mock.calls[0][0]).toMatchObject({ type: 'cancellation' });
         resolve();
       });
     }));
@@ -148,10 +154,9 @@ describe('AppointmentCatalogEffects', () => {
         expect(
           appointmentService.rescheduleAppointment,
         ).toHaveBeenCalledWith('a1', slot);
-        expect(notify.addNotification).toHaveBeenCalledTimes(1);
-        expect(notify.addNotification.mock.calls[0][0]).toMatchObject({
-          type: 'reschedule',
-        });
+        expect(notify.addTransient).toHaveBeenCalledTimes(1);
+        expect(notifyApi.create).toHaveBeenCalledTimes(1);
+        expect(notifyApi.create.mock.calls[0][0]).toMatchObject({ type: 'reschedule' });
         resolve();
       });
     }));

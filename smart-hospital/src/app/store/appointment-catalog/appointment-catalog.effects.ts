@@ -13,6 +13,8 @@ import { DoctorService } from '../../features/doctors/services/doctor.service';
 import { AppointmentService } from '../../features/appointment/services/appointment.service';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { NotificationApiService } from '../../features/notifications/services/notification-api.service';
+import { Notification } from '../../core/models';
 import * as A from './appointment-catalog.actions';
 
 @Injectable()
@@ -22,6 +24,34 @@ export class AppointmentCatalogEffects {
   private appointmentService = inject(AppointmentService);
   private auth = inject(AuthService);
   private notify = inject(NotificationService);
+  private notifyApi = inject(NotificationApiService);
+
+  /** Show an instant in-memory toast to the current actor + persist a DB record
+   *  so the recipient (which may be a different user) sees it on their next poll. */
+  private emit(
+    recipientId: string,
+    type: Notification['type'],
+    title: string,
+    message: string,
+    toastToActor = true,
+  ): void {
+    if (toastToActor) {
+      this.notify.addTransient({
+        id: `local-${Date.now()}`,
+        userId: recipientId,
+        type,
+        title,
+        message,
+        read: false,
+        createdAt: new Date().toISOString(),
+      });
+    }
+    if (recipientId) {
+      this.notifyApi
+        .create({ userId: recipientId, type, title, message })
+        .subscribe({ error: () => undefined });
+    }
+  }
 
   loadDoctorSlots$ = createEffect(() =>
     this.actions$.pipe(
@@ -61,15 +91,12 @@ export class AppointmentCatalogEffects {
         this.appointmentService.bookAppointment(booking).pipe(
           map((appointment) => A.bookSlotSuccess({ appointment })),
           tap(() =>
-            this.notify.addNotification({
-              id: `n-${Date.now()}`,
-              userId: booking.patientId,
-              type: 'confirmation',
-              title: 'Appointment booked',
-              message: 'Your appointment is confirmed.',
-              read: false,
-              createdAt: new Date().toISOString(),
-            }),
+            this.emit(
+              booking.patientId,
+              'confirmation',
+              'Appointment booked',
+              'Your appointment is confirmed.',
+            ),
           ),
           catchError((error) =>
             of(A.bookSlotFailure({ error: error.message })),
@@ -85,16 +112,13 @@ export class AppointmentCatalogEffects {
       mergeMap(({ appointmentId }) =>
         this.appointmentService.cancelAppointment(appointmentId).pipe(
           map((appointment) => A.cancelAppointmentSuccess({ appointment })),
-          tap(() =>
-            this.notify.addNotification({
-              id: `n-${Date.now()}`,
-              userId: '',
-              type: 'cancellation',
-              title: 'Appointment cancelled',
-              message: 'Your appointment was cancelled.',
-              read: false,
-              createdAt: new Date().toISOString(),
-            }),
+          tap((action) =>
+            this.emit(
+              action.appointment.patientId,
+              'cancellation',
+              'Appointment cancelled',
+              'Your appointment was cancelled.',
+            ),
           ),
           catchError((error) =>
             of(A.cancelAppointmentFailure({ error: error.message })),
@@ -110,16 +134,13 @@ export class AppointmentCatalogEffects {
       mergeMap(({ appointmentId, newSlot }) =>
         this.appointmentService.rescheduleAppointment(appointmentId, newSlot).pipe(
           map((appointment) => A.rescheduleAppointmentSuccess({ appointment })),
-          tap(() =>
-            this.notify.addNotification({
-              id: `n-${Date.now()}`,
-              userId: '',
-              type: 'reschedule',
-              title: 'Appointment rescheduled',
-              message: 'Your appointment was moved.',
-              read: false,
-              createdAt: new Date().toISOString(),
-            }),
+          tap((action) =>
+            this.emit(
+              action.appointment.patientId,
+              'reschedule',
+              'Appointment rescheduled',
+              'Your appointment was moved to a new time.',
+            ),
           ),
           catchError((error) =>
             of(A.rescheduleAppointmentFailure({ error: error.message })),

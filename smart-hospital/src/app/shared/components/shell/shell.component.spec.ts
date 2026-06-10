@@ -1,9 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { signal } from '@angular/core';
+import { of } from 'rxjs';
 import { ShellComponent } from './shell.component';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { NotificationPollService } from '../../../core/services/notification-poll.service';
+import { NotificationApiService } from '../../../features/notifications/services/notification-api.service';
 import { User } from '../../../core/models';
 
 function makeUser(role: 'customer' | 'admin'): User {
@@ -21,7 +24,12 @@ function configure(role: 'customer' | 'admin' | null) {
     providers: [
       provideRouter([]),
       { provide: AuthService, useValue: { getCurrentUser: () => user, logout } },
-      { provide: NotificationService, useValue: { unreadCount: signal(2) } },
+      {
+        provide: NotificationService,
+        useValue: { unreadCount: signal(2), getNotifications: () => signal([]) },
+      },
+      { provide: NotificationApiService, useValue: { load: () => of([]) } },
+      { provide: NotificationPollService, useValue: { start: vi.fn() } },
     ],
   });
   return { logout };

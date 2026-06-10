@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  computed,
   inject,
   signal,
 } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { AuthService } from '../../../../core/services/auth.service';
 import { PatientRecordsService } from '../../services/patient-records.service';
 import { Prescription } from '../../../../core/models';
@@ -23,6 +25,7 @@ import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
     AppButtonComponent,
     EmptyStateComponent,
     RelativeDatePipe,
+    DatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './prescription-view.component.html',
@@ -35,8 +38,19 @@ export class PrescriptionViewComponent implements OnInit {
   protected readonly prescriptions = signal<Prescription[]>([]);
   protected readonly loading = signal(true);
 
+  private readonly user = this.auth.getCurrentUser();
+  protected readonly patientName = computed(() => {
+    const u = this.user();
+    return u ? `${u.firstName} ${u.lastName}` : '';
+  });
+  protected readonly patientDob = computed(() => this.user()?.dateOfBirth ?? '');
+
+  /** The prescription being printed (null = print all / none). When set, only that
+   *  formal Rx sheet is sent to the printer via the print stylesheet. */
+  protected readonly printingId = signal<string | null>(null);
+
   ngOnInit(): void {
-    const patientId = this.auth.getCurrentUser()()?.id ?? '';
+    const patientId = this.user()?.id ?? '';
     if (!patientId) {
       this.loading.set(false);
       return;
@@ -50,7 +64,13 @@ export class PrescriptionViewComponent implements OnInit {
     });
   }
 
-  print(): void {
-    window.print();
+  /** Print a single prescription as a formal Rx sheet. */
+  printOne(id: string): void {
+    this.printingId.set(id);
+    // Let the DOM update so only the chosen Rx sheet is visible to the printer.
+    setTimeout(() => {
+      window.print();
+      this.printingId.set(null);
+    });
   }
 }

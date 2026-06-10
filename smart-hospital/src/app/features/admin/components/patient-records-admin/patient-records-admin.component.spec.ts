@@ -115,6 +115,12 @@ describe('PatientRecordsAdminComponent', () => {
     expect(patch.request.method).toBe('PATCH');
     expect(patch.request.body.status).toBe('completed');
     patch.flush({});
+
+    // ...then notifies the patient (a persisted notification record).
+    const notif = httpMock.expectOne(`${api}/notifications`);
+    expect(notif.request.method).toBe('POST');
+    expect(notif.request.body).toMatchObject({ userId: 'u1', type: 'admin-alert' });
+    notif.flush({});
     fixture.detectChanges();
 
     expect(

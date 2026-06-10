@@ -29,5 +29,12 @@ export const ADMIN_ROUTES: Routes = [
         (m) => m.ReportsComponent,
       ),
   },
+  {
+    path: 'prescriptions',
+    loadComponent: () =>
+      import(
+        './components/prescription-editor/prescription-editor.component'
+      ).then((m) => m.PrescriptionEditorComponent),
+  },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 ];

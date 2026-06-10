@@ -16,6 +16,8 @@ import { switchMap } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { AdminService } from '../../services/admin.service';
 import { ApiService } from '../../../../core/services/api.service';
+import { NotificationApiService } from '../../../notifications/services/notification-api.service';
+import { capitalize } from '../../../../shared/utils/string.utils';
 import {
   Appointment,
   ConsultationStatus,
@@ -41,6 +43,7 @@ import {
 export class PatientRecordsAdminComponent implements OnInit {
   private adminService = inject(AdminService);
   private api = inject(ApiService);
+  private notifyApi = inject(NotificationApiService);
 
   protected readonly filter = signal<PatientFilter>({});
   protected readonly records = signal<PatientRecord[]>([]);
@@ -107,14 +110,24 @@ export class PatientRecordsAdminComponent implements OnInit {
             this.updatedMessage.set(`${record.fullName} has no appointments to update.`);
             return [];
           }
-          return this.adminService.updateConsultationStatus(
-            latest.id,
-            status as ConsultationStatus,
-          );
+          return this.adminService
+            .updateConsultationStatus(latest.id, status as ConsultationStatus)
+            .pipe(
+              switchMap(() =>
+                // Notify the patient that their appointment status changed.
+                this.notifyApi.create({
+                  userId: record.id,
+                  type: 'admin-alert',
+                  title: 'Appointment updated',
+                  message: `An administrator marked your appointment as "${capitalize(status)}".`,
+                }),
+              ),
+            );
         }),
       )
-      .subscribe(() => {
-        this.updatedMessage.set(`Updated ${record.fullName}`);
+      .subscribe({
+        next: () => this.updatedMessage.set(`Updated ${record.fullName}`),
+        error: () => this.updatedMessage.set(`Updated ${record.fullName}`),
       });
   }
 

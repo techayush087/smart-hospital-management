@@ -131,21 +131,156 @@
   }
 }
 
-@media print {
-  :host {
+/* ── Formal printable Rx sheet — hidden on screen, formatted for paper ── */
+.rx-sheet {
+  display: none; // only shown when printing the matching prescription
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.rx-sheet__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: var(--spacing-4);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.rx-sheet__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.rx-sheet__mark {
+  font-size: 2.4rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.rx-sheet__clinic {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+.rx-sheet__clinic-sub {
+  margin: 2px 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.rx-sheet__meta {
+  text-align: right;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+
+  p { margin: 0 0 2px; }
+  span { display: block; font-weight: var(--font-weight-semibold); color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); }
+}
+
+.rx-sheet__patient {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-6);
+  padding: var(--spacing-4) 0;
+  border-bottom: 1px solid var(--color-divider);
+
+  span {
+    display: block;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+  }
+}
+
+.rx-sheet__rx {
+  position: relative;
+  display: flex;
+  gap: var(--spacing-4);
+  padding: var(--spacing-5) 0;
+}
+
+.rx-sheet__rx-symbol {
+  font-size: 2rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1.2;
+}
+
+.rx-sheet__table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-text-tertiary);
+    border-bottom: 1px solid var(--color-border);
+  }
+  td {
+    padding: var(--spacing-3);
+    border-bottom: 1px solid var(--color-divider);
     color: var(--color-text-primary);
   }
+}
 
-  .prescriptions__toolbar,
-  .prescriptions__skeletons {
-    display: none;
+.rx-sheet__med-name {
+  font-weight: var(--font-weight-semibold);
+}
+
+.rx-sheet__notes {
+  padding: var(--spacing-4) 0;
+
+  p { margin: 0; }
+  &-label {
+    font-size: var(--font-size-xs) !important;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    margin-bottom: var(--spacing-1) !important;
+  }
+}
+
+.rx-sheet__foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: var(--spacing-12);
+  padding-top: var(--spacing-4);
+}
+
+.rx-sheet__sign-line {
+  width: 12rem;
+  border-bottom: 1px solid var(--color-text-primary);
+  margin-bottom: var(--spacing-1);
+}
+.rx-sheet__sign p { margin: 0; font-size: var(--font-size-xs); color: var(--color-text-secondary); }
+
+.rx-sheet__disclaimer {
+  max-width: 18rem;
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  text-align: right;
+}
+
+/* ── Print: show ONLY the active Rx sheet, nothing else ── */
+@media print {
+  .prescriptions-screen { display: none !important; }
+
+  .rx-sheet--active {
+    display: block;
+    padding: var(--spacing-8);
   }
 
-  .prescriptions__list {
-    gap: var(--spacing-4);
-  }
-
-  .prescription {
-    break-inside: avoid;
-  }
+  .rx-sheet__table th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
