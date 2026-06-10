@@ -63,8 +63,8 @@
     </div>
 
     <div class="rx-meds" formArrayName="medications">
-      @for (med of medications.controls; track $index) {
-        <div class="rx-med" [formGroupName]="$index">
+      @for (med of medications.controls; track med; let i = $index) {
+        <div class="rx-med" [formGroupName]="i">
           <div class="rx-med__grid">
             <div class="form-field">
               <label class="form-field__label">Name</label>
@@ -84,7 +84,7 @@
             </div>
           </div>
           @if (medications.length > 1) {
-            <button type="button" class="rx-med__remove" aria-label="Remove medication" (click)="removeMedication($index)">
+            <button type="button" class="rx-med__remove" aria-label="Remove medication" (click)="removeMedication(i)">
               <span class="material-icons-round" aria-hidden="true">delete</span>
             </button>
           }

@@ -67,6 +67,43 @@ describe('PrescriptionEditorComponent', () => {
     expect(banner.textContent).toContain('instructions');
   });
 
+  it('saves when two medication rows are filled via the DOM inputs', () => {
+    const c = fixture.componentInstance;
+    (c as any).form.patchValue({ patientId: 'u1', doctorId: 'd1', instructions: 'WHY' });
+
+    // Add a second row and type into BOTH rows' inputs through the DOM, the way
+    // an admin does — this is what regressed when rows tracked by $index.
+    c.addMedication();
+    fixture.detectChanges();
+
+    const rows = fixture.nativeElement.querySelectorAll('.rx-med');
+    expect(rows.length).toBe(2);
+
+    const fill = (row: Element, values: string[]) => {
+      const inputs = row.querySelectorAll('input');
+      inputs.forEach((input: HTMLInputElement, idx: number) => {
+        input.value = values[idx];
+        input.dispatchEvent(new Event('input'));
+      });
+    };
+    fill(rows[0], ['TEST2', '10000', '88', '68']);
+    fill(rows[1], ['dsdd', 'ad', 'dsud', 'sd']);
+    fixture.detectChanges();
+
+    // Every medication control is now valid — no "complete medication" error.
+    expect((c as any).form.invalid).toBe(false);
+
+    c.submit();
+
+    const rx = httpMock.expectOne(`${api}/prescriptions`);
+    expect(rx.request.body.medications).toEqual([
+      { name: 'TEST2', dosage: '10000', frequency: '88', duration: '68' },
+      { name: 'dsdd', dosage: 'ad', frequency: 'dsud', duration: 'sd' },
+    ]);
+    rx.flush({ id: 'rx1', ...rx.request.body });
+    httpMock.expectOne(`${api}/notifications`).flush({ id: 'n1' });
+  });
+
   it('creates the prescription then notifies the patient', () => {
     const c = fixture.componentInstance;
     (c as any).form.patchValue({ patientId: 'u1', doctorId: 'd1', instructions: 'After food' });

@@ -103,14 +103,23 @@ export class PrescriptionEditorComponent implements OnInit {
   }
 
   /** Human-readable list of the required fields still empty — so an invalid
-   *  "Save" tells the admin exactly what's missing instead of doing nothing. */
+   *  "Save" tells the admin exactly which field (and which medication row) to
+   *  fill instead of just saying "all medication fields". */
   private missingFields(): string[] {
     const missing: string[] = [];
     if (this.form.get('patientId')?.invalid) missing.push('patient');
     if (this.form.get('doctorId')?.invalid) missing.push('prescribing doctor');
     if (this.form.get('instructions')?.invalid) missing.push('instructions');
-    const incompleteMed = this.medications.controls.some((c) => c.invalid);
-    if (incompleteMed) missing.push('all medication fields');
+
+    const single = this.medications.length === 1;
+    this.medications.controls.forEach((group, i) => {
+      for (const field of ['name', 'dosage', 'frequency', 'duration'] as const) {
+        if (group.get(field)?.invalid) {
+          missing.push(single ? `medication ${field}` : `medication ${i + 1} ${field}`);
+        }
+      }
+    });
+
     return missing.length ? missing : ['the required fields'];
   }
 
