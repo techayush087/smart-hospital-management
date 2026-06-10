@@ -19,19 +19,32 @@
     <div class="appts__filters" role="group" aria-label="Filter by status">
       <button
         type="button"
+        class="appts__filter appts__filter--requests"
+        [class.appts__filter--active]="statusFilter() === 'pending'"
+        (click)="setStatusFilter('pending')"
+        data-cy="filter-requests">
+        Requests
+        @if (pendingCount() > 0) {
+          <span class="appts__count" aria-label="pending requests">{{ pendingCount() }}</span>
+        }
+      </button>
+      <button
+        type="button"
         class="appts__filter"
         [class.appts__filter--active]="statusFilter() === 'all'"
         (click)="setStatusFilter('all')">
         All
       </button>
       @for (s of statuses; track s) {
-        <button
-          type="button"
-          class="appts__filter"
-          [class.appts__filter--active]="statusFilter() === s"
-          (click)="setStatusFilter(s)">
-          {{ s | appointmentStatus }}
-        </button>
+        @if (s !== 'pending') {
+          <button
+            type="button"
+            class="appts__filter"
+            [class.appts__filter--active]="statusFilter() === s"
+            (click)="setStatusFilter(s)">
+            {{ s | appointmentStatus }}
+          </button>
+        }
       }
     </div>
   </div>
@@ -44,7 +57,7 @@
     </div>
   } @else if (filtered().length) {
     <ul class="appts__list">
-      @for (a of filtered(); track a.id) {
+      @for (a of paged(); track a.id) {
         <li class="appt-row" data-cy="appt-row">
           <app-avatar [name]="a.patientName" size="md" />
 
@@ -69,16 +82,35 @@
             [status]="a.status" />
 
           <div class="appt-row__actions">
-            <select
-              class="appt-row__status-select"
-              [value]="a.status"
-              data-cy="appt-status"
-              aria-label="Update status"
-              (change)="onStatusChange(a, $any($event.target).value)">
-              @for (s of statuses; track s) {
-                <option [value]="s">{{ s | appointmentStatus }}</option>
-              }
-            </select>
+            @if (a.status === 'pending') {
+              <button
+                type="button"
+                class="appt-row__confirm"
+                data-cy="appt-confirm"
+                (click)="confirm(a)">
+                <span class="material-icons-round" aria-hidden="true">check</span>
+                Confirm
+              </button>
+              <button
+                type="button"
+                class="appt-row__decline"
+                data-cy="appt-decline"
+                (click)="decline(a)">
+                <span class="material-icons-round" aria-hidden="true">close</span>
+                Decline
+              </button>
+            } @else {
+              <select
+                class="appt-row__status-select"
+                [value]="a.status"
+                data-cy="appt-status"
+                aria-label="Update status"
+                (change)="onStatusChange(a, $any($event.target).value)">
+                @for (s of statuses; track s) {
+                  <option [value]="s">{{ s | appointmentStatus }}</option>
+                }
+              </select>
+            }
 
             <button
               type="button"
@@ -92,6 +124,12 @@
         </li>
       }
     </ul>
+
+    <app-paginator
+      [page]="page()"
+      [total]="filtered().length"
+      [pageSize]="pageSize"
+      (pageChange)="goToPage($event)" />
   } @else {
     <app-empty-state
       title="No appointments found"

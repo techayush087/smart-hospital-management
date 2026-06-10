@@ -179,6 +179,29 @@
   flex-direction: column;
   gap: var(--spacing-3);
 
+  &__filters {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  &__filter {
+    padding: var(--spacing-1) var(--spacing-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-surface);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+
+    &:hover { background: var(--color-surface-alt); }
+    &--active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-text-inverse);
+    }
+  }
+
   &__header,
   &__row {
     display: grid;

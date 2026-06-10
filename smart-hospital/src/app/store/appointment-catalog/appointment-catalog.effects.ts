@@ -93,9 +93,9 @@ export class AppointmentCatalogEffects {
           tap(() =>
             this.emit(
               booking.patientId,
-              'confirmation',
-              'Appointment booked',
-              'Your appointment is confirmed.',
+              'reminder',
+              'Appointment requested',
+              'Your appointment request was submitted and is awaiting confirmation.',
             ),
           ),
           catchError((error) =>

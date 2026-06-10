@@ -27,7 +27,8 @@ export class AppointmentService {
       scheduledAt: booking.scheduledAt,
       duration: booking.duration,
       type: booking.type,
-      status: 'confirmed',
+      // New bookings start as a request awaiting admin confirmation.
+      status: 'pending',
       reason: booking.reason,
       createdAt: now,
       updatedAt: now,

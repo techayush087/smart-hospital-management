@@ -1,0 +1,30 @@
+@if (totalPages() > 1) {
+  <nav class="paginator" aria-label="Pagination">
+    <span class="paginator__info">
+      {{ from() }}–{{ to() }} of {{ total() }}
+    </span>
+    <div class="paginator__controls">
+      <button
+        type="button"
+        class="paginator__btn"
+        aria-label="Previous page"
+        [disabled]="!canPrev()"
+        (click)="prev()"
+        data-cy="page-prev">
+        <span class="material-icons-round" aria-hidden="true">chevron_left</span>
+      </button>
+      <span class="paginator__page" data-cy="page-info">
+        Page {{ page() }} of {{ totalPages() }}
+      </span>
+      <button
+        type="button"
+        class="paginator__btn"
+        aria-label="Next page"
+        [disabled]="!canNext()"
+        (click)="next()"
+        data-cy="page-next">
+        <span class="material-icons-round" aria-hidden="true">chevron_right</span>
+      </button>
+    </div>
+  </nav>
+}

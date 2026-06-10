@@ -92,7 +92,8 @@ describe('AppointmentService', () => {
     const req = httpMock.expectOne(`${environment.apiUrl}/appointments`);
     expect(req.request.method).toBe('POST');
     const body = req.request.body;
-    expect(body.status).toBe('confirmed');
+    // New bookings are 'pending' until an admin confirms.
+    expect(body.status).toBe('pending');
     expect(body.doctorId).toBe('d99');
     expect(body.patientId).toBe('u42');
     expect(body.reason).toBe('Severe headache');

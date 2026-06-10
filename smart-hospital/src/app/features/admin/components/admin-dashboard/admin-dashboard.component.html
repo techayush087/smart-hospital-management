@@ -49,14 +49,20 @@
 
     <app-card title="Recent Activity" subtitle="Latest bookings" [elevated]="true">
       <div class="activity">
+        <div class="activity__filters" role="group" aria-label="Filter activity by date">
+          <button type="button" class="activity__filter" [class.activity__filter--active]="activityFilter() === 'today'" (click)="setActivityFilter('today')">Today</button>
+          <button type="button" class="activity__filter" [class.activity__filter--active]="activityFilter() === 'week'" (click)="setActivityFilter('week')">This week</button>
+          <button type="button" class="activity__filter" [class.activity__filter--active]="activityFilter() === 'all'" (click)="setActivityFilter('all')">All</button>
+        </div>
+
         <div class="activity__header" role="row">
           <span class="activity__col">Patient</span>
           <span class="activity__col">Doctor</span>
           <span class="activity__col">Status</span>
           <span class="activity__col">When</span>
         </div>
-        @if (recent().length) {
-          @for (a of recent(); track a.id) {
+        @if (activityPaged().length) {
+          @for (a of activityPaged(); track a.id) {
             <div class="activity__row" role="row" data-cy="activity-row">
               <span class="activity__col activity__col--strong">{{ a.patientName }}</span>
               <span class="activity__col">{{ a.doctorName }}</span>
@@ -66,8 +72,13 @@
               <span class="activity__col">{{ a.scheduledAt | relativeDate }}</span>
             </div>
           }
+          <app-paginator
+            [page]="activityPage()"
+            [total]="activityFiltered().length"
+            [pageSize]="activityPageSize"
+            (pageChange)="goToActivityPage($event)" />
         } @else {
-          <p class="activity__empty">No recent bookings yet.</p>
+          <p class="activity__empty">No bookings in this range.</p>
         }
       </div>
     </app-card>

@@ -11,7 +11,7 @@ import { PatientRecordsService } from '../../services/patient-records.service';
 import { VisitRecord } from '../../../../core/models';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { AppBadgeComponent } from '../../../../shared/components/badge/badge.component';
-import { AppButtonComponent } from '../../../../shared/components/button/button.component';
+import { PaginatorComponent } from '../../../../shared/components/paginator/paginator.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
 import { AppointmentStatusPipe } from '../../../../shared/pipes/appointment-status.pipe';
@@ -24,7 +24,7 @@ const PAGE_SIZE = 10;
   imports: [
     PageHeaderComponent,
     AppBadgeComponent,
-    AppButtonComponent,
+    PaginatorComponent,
     EmptyStateComponent,
     RelativeDatePipe,
     AppointmentStatusPipe,
@@ -65,11 +65,7 @@ export class VisitHistoryComponent implements OnInit {
     });
   }
 
-  prev(): void {
-    if (this.page() > 1) this.page.update((p) => p - 1);
-  }
-
-  next(): void {
-    if (this.page() < this.totalPages()) this.page.update((p) => p + 1);
+  goToPage(p: number): void {
+    this.page.set(p);
   }
 }

@@ -13,6 +13,7 @@ import { SearchBarComponent } from '../../../../shared/components/search-bar/sea
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { AppBadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { AppAvatarComponent } from '../../../../shared/components/avatar/avatar.component';
+import { PaginatorComponent } from '../../../../shared/components/paginator/paginator.component';
 import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
 import { TimeSlotPipe } from '../../../../shared/pipes/time-slot.pipe';
 import { AppointmentStatusPipe } from '../../../../shared/pipes/appointment-status.pipe';
@@ -34,6 +35,7 @@ const STATUSES: AppointmentStatus[] = [
     EmptyStateComponent,
     AppBadgeComponent,
     AppAvatarComponent,
+    PaginatorComponent,
     RelativeDatePipe,
     TimeSlotPipe,
     AppointmentStatusPipe,
@@ -48,11 +50,18 @@ export class AppointmentsAdminComponent implements OnInit {
   private router = inject(Router);
 
   protected readonly statuses = STATUSES;
+  protected readonly pageSize = 10;
   protected readonly appointments = signal<AdminAppointment[]>([]);
   protected readonly loading = signal(true);
   protected readonly query = signal('');
   protected readonly statusFilter = signal<AppointmentStatus | 'all'>('all');
   protected readonly updatedMessage = signal('');
+  protected readonly page = signal(1);
+
+  /** Number of appointments awaiting confirmation — drives the Requests badge. */
+  protected readonly pendingCount = computed(
+    () => this.appointments().filter((a) => a.status === 'pending').length,
+  );
 
   protected readonly filtered = computed(() => {
     const q = this.query().toLowerCase().trim();
@@ -68,8 +77,26 @@ export class AppointmentsAdminComponent implements OnInit {
     });
   });
 
+  protected readonly paged = computed(() => {
+    const start = (this.page() - 1) * this.pageSize;
+    return this.filtered().slice(start, start + this.pageSize);
+  });
+
   ngOnInit(): void {
     this.load();
+  }
+
+  protected goToPage(p: number): void {
+    this.page.set(p);
+  }
+
+  /** Confirm a pending request (status -> confirmed) and notify the patient. */
+  protected confirm(appt: AdminAppointment): void {
+    this.onStatusChange(appt, 'confirmed');
+  }
+  /** Decline a pending request (status -> cancelled) and notify the patient. */
+  protected decline(appt: AdminAppointment): void {
+    this.onStatusChange(appt, 'cancelled');
   }
 
   private load(): void {
@@ -85,14 +112,17 @@ export class AppointmentsAdminComponent implements OnInit {
 
   protected onSearch(q: string): void {
     this.query.set(q);
+    this.page.set(1);
   }
 
   protected onClearSearch(): void {
     this.query.set('');
+    this.page.set(1);
   }
 
   protected setStatusFilter(status: AppointmentStatus | 'all'): void {
     this.statusFilter.set(status);
+    this.page.set(1);
   }
 
   protected onStatusChange(appt: AdminAppointment, status: string): void {

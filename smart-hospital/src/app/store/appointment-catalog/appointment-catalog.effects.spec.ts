@@ -118,13 +118,13 @@ describe('AppointmentCatalogEffects', () => {
       effects.bookSlot$.subscribe((action) => {
         expect(action).toEqual(A.bookSlotSuccess({ appointment }));
         expect(appointmentService.bookAppointment).toHaveBeenCalledWith(booking);
-        // Instant toast to the actor...
+        // Instant toast to the actor... (a new booking is a 'reminder' — awaiting confirmation)
         expect(notify.addTransient).toHaveBeenCalledTimes(1);
-        expect(notify.addTransient.mock.calls[0][0]).toMatchObject({ type: 'confirmation' });
+        expect(notify.addTransient.mock.calls[0][0]).toMatchObject({ type: 'reminder' });
         // ...and a persisted record for the recipient.
         expect(notifyApi.create).toHaveBeenCalledTimes(1);
         expect(notifyApi.create.mock.calls[0][0]).toMatchObject({
-          type: 'confirmation',
+          type: 'reminder',
           userId: booking.patientId,
         });
         resolve();

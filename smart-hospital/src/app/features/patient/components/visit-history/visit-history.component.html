@@ -33,25 +33,11 @@
       }
     </div>
 
-    @if (totalPages() > 1) {
-      <div class="visit-history__pagination">
-        <app-button
-          label="Previous"
-          variant="secondary"
-          size="sm"
-          [disabled]="page() === 1"
-          (clicked)="prev()" />
-        <span class="visit-history__page-info">
-          Page {{ page() }} of {{ totalPages() }}
-        </span>
-        <app-button
-          label="Next"
-          variant="secondary"
-          size="sm"
-          [disabled]="page() === totalPages()"
-          (clicked)="next()" />
-      </div>
-    }
+    <app-paginator
+      [page]="page()"
+      [total]="visits().length"
+      [pageSize]="pageSize"
+      (pageChange)="goToPage($event)" />
   } @else {
     <app-empty-state
       title="No visit history"

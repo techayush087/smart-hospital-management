@@ -66,19 +66,22 @@ describe('PatientDashboardComponent', () => {
   });
 
   function flushRecords(visits = 3, prescriptions = 2): void {
-    const visitReq = httpMock.expectOne(
-      (r) => r.url === `${environment.apiUrl}/visits`,
-    );
-    visitReq.flush(
-      Array.from({ length: visits }, (_, i) => ({ id: `v${i}` })),
-    );
-
-    const presReq = httpMock.expectOne(
-      (r) => r.url === `${environment.apiUrl}/prescriptions`,
-    );
-    presReq.flush(
-      Array.from({ length: prescriptions }, (_, i) => ({ id: `p${i}` })),
-    );
+    // Visit history is derived from completed appointments + doctors.
+    httpMock
+      .expectOne((r) => r.url === `${environment.apiUrl}/appointments` && r.params.get('patientId') === 'u1')
+      .flush(
+        Array.from({ length: visits }, (_, i) => ({
+          id: `a${i}`, patientId: 'u1', doctorId: 'd1',
+          scheduledAt: '2026-05-20T09:00:00.000Z', duration: 30, type: 'virtual',
+          status: 'completed', reason: 'Visit', createdAt: '', updatedAt: '',
+        })),
+      );
+    httpMock
+      .expectOne(`${environment.apiUrl}/doctors`)
+      .flush([{ id: 'd1', name: 'Dr. Roy Patel', specialization: 'General Medicine', experience: 8, consultationType: 'both', location: 'NY', rating: 4.7, reviewCount: 1, bio: '', languages: [], consultationFee: 100 }]);
+    httpMock
+      .expectOne((r) => r.url === `${environment.apiUrl}/prescriptions` && r.params.get('patientId') === 'u1')
+      .flush(Array.from({ length: prescriptions }, (_, i) => ({ id: `p${i}` })));
     fixture.detectChanges();
   }
 

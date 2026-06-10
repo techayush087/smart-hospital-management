@@ -15,6 +15,7 @@ import { AdminAppointment, DashboardStats } from '../../../../core/models';
 import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
 import { AppointmentStatusPipe } from '../../../../shared/pipes/appointment-status.pipe';
 import { AppBadgeComponent } from '../../../../shared/components/badge/badge.component';
+import { PaginatorComponent } from '../../../../shared/components/paginator/paginator.component';
 
 interface KpiCard {
   key: string;
@@ -33,6 +34,7 @@ interface KpiCard {
     LineChartComponent,
     DonutChartComponent,
     AppBadgeComponent,
+    PaginatorComponent,
     RelativeDatePipe,
     AppointmentStatusPipe,
   ],
@@ -53,8 +55,35 @@ export class AdminDashboardComponent implements OnInit {
   /** Loading skeleton placeholders, one per KPI card. */
   protected readonly skeletons = [0, 1, 2, 3];
 
-  /** The five most recent bookings for the Recent Activity table. */
-  protected readonly recent = signal<AdminAppointment[]>([]);
+  /** All bookings (date-sorted), filtered + paginated for Recent Activity. */
+  protected readonly activity = signal<AdminAppointment[]>([]);
+  protected readonly activityFilter = signal<'today' | 'week' | 'all'>('all');
+  protected readonly activityPage = signal(1);
+  protected readonly activityPageSize = 10;
+
+  protected readonly activityFiltered = computed(() => {
+    const filter = this.activityFilter();
+    if (filter === 'all') return this.activity();
+    const now = Date.now();
+    const dayMs = 86_400_000;
+    const cutoff = filter === 'today' ? now - dayMs : now - 7 * dayMs;
+    return this.activity().filter(
+      (a) => new Date(a.scheduledAt).getTime() >= cutoff,
+    );
+  });
+
+  protected readonly activityPaged = computed(() => {
+    const start = (this.activityPage() - 1) * this.activityPageSize;
+    return this.activityFiltered().slice(start, start + this.activityPageSize);
+  });
+
+  protected setActivityFilter(filter: 'today' | 'week' | 'all'): void {
+    this.activityFilter.set(filter);
+    this.activityPage.set(1);
+  }
+  protected goToActivityPage(p: number): void {
+    this.activityPage.set(p);
+  }
 
   ngOnInit(): void {
     this.adminService.getDashboardStats().subscribe((stats) => {
@@ -63,7 +92,7 @@ export class AdminDashboardComponent implements OnInit {
     });
     this.adminService
       .getAllAppointments()
-      .subscribe((list) => this.recent.set(list.slice(0, 5)));
+      .subscribe((list) => this.activity.set(list));
   }
 
   /** Derives the four KPI cards from the loaded stats. */

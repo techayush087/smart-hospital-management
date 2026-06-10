@@ -5,21 +5,41 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { VisitHistoryComponent } from './visit-history.component';
-import { VisitRecord } from '../../../../core/models';
+import { Appointment, Doctor } from '../../../../core/models';
 import { AuthService } from '../../../../core/services/auth.service';
 import { environment } from '../../../../../environments/environment';
 
-function makeVisit(overrides: Partial<VisitRecord> = {}): VisitRecord {
+const api = environment.apiUrl;
+
+function makeAppointment(overrides: Partial<Appointment> = {}): Appointment {
   return {
-    id: 'v1',
+    id: 'a1',
     patientId: 'u1',
     doctorId: 'd1',
-    doctorName: 'Dr. Roy Patel',
-    specialization: 'General Medicine',
-    visitDate: '2026-05-20T09:00:00.000Z',
+    scheduledAt: '2026-05-20T09:00:00.000Z',
+    duration: 30,
     type: 'virtual',
     status: 'completed',
-    summary: 'Follow-up; recovering well.',
+    reason: 'Follow-up consultation',
+    createdAt: '',
+    updatedAt: '',
+    ...overrides,
+  };
+}
+
+function makeDoctor(overrides: Partial<Doctor> = {}): Doctor {
+  return {
+    id: 'd1',
+    name: 'Dr. Roy Patel',
+    specialization: 'General Medicine',
+    experience: 8,
+    consultationType: 'both',
+    location: 'NY',
+    rating: 4.7,
+    reviewCount: 1,
+    bio: '',
+    languages: [],
+    consultationFee: 100,
     ...overrides,
   };
 }
@@ -51,15 +71,29 @@ describe('VisitHistoryComponent', () => {
     httpMock.verify();
   });
 
-  it('renders a row per visit', () => {
-    const req = httpMock.expectOne(
-      (r) => r.url === `${environment.apiUrl}/visits`,
-    );
-    req.flush([
-      makeVisit({ id: 'v1', doctorName: 'Dr. Roy Patel' }),
-      makeVisit({ id: 'v2', doctorName: 'Dr. Sarah Chen' }),
-    ]);
+  // Visit history is now derived from the patient's COMPLETED appointments
+  // (joined with /doctors for names) — not a separate /visits resource.
+  function flush(appointments: Appointment[], doctors: Doctor[]): void {
+    httpMock
+      .expectOne((r) => r.url === `${api}/appointments` && r.params.get('patientId') === 'u1')
+      .flush(appointments);
+    httpMock.expectOne(`${api}/doctors`).flush(doctors);
     fixture.detectChanges();
+  }
+
+  it('renders a row per completed appointment', () => {
+    flush(
+      [
+        makeAppointment({ id: 'a1', doctorId: 'd1', status: 'completed' }),
+        makeAppointment({ id: 'a2', doctorId: 'd2', status: 'completed' }),
+        // A non-completed appointment must NOT appear in history.
+        makeAppointment({ id: 'a3', doctorId: 'd1', status: 'confirmed' }),
+      ],
+      [
+        makeDoctor({ id: 'd1', name: 'Dr. Roy Patel' }),
+        makeDoctor({ id: 'd2', name: 'Dr. Sarah Chen' }),
+      ],
+    );
 
     const rows = fixture.nativeElement.querySelectorAll('.visit-table__row');
     expect(rows.length).toBe(2);
@@ -69,12 +103,8 @@ describe('VisitHistoryComponent', () => {
     expect(text).toContain('Dr. Sarah Chen');
   });
 
-  it('shows the empty state when there are no visits', () => {
-    const req = httpMock.expectOne(
-      (r) => r.url === `${environment.apiUrl}/visits`,
-    );
-    req.flush([]);
-    fixture.detectChanges();
+  it('shows the empty state when there are no completed appointments', () => {
+    flush([makeAppointment({ status: 'pending' })], [makeDoctor()]);
 
     const text: string = fixture.nativeElement.textContent;
     expect(text).toContain('No visit history');
