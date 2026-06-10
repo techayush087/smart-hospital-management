@@ -18,10 +18,16 @@ interface DayCell {
   inMonth: boolean;
 }
 
+type View = 'days' | 'months' | 'years';
+
 const WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
+];
+const MONTHS_SHORT = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ];
 
 /**
@@ -60,16 +66,28 @@ export class DatePickerComponent implements ControlValueAccessor {
   readonly open = signal(false);
   readonly value = signal<string>(''); // ISO yyyy-mm-dd
   readonly disabled = signal(false);
+  /** Which panel is showing: day grid, month grid, or year grid. */
+  readonly view = signal<View>('days');
 
   // The month currently shown in the popover (1st of that month).
   private readonly viewDate = signal<Date>(this.startOfMonth(new Date()));
 
-  readonly monthLabel = computed(() => {
-    const d = this.viewDate();
-    return `${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-  });
-
+  readonly monthName = computed(() => MONTHS[this.viewDate().getMonth()]);
+  readonly yearNumber = computed(() => this.viewDate().getFullYear());
+  readonly months = MONTHS_SHORT;
   readonly weekdays = WEEKDAYS;
+
+  /** Year range for the year grid — bounded by min/max when provided, else a wide
+   *  window around the view year (covers DOB without endless clicking). */
+  readonly years = computed<number[]>(() => {
+    const current = this.viewDate().getFullYear();
+    const minYear = this.min() ? Number(this.min()!.slice(0, 4)) : current - 100;
+    const maxYear = this.max() ? Number(this.max()!.slice(0, 4)) : current + 10;
+    const out: number[] = [];
+    // Newest first so a DOB picker opens near recent years.
+    for (let y = maxYear; y >= minYear; y--) out.push(y);
+    return out;
+  });
 
   readonly displayValue = computed(() => {
     const v = this.value();
@@ -115,6 +133,7 @@ export class DatePickerComponent implements ControlValueAccessor {
     if (this.disabled()) return;
     this.open.update((o) => !o);
     if (this.open()) {
+      this.view.set('days');
       const d = this.value() ? this.parseIso(this.value()) : new Date();
       if (d) this.viewDate.set(this.startOfMonth(d));
     } else {
@@ -122,8 +141,32 @@ export class DatePickerComponent implements ControlValueAccessor {
     }
   }
 
-  prevMonth(): void { this.shiftMonth(-1); }
-  nextMonth(): void { this.shiftMonth(1); }
+  /** Step the prev/next button: month in day view, year in month view, decade in year view. */
+  prev(): void { this.step(-1); }
+  next(): void { this.step(1); }
+
+  /** Open the month grid (clicking the month name) or year grid (clicking the year). */
+  showMonths(): void { this.view.set('months'); }
+  showYears(): void { this.view.set('years'); }
+
+  selectMonth(monthIndex: number): void {
+    const d = this.viewDate();
+    this.viewDate.set(new Date(d.getFullYear(), monthIndex, 1));
+    this.view.set('days');
+  }
+
+  selectYear(year: number): void {
+    const d = this.viewDate();
+    this.viewDate.set(new Date(year, d.getMonth(), 1));
+    this.view.set('months');
+  }
+
+  isCurrentMonth(monthIndex: number): boolean {
+    return this.viewDate().getMonth() === monthIndex;
+  }
+  isCurrentYear(year: number): boolean {
+    return this.viewDate().getFullYear() === year;
+  }
 
   select(cell: DayCell): void {
     if (this.isDisabledDate(cell.date)) return;
@@ -131,6 +174,7 @@ export class DatePickerComponent implements ControlValueAccessor {
     this.onChange(cell.date);
     this.dateChange.emit(cell.date);
     this.open.set(false);
+    this.view.set('days');
     this.onTouched();
   }
 
@@ -159,9 +203,15 @@ export class DatePickerComponent implements ControlValueAccessor {
   }
 
   // ── Helpers ──
-  private shiftMonth(delta: number): void {
+  private step(delta: number): void {
     const d = this.viewDate();
-    this.viewDate.set(new Date(d.getFullYear(), d.getMonth() + delta, 1));
+    const view = this.view();
+    if (view === 'months') {
+      this.viewDate.set(new Date(d.getFullYear() + delta, d.getMonth(), 1));
+    } else {
+      // day view: step a month
+      this.viewDate.set(new Date(d.getFullYear(), d.getMonth() + delta, 1));
+    }
   }
   private startOfMonth(d: Date): Date { return new Date(d.getFullYear(), d.getMonth(), 1); }
   private toIso(d: Date): string {

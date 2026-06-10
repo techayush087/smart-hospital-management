@@ -26,8 +26,11 @@ export class RegisterComponent {
   readonly error = signal('');
 
   readonly bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-  /** DOB can't be in the future. */
+  /** DOB can't be in the future; cap the year list at ~120 years back. */
   readonly today = toISODate(new Date());
+  readonly minBirthDate = toISODate(
+    new Date(new Date().getFullYear() - 120, 0, 1),
+  );
 
   private toList(value: string | null | undefined): string[] {
     return (value ?? '')

@@ -148,6 +148,7 @@
               formControlName="dateOfBirth"
               placeholder="Select your date of birth"
               dataCy="dateOfBirth"
+              [min]="minBirthDate"
               [max]="today"
             />
             @if (form.get('dateOfBirth')?.touched && form.get('dateOfBirth')?.invalid) {

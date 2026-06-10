@@ -16,36 +16,80 @@
   @if (open()) {
     <div class="date-picker__pop" role="dialog" aria-label="Choose date">
       <header class="date-picker__nav">
-        <button type="button" class="date-picker__nav-btn" aria-label="Previous month" (click)="prevMonth()">
+        <button type="button" class="date-picker__nav-btn" aria-label="Previous" (click)="prev()">
           <span class="material-icons-round" aria-hidden="true">chevron_left</span>
         </button>
-        <span class="date-picker__month">{{ monthLabel() }}</span>
-        <button type="button" class="date-picker__nav-btn" aria-label="Next month" (click)="nextMonth()">
+
+        <!-- Clickable header: month name -> month grid, year -> year grid -->
+        <div class="date-picker__heading">
+          @if (view() === 'days') {
+            <button type="button" class="date-picker__heading-btn" (click)="showMonths()">{{ monthName() }}</button>
+            <button type="button" class="date-picker__heading-btn" (click)="showYears()">{{ yearNumber() }}</button>
+          } @else if (view() === 'months') {
+            <button type="button" class="date-picker__heading-btn" (click)="showYears()">{{ yearNumber() }}</button>
+          } @else {
+            <span class="date-picker__heading-label">Select year</span>
+          }
+        </div>
+
+        <button type="button" class="date-picker__nav-btn" aria-label="Next" (click)="next()">
           <span class="material-icons-round" aria-hidden="true">chevron_right</span>
         </button>
       </header>
 
-      <div class="date-picker__weekdays" aria-hidden="true">
-        @for (w of weekdays; track w) {
-          <span class="date-picker__weekday">{{ w }}</span>
-        }
-      </div>
+      <!-- Day grid -->
+      @if (view() === 'days') {
+        <div class="date-picker__weekdays" aria-hidden="true">
+          @for (w of weekdays; track w) {
+            <span class="date-picker__weekday">{{ w }}</span>
+          }
+        </div>
+        <div class="date-picker__grid" role="grid">
+          @for (cell of cells(); track cell.date) {
+            <button
+              type="button"
+              class="date-picker__day"
+              [class.date-picker__day--muted]="!cell.inMonth"
+              [class.date-picker__day--today]="isToday(cell.date)"
+              [class.date-picker__day--selected]="isSelected(cell.date)"
+              [disabled]="isDisabledDate(cell.date)"
+              [attr.aria-pressed]="isSelected(cell.date)"
+              (click)="select(cell)">
+              {{ cell.day }}
+            </button>
+          }
+        </div>
+      }
 
-      <div class="date-picker__grid" role="grid">
-        @for (cell of cells(); track cell.date) {
-          <button
-            type="button"
-            class="date-picker__day"
-            [class.date-picker__day--muted]="!cell.inMonth"
-            [class.date-picker__day--today]="isToday(cell.date)"
-            [class.date-picker__day--selected]="isSelected(cell.date)"
-            [disabled]="isDisabledDate(cell.date)"
-            [attr.aria-pressed]="isSelected(cell.date)"
-            (click)="select(cell)">
-            {{ cell.day }}
-          </button>
-        }
-      </div>
+      <!-- Month grid -->
+      @if (view() === 'months') {
+        <div class="date-picker__cards">
+          @for (m of months; track $index) {
+            <button
+              type="button"
+              class="date-picker__card"
+              [class.date-picker__card--current]="isCurrentMonth($index)"
+              (click)="selectMonth($index)">
+              {{ m }}
+            </button>
+          }
+        </div>
+      }
+
+      <!-- Year grid (scrollable, newest first) -->
+      @if (view() === 'years') {
+        <div class="date-picker__cards date-picker__cards--years">
+          @for (y of years(); track y) {
+            <button
+              type="button"
+              class="date-picker__card"
+              [class.date-picker__card--current]="isCurrentYear(y)"
+              (click)="selectYear(y)">
+              {{ y }}
+            </button>
+          }
+        </div>
+      }
     </div>
   }
 </div>

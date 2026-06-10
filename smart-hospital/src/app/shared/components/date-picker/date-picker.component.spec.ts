@@ -61,4 +61,33 @@ describe('DatePickerComponent', () => {
     expect(component.isDisabledDate('2026-06-15')).toBe(false);
     expect(component.isDisabledDate('2026-06-21')).toBe(true);
   });
+
+  it('jumps to a year then a month in two clicks (fast DOB selection)', () => {
+    component.writeValue('2026-06-15');
+    fixture.detectChanges();
+
+    component.showYears();
+    expect(component.view()).toBe('years');
+
+    component.selectYear(1995);
+    expect(component.view()).toBe('months');
+    expect(component.yearNumber()).toBe(1995);
+
+    component.selectMonth(3); // April
+    expect(component.view()).toBe('days');
+    expect(component.monthName()).toBe('April');
+
+    // The day grid now reflects April 1995 — selecting a day gives that date.
+    component.select({ date: '1995-04-10', day: 10, inMonth: true });
+    expect(component.value()).toBe('1995-04-10');
+  });
+
+  it('year grid is bounded by min/max (newest first)', () => {
+    fixture.componentRef.setInput('min', '1990-01-01');
+    fixture.componentRef.setInput('max', '2026-12-31');
+    fixture.detectChanges();
+    const years = component.years();
+    expect(years[0]).toBe(2026);
+    expect(years[years.length - 1]).toBe(1990);
+  });
 });
