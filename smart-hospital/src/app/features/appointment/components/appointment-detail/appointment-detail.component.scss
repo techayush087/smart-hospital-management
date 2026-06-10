@@ -47,6 +47,8 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     background: var(--color-surface);
+
+    @media (max-width: 480px) { grid-template-columns: 1fr; }
   }
 
   &__field {

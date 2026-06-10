@@ -18,15 +18,15 @@
       </div>
       @for (v of paged(); track v.id) {
         <div class="visit-table__row" role="row">
-          <span class="visit-table__cell visit-table__cell--strong" role="cell">
+          <span class="visit-table__cell visit-table__cell--strong" role="cell" data-label="Date">
             {{ v.visitDate | relativeDate }}
           </span>
-          <span class="visit-table__cell" role="cell">{{ v.doctorName }}</span>
-          <span class="visit-table__cell" role="cell">{{ v.specialization }}</span>
-          <span class="visit-table__cell visit-table__cell--type" role="cell">
+          <span class="visit-table__cell" role="cell" data-label="Doctor">{{ v.doctorName }}</span>
+          <span class="visit-table__cell" role="cell" data-label="Specialization">{{ v.specialization }}</span>
+          <span class="visit-table__cell visit-table__cell--type" role="cell" data-label="Type">
             {{ v.type }}
           </span>
-          <span class="visit-table__cell" role="cell">
+          <span class="visit-table__cell" role="cell" data-label="Status">
             <app-badge [text]="v.status | appointmentStatus" [status]="v.status" />
           </span>
         </div>

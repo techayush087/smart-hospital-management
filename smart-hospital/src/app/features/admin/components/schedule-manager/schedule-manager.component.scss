@@ -76,6 +76,11 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background: var(--color-surface);
+
+    @media (max-width: 767px) {
+      grid-template-columns: 1fr auto;
+      gap: var(--spacing-3);
+    }
   }
 
   &__time {
