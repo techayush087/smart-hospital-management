@@ -17,6 +17,11 @@
   font-size: var(--font-size-sm);
 
   .material-icons-round { font-size: var(--font-size-lg); }
+
+  &--error {
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
+  }
 }
 
 .rx-editor__card {

@@ -36,6 +36,7 @@ export class PrescriptionEditorComponent implements OnInit {
   protected readonly doctors = signal<Doctor[]>([]);
   protected readonly loading = signal(false);
   protected readonly savedMessage = signal('');
+  protected readonly errorMessage = signal('');
   protected readonly today = toISODate(new Date());
 
   /** When opened from an appointment's "Prescribe" button, link the Rx to it. */
@@ -101,10 +102,24 @@ export class PrescriptionEditorComponent implements OnInit {
     return this.patients().find((p) => p.id === id)?.fullName ?? 'the patient';
   }
 
+  /** Human-readable list of the required fields still empty — so an invalid
+   *  "Save" tells the admin exactly what's missing instead of doing nothing. */
+  private missingFields(): string[] {
+    const missing: string[] = [];
+    if (this.form.get('patientId')?.invalid) missing.push('patient');
+    if (this.form.get('doctorId')?.invalid) missing.push('prescribing doctor');
+    if (this.form.get('instructions')?.invalid) missing.push('instructions');
+    const incompleteMed = this.medications.controls.some((c) => c.invalid);
+    if (incompleteMed) missing.push('all medication fields');
+    return missing.length ? missing : ['the required fields'];
+  }
+
   submit(): void {
     this.savedMessage.set('');
+    this.errorMessage.set('');
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.errorMessage.set(`Please complete: ${this.missingFields().join(', ')}.`);
       return;
     }
     const v = this.form.getRawValue();
@@ -144,6 +159,7 @@ export class PrescriptionEditorComponent implements OnInit {
       .subscribe({
         next: () => {
           this.loading.set(false);
+          this.errorMessage.set('');
           this.savedMessage.set(
             `Prescription saved for ${this.patientName(patientId)}.`,
           );
@@ -151,7 +167,7 @@ export class PrescriptionEditorComponent implements OnInit {
         },
         error: () => {
           this.loading.set(false);
-          this.savedMessage.set('Could not save the prescription. Please try again.');
+          this.errorMessage.set('Could not save the prescription. Please try again.');
         },
       });
   }

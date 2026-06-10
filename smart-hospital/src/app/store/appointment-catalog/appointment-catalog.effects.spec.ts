@@ -7,6 +7,7 @@ import { AppointmentCatalogEffects } from './appointment-catalog.effects';
 import * as A from './appointment-catalog.actions';
 import { DoctorService } from '../../features/doctors/services/doctor.service';
 import { AppointmentService } from '../../features/appointment/services/appointment.service';
+import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { NotificationApiService } from '../../features/notifications/services/notification-api.service';
@@ -58,6 +59,7 @@ describe('AppointmentCatalogEffects', () => {
   };
   let notify: { addTransient: ReturnType<typeof vi.fn> };
   let notifyApi: { create: ReturnType<typeof vi.fn> };
+  let api: { get: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     doctorService = { getAvailableSlots: vi.fn(() => of([slot])) };
@@ -71,6 +73,8 @@ describe('AppointmentCatalogEffects', () => {
     };
     notify = { addTransient: vi.fn() };
     notifyApi = { create: vi.fn(() => of({})) };
+    // GET /users?role=admin returns one admin so booking alerts them.
+    api = { get: vi.fn(() => of([{ id: 'admin1', role: 'admin' }])) };
 
     TestBed.configureTestingModule({
       providers: [
@@ -78,6 +82,7 @@ describe('AppointmentCatalogEffects', () => {
         provideMockActions(() => actions$),
         { provide: DoctorService, useValue: doctorService },
         { provide: AppointmentService, useValue: appointmentService },
+        { provide: ApiService, useValue: api },
         { provide: AuthService, useValue: { getCurrentUser: () => () => ({ id: 'u1' }) } },
         { provide: NotificationService, useValue: notify },
         { provide: NotificationApiService, useValue: notifyApi },
@@ -121,11 +126,17 @@ describe('AppointmentCatalogEffects', () => {
         // Instant toast to the actor... (a new booking is a 'reminder' — awaiting confirmation)
         expect(notify.addTransient).toHaveBeenCalledTimes(1);
         expect(notify.addTransient.mock.calls[0][0]).toMatchObject({ type: 'reminder' });
-        // ...and a persisted record for the recipient.
-        expect(notifyApi.create).toHaveBeenCalledTimes(1);
+        // Two persisted records: the patient's 'reminder' + an admin 'admin-alert'.
+        expect(notifyApi.create).toHaveBeenCalledTimes(2);
         expect(notifyApi.create.mock.calls[0][0]).toMatchObject({
           type: 'reminder',
           userId: booking.patientId,
+        });
+        // Admins were looked up and alerted to the new request.
+        expect(api.get).toHaveBeenCalledWith('/users', expect.anything());
+        expect(notifyApi.create.mock.calls[1][0]).toMatchObject({
+          type: 'admin-alert',
+          userId: 'admin1',
         });
         resolve();
       });

@@ -52,6 +52,21 @@ describe('PrescriptionEditorComponent', () => {
     expect(c.medications.length).toBe(1);
   });
 
+  it('shows what is missing (and makes no request) when submitting an empty form', () => {
+    const c = fixture.componentInstance;
+
+    c.submit();
+    fixture.detectChanges();
+
+    // No POST fires (afterEach httpMock.verify() guards this), and the admin is
+    // told what to fill rather than the button silently doing nothing.
+    const banner = fixture.nativeElement.querySelector('[data-cy="rx-error"]');
+    expect(banner).not.toBeNull();
+    expect(banner.textContent).toContain('patient');
+    expect(banner.textContent).toContain('prescribing doctor');
+    expect(banner.textContent).toContain('instructions');
+  });
+
   it('creates the prescription then notifies the patient', () => {
     const c = fixture.componentInstance;
     (c as any).form.patchValue({ patientId: 'u1', doctorId: 'd1', instructions: 'After food' });

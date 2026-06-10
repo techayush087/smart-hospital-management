@@ -10,6 +10,13 @@
     </div>
   }
 
+  @if (errorMessage()) {
+    <div class="rx-editor__banner rx-editor__banner--error" role="alert" data-cy="rx-error">
+      <span class="material-icons-round" aria-hidden="true">error_outline</span>
+      {{ errorMessage() }}
+    </div>
+  }
+
   <section class="rx-editor__card">
     <h2 class="rx-editor__section-title">Patient & details</h2>
 

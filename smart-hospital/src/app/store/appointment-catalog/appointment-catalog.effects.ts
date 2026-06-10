@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
 import {
   switchMap,
   map,
@@ -11,10 +12,11 @@ import {
 } from 'rxjs/operators';
 import { DoctorService } from '../../features/doctors/services/doctor.service';
 import { AppointmentService } from '../../features/appointment/services/appointment.service';
+import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { NotificationApiService } from '../../features/notifications/services/notification-api.service';
-import { Notification } from '../../core/models';
+import { Notification, User } from '../../core/models';
 import * as A from './appointment-catalog.actions';
 
 @Injectable()
@@ -22,6 +24,7 @@ export class AppointmentCatalogEffects {
   private actions$ = inject(Actions);
   private doctorService = inject(DoctorService);
   private appointmentService = inject(AppointmentService);
+  private api = inject(ApiService);
   private auth = inject(AuthService);
   private notify = inject(NotificationService);
   private notifyApi = inject(NotificationApiService);
@@ -51,6 +54,33 @@ export class AppointmentCatalogEffects {
         .create({ userId: recipientId, type, title, message })
         .subscribe({ error: () => undefined });
     }
+  }
+
+  /** Persist an alert for every admin so they see new patient activity on their
+   *  next poll (no toast — the actor is the patient, not an admin). */
+  private emitToAdmins(
+    title: string,
+    message: string,
+    relatedEntityId?: string,
+  ): void {
+    this.api
+      .get<User[]>('/users', new HttpParams().set('role', 'admin'))
+      .subscribe({
+        next: (admins) => {
+          for (const admin of admins) {
+            this.notifyApi
+              .create({
+                userId: admin.id,
+                type: 'admin-alert',
+                title,
+                message,
+                relatedEntityId,
+              })
+              .subscribe({ error: () => undefined });
+          }
+        },
+        error: () => undefined,
+      });
   }
 
   loadDoctorSlots$ = createEffect(() =>
@@ -90,14 +120,21 @@ export class AppointmentCatalogEffects {
       exhaustMap(({ booking }) =>
         this.appointmentService.bookAppointment(booking).pipe(
           map((appointment) => A.bookSlotSuccess({ appointment })),
-          tap(() =>
+          tap((action) => {
+            // Tell the patient their request is in.
             this.emit(
               booking.patientId,
               'reminder',
               'Appointment requested',
               'Your appointment request was submitted and is awaiting confirmation.',
-            ),
-          ),
+            );
+            // Alert every admin so the new request shows up in their bell.
+            this.emitToAdmins(
+              'New appointment request',
+              'A patient submitted an appointment request awaiting your confirmation.',
+              action.appointment.id,
+            );
+          }),
           catchError((error) =>
             of(A.bookSlotFailure({ error: error.message })),
           ),
