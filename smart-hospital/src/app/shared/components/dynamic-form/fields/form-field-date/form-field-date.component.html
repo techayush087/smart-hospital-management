@@ -2,13 +2,10 @@
   <label class="form-field__label form-field__label--static" [attr.for]="fieldKey()">
     {{ label() }}
   </label>
-  <input
-    class="form-field__input"
-    type="date"
-    [id]="fieldKey()"
-    [attr.data-cy]="fieldKey()"
-    [attr.aria-describedby]="showError() ? fieldKey() + '-error' : null"
-    [formControl]="control()" />
+  <app-date-picker
+    [formControl]="control()"
+    [dataCy]="fieldKey()"
+    placeholder="Select a date" />
 
   @if (showError()) {
     <span class="form-field__error" [id]="fieldKey() + '-error'">

@@ -9,24 +9,20 @@
 <section class="reports">
   <app-card title="Appointment Report" subtitle="Filter by date range">
     <div class="range">
-      <label class="range__field">
+      <div class="range__field">
         <span class="range__label">Start date</span>
-        <input
-          type="date"
-          class="range__input"
-          data-cy="report-range-start"
-          [value]="start()"
-          (input)="onStartChange($any($event.target).value)" />
-      </label>
-      <label class="range__field">
+        <app-date-picker
+          dataCy="report-range-start"
+          placeholder="From"
+          (dateChange)="onStartChange($event)" />
+      </div>
+      <div class="range__field">
         <span class="range__label">End date</span>
-        <input
-          type="date"
-          class="range__input"
-          data-cy="report-range-end"
-          [value]="end()"
-          (input)="onEndChange($any($event.target).value)" />
-      </label>
+        <app-date-picker
+          dataCy="report-range-end"
+          placeholder="To"
+          (dateChange)="onEndChange($event)" />
+      </div>
       <app-button
         label="Apply"
         variant="primary"

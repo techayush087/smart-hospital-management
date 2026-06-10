@@ -1,0 +1,51 @@
+<div class="date-picker" [class.date-picker--open]="open()">
+  <button
+    type="button"
+    class="date-picker__trigger"
+    [class.date-picker__trigger--placeholder]="!value()"
+    [disabled]="disabled()"
+    [attr.data-cy]="dataCy() || null"
+    [attr.aria-expanded]="open()"
+    aria-haspopup="dialog"
+    (click)="toggle()">
+    <span class="material-icons-round date-picker__lead" aria-hidden="true">calendar_today</span>
+    <span class="date-picker__text">{{ displayValue() || placeholder() }}</span>
+    <span class="material-icons-round date-picker__chevron" aria-hidden="true">expand_more</span>
+  </button>
+
+  @if (open()) {
+    <div class="date-picker__pop" role="dialog" aria-label="Choose date">
+      <header class="date-picker__nav">
+        <button type="button" class="date-picker__nav-btn" aria-label="Previous month" (click)="prevMonth()">
+          <span class="material-icons-round" aria-hidden="true">chevron_left</span>
+        </button>
+        <span class="date-picker__month">{{ monthLabel() }}</span>
+        <button type="button" class="date-picker__nav-btn" aria-label="Next month" (click)="nextMonth()">
+          <span class="material-icons-round" aria-hidden="true">chevron_right</span>
+        </button>
+      </header>
+
+      <div class="date-picker__weekdays" aria-hidden="true">
+        @for (w of weekdays; track w) {
+          <span class="date-picker__weekday">{{ w }}</span>
+        }
+      </div>
+
+      <div class="date-picker__grid" role="grid">
+        @for (cell of cells(); track cell.date) {
+          <button
+            type="button"
+            class="date-picker__day"
+            [class.date-picker__day--muted]="!cell.inMonth"
+            [class.date-picker__day--today]="isToday(cell.date)"
+            [class.date-picker__day--selected]="isSelected(cell.date)"
+            [disabled]="isDisabledDate(cell.date)"
+            [attr.aria-pressed]="isSelected(cell.date)"
+            (click)="select(cell)">
+            {{ cell.day }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>

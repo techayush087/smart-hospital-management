@@ -16,11 +16,13 @@ import {
 } from '../../../../../../store/appointment-catalog';
 import { TimeSlot } from '../../../../../../core/models';
 import { TimeSlotPipe } from '../../../../../../shared/pipes/time-slot.pipe';
+import { DatePickerComponent } from '../../../../../../shared/components/date-picker/date-picker.component';
+import { toISODate } from '../../../../../../shared/utils/date.utils';
 
 @Component({
   selector: 'app-step-select-slot',
   standalone: true,
-  imports: [TimeSlotPipe],
+  imports: [TimeSlotPipe, DatePickerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './step-select-slot.component.html',
   styleUrl: './step-select-slot.component.scss',
@@ -31,6 +33,7 @@ export class StepSelectSlotComponent {
   readonly doctorId = input.required<string>();
 
   protected readonly selectedDate = signal('');
+  protected readonly today = toISODate(new Date());
 
   protected readonly slots = toSignal(this.store.select(selectAvailableSlots), {
     initialValue: [] as TimeSlot[],

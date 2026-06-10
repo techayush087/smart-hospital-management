@@ -1,13 +1,12 @@
 <section class="step-select-slot" data-cy="step-select-slot">
-  <label class="step-select-slot__field">
+  <div class="step-select-slot__field">
     <span class="step-select-slot__label">Choose a date</span>
-    <input
-      type="date"
-      class="step-select-slot__date"
-      data-cy="slot-date"
-      [value]="selectedDate()"
-      (change)="onDateChange($any($event.target).value)" />
-  </label>
+    <app-date-picker
+      dataCy="slot-date"
+      placeholder="Pick an appointment date"
+      [min]="today"
+      (dateChange)="onDateChange($event)" />
+  </div>
 
   @if (slotsLoading()) {
     <div class="step-select-slot__grid">

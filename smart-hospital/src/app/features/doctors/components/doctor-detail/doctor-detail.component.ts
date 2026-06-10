@@ -18,7 +18,9 @@ import { Doctor, TimeSlot } from '../../../../core/models';
 import { AppAvatarComponent } from '../../../../shared/components/avatar/avatar.component';
 import { AppBadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { AppButtonComponent } from '../../../../shared/components/button/button.component';
+import { DatePickerComponent } from '../../../../shared/components/date-picker/date-picker.component';
 import { TimeSlotPipe } from '../../../../shared/pipes/time-slot.pipe';
+import { toISODate } from '../../../../shared/utils/date.utils';
 
 @Component({
   selector: 'app-doctor-detail',
@@ -28,6 +30,7 @@ import { TimeSlotPipe } from '../../../../shared/pipes/time-slot.pipe';
     AppBadgeComponent,
     AppButtonComponent,
     TimeSlotPipe,
+    DatePickerComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './doctor-detail.component.html',
@@ -42,6 +45,7 @@ export class DoctorDetailComponent implements OnInit {
   protected readonly doctorId = this.route.snapshot.paramMap.get('id') ?? '';
   protected readonly doctor = signal<Doctor | null>(null);
   protected readonly selectedDate = signal('');
+  protected readonly today = toISODate(new Date());
   protected readonly selectedSlotId = signal<string | null>(null);
 
   protected readonly slots = toSignal(this.store.select(selectAvailableSlots), {

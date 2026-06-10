@@ -3,15 +3,14 @@
   [title]="'Reschedule Appointment'"
   (closed)="onClose()">
   <div class="reschedule-modal" data-cy="reschedule-modal">
-    <label class="reschedule-modal__field">
+    <div class="reschedule-modal__field">
       <span class="reschedule-modal__label">Choose a new date</span>
-      <input
-        type="date"
-        class="reschedule-modal__date"
-        data-cy="reschedule-date"
-        [value]="selectedDate()"
-        (change)="onDateChange($any($event.target).value)" />
-    </label>
+      <app-date-picker
+        dataCy="reschedule-date"
+        placeholder="Pick a new date"
+        [min]="today"
+        (dateChange)="onDateChange($event)" />
+    </div>
 
     @if (slotsLoading()) {
       <div class="reschedule-modal__grid">

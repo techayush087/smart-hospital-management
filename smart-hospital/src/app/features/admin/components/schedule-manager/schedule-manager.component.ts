@@ -12,6 +12,7 @@ import { AppButtonComponent } from '../../../../shared/components/button/button.
 import { AppBadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { DatePickerComponent } from '../../../../shared/components/date-picker/date-picker.component';
 import { TimeSlotPipe } from '../../../../shared/pipes/time-slot.pipe';
 import { AdminService } from '../../services/admin.service';
 import { DoctorService } from '../../../doctors/services/doctor.service';
@@ -29,6 +30,7 @@ import { Appointment, AppointmentSlot, Doctor, TimeSlot } from '../../../../core
     ModalComponent,
     EmptyStateComponent,
     TimeSlotPipe,
+    DatePickerComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './schedule-manager.component.html',

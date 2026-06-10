@@ -2,14 +2,16 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AppButtonComponent } from '../../../../shared/components/button/button.component';
+import { DatePickerComponent } from '../../../../shared/components/date-picker/date-picker.component';
 import { AuthService } from '../../../../core/services/auth.service';
 import { RegisterDto } from '../../../../core/models';
+import { toISODate } from '../../../../shared/utils/date.utils';
 import { AuthFormService } from '../../services/auth-form.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, AppButtonComponent],
+  imports: [ReactiveFormsModule, RouterLink, AppButtonComponent, DatePickerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
@@ -24,6 +26,8 @@ export class RegisterComponent {
   readonly error = signal('');
 
   readonly bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+  /** DOB can't be in the future. */
+  readonly today = toISODate(new Date());
 
   private toList(value: string | null | undefined): string[] {
     return (value ?? '')

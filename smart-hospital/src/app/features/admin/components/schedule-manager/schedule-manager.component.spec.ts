@@ -72,11 +72,11 @@ describe('ScheduleManagerComponent', () => {
     select.value = 'd1';
     select.dispatchEvent(new Event('change'));
 
-    const dateInput: HTMLInputElement = fixture.nativeElement.querySelector(
-      '[data-cy="date-input"]',
+    // The date is chosen via the custom <app-date-picker> (its own popover is unit-
+    // tested separately); drive the resulting change through the component handler.
+    (fixture.componentInstance as unknown as { onDateChange(d: string): void }).onDateChange(
+      '2026-06-10',
     );
-    dateInput.value = '2026-06-10';
-    dateInput.dispatchEvent(new Event('input'));
 
     fixture.detectChanges();
   }

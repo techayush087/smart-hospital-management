@@ -19,12 +19,14 @@ import {
 import { Appointment, TimeSlot } from '../../../../core/models';
 import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 import { AppButtonComponent } from '../../../../shared/components/button/button.component';
+import { DatePickerComponent } from '../../../../shared/components/date-picker/date-picker.component';
 import { TimeSlotPipe } from '../../../../shared/pipes/time-slot.pipe';
+import { toISODate } from '../../../../shared/utils/date.utils';
 
 @Component({
   selector: 'app-reschedule-modal',
   standalone: true,
-  imports: [ModalComponent, AppButtonComponent, TimeSlotPipe],
+  imports: [ModalComponent, AppButtonComponent, TimeSlotPipe, DatePickerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './reschedule-modal.component.html',
   styleUrl: './reschedule-modal.component.scss',
@@ -37,6 +39,7 @@ export class RescheduleModalComponent {
   readonly closed = output<void>();
 
   protected readonly selectedDate = signal('');
+  protected readonly today = toISODate(new Date());
 
   protected readonly slots = toSignal(this.store.select(selectAvailableSlots), {
     initialValue: [] as TimeSlot[],

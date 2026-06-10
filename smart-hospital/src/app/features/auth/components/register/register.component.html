@@ -143,16 +143,13 @@
 
         <div class="register__grid">
           <div class="form-field">
-            <input
-              id="reg-dateOfBirth"
-              class="form-field__input"
-              type="date"
-              placeholder=" "
-              formControlName="dateOfBirth"
-              data-cy="dateOfBirth"
-              [attr.aria-describedby]="form.get('dateOfBirth')?.touched && form.get('dateOfBirth')?.invalid ? 'reg-dateOfBirth-error' : null"
-            />
             <label class="form-field__label" for="reg-dateOfBirth">Date of birth</label>
+            <app-date-picker
+              formControlName="dateOfBirth"
+              placeholder="Select your date of birth"
+              dataCy="dateOfBirth"
+              [max]="today"
+            />
             @if (form.get('dateOfBirth')?.touched && form.get('dateOfBirth')?.invalid) {
               <p class="form-field__error" id="reg-dateOfBirth-error">
                 <span class="material-icons-round" aria-hidden="true">error</span>

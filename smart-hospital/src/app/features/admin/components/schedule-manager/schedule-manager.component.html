@@ -18,15 +18,13 @@
           }
         </select>
       </label>
-      <label class="selector__field">
+      <div class="selector__field">
         <span class="selector__label">Date</span>
-        <input
-          type="date"
-          class="selector__input"
-          data-cy="date-input"
-          [value]="date()"
-          (input)="onDateChange($any($event.target).value)" />
-      </label>
+        <app-date-picker
+          dataCy="date-input"
+          placeholder="Pick a date"
+          (dateChange)="onDateChange($event)" />
+      </div>
     </div>
   </app-card>
 

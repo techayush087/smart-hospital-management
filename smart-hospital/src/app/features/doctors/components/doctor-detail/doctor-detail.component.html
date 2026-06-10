@@ -49,12 +49,12 @@
 
     <section class="doctor-detail__section">
       <h2 class="doctor-detail__section-title">Available slots</h2>
-      <input
-        type="date"
+      <app-date-picker
         class="doctor-detail__date"
-        data-cy="slot-date"
-        [value]="selectedDate()"
-        (change)="onDateChange($any($event.target).value)" />
+        dataCy="slot-date"
+        placeholder="Pick a date to see slots"
+        [min]="today"
+        (dateChange)="onDateChange($event)" />
 
       @if (slotsLoading()) {
         <div class="doctor-detail__slots">

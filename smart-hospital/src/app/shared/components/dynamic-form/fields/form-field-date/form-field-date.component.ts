@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { DatePickerComponent } from '../../../date-picker/date-picker.component';
 
 @Component({
   selector: 'app-form-field-date',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, DatePickerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './form-field-date.component.html',
   styleUrl: './form-field-date.component.scss',

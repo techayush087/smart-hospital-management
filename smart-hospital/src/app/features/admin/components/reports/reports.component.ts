@@ -3,6 +3,7 @@ import { PageHeaderComponent } from '../../../../shared/components/page-header/p
 import { AppCardComponent } from '../../../../shared/components/card/card.component';
 import { AppButtonComponent } from '../../../../shared/components/button/button.component';
 import { AppBadgeComponent } from '../../../../shared/components/badge/badge.component';
+import { DatePickerComponent } from '../../../../shared/components/date-picker/date-picker.component';
 import { AppointmentStatusPipe } from '../../../../shared/pipes/appointment-status.pipe';
 import { AdminService } from '../../services/admin.service';
 import { ReportData } from '../../../../core/models';
@@ -16,6 +17,7 @@ import { ReportData } from '../../../../core/models';
     AppButtonComponent,
     AppBadgeComponent,
     AppointmentStatusPipe,
+    DatePickerComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './reports.component.html',

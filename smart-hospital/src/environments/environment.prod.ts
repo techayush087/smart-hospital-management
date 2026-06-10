@@ -1,10 +1,12 @@
 // Production config — used by `ng build` via angular.json fileReplacements.
 //
-// Set apiUrl to your hosted mock-server URL (Render/Railway/Fly) + '/api'.
-// Example: 'https://shapms-api.onrender.com/api'
-// Until you deploy the API, login + data calls will fail (the UI still renders).
+// IMPORTANT: apiUrl must point at your deployed Render API (NOT the Vercel domain).
+// Render assigns a URL like https://<service-name>.onrender.com. Your service is
+// named "appointment-system", so it is most likely the URL below — but VERIFY it:
+// open https://<your-render-url>/api/doctors and confirm it returns the doctors.
+// If Render gave a different host (e.g. a -xxxx suffix), update this and redeploy.
 export const environment = {
   production: true,
-  apiUrl: 'https://YOUR-HOSTED-API.onrender.com/api',
+  apiUrl: 'https://appointment-system.onrender.com/api',
   wsUrl: '',
 };
