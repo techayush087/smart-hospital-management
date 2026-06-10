@@ -21,7 +21,7 @@ const MAX_VISIBLE = 3;
 })
 export class NotificationToastComponent {
   private readonly notificationService = inject(NotificationService);
-  // Combined stream: transient error toasts + persisted notifications.
+  // Transient toasts only — persisted notifications live in the bell/inbox.
   private readonly source = this.notificationService.toasts;
 
   // Ids the user (or the auto-dismiss timer) has closed locally.
@@ -33,9 +33,8 @@ export class NotificationToastComponent {
   protected readonly toasts = computed<Notification[]>(() => {
     const dismissed = this.dismissed();
     return this.source()
-      // Show transient toasts (read:true, type admin-alert from errors) and unread
-      // persisted notifications; hide anything already read in the inbox.
-      .filter((n) => !dismissed.has(n.id) && (n.type === 'admin-alert' || !n.read))
+      // Only the ones the user hasn't closed yet.
+      .filter((n) => !dismissed.has(n.id))
       .slice(0, MAX_VISIBLE);
   });
 

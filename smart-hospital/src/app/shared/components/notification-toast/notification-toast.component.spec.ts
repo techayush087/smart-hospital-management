@@ -29,8 +29,8 @@ describe('NotificationToastComponent', () => {
     fixture = TestBed.createComponent(NotificationToastComponent);
   });
 
-  it('renders a toast with title and message for an unread notification', () => {
-    service.addNotification(makeNotification());
+  it('renders a transient toast with title and message', () => {
+    service.addTransient(makeNotification());
     fixture.detectChanges();
 
     const item = fixture.nativeElement.querySelector(
@@ -41,8 +41,10 @@ describe('NotificationToastComponent', () => {
     expect(item.textContent).toContain('Your booking with Dr. Lee is set.');
   });
 
-  it('does not render read notifications', () => {
-    service.addNotification(makeNotification({ read: true }));
+  it('does NOT render persisted inbox notifications (those belong to the bell)', () => {
+    // The toast outlet shows transient toasts only — persisted notifications
+    // rendering here too is exactly what caused duplicate toasts.
+    service.addNotification(makeNotification());
     fixture.detectChanges();
     expect(
       fixture.nativeElement.querySelector('.app-notification-toast__item'),
@@ -50,7 +52,7 @@ describe('NotificationToastComponent', () => {
   });
 
   it('removes the toast from the DOM when the close button is clicked', () => {
-    service.addNotification(makeNotification());
+    service.addTransient(makeNotification());
     fixture.detectChanges();
     expect(
       fixture.nativeElement.querySelector('.app-notification-toast__item'),
@@ -68,8 +70,11 @@ describe('NotificationToastComponent', () => {
   });
 
   it('shows at most three toasts', () => {
+    // Distinct content so the dedupe guard doesn't drop them.
     for (let i = 0; i < 5; i++) {
-      service.addNotification(makeNotification({ id: `n${i}` }));
+      service.addTransient(
+        makeNotification({ id: `n${i}`, title: `T${i}`, message: `M${i}` }),
+      );
     }
     fixture.detectChanges();
     const items = fixture.nativeElement.querySelectorAll(
@@ -81,7 +86,7 @@ describe('NotificationToastComponent', () => {
   it('auto-dismisses a toast after the duration elapses', () => {
     vi.useFakeTimers();
     try {
-      service.addNotification(makeNotification());
+      service.addTransient(makeNotification());
       fixture.detectChanges();
       expect(
         fixture.nativeElement.querySelector('.app-notification-toast__item'),

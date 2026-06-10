@@ -70,6 +70,33 @@ describe('NotificationService', () => {
     expect(service.getNotifications()().length).toBe(0);
   });
 
+  it('addTransient feeds the toast outlet but not the bell count', () => {
+    service.addTransient(makeNotification('t1', false));
+    expect(service.toasts().length).toBe(1);
+    // Transient toasts never inflate the unread/inbox count.
+    expect(service.unreadCount()).toBe(0);
+    expect(service.getNotifications()()).toEqual([]);
+  });
+
+  it('addTransient drops a duplicate with identical content (effect + poll)', () => {
+    // Same content, different ids — the instant effect toast then the persisted
+    // copy fetched by polling. Only the first should pop.
+    const content = { title: 'Booked', message: 'Awaiting confirmation.' };
+    service.addTransient(makeNotification('local-1', false, content));
+    service.addTransient(makeNotification('server-uuid', false, content));
+    expect(service.toasts().length).toBe(1);
+
+    // Different content is still allowed through.
+    service.addTransient(makeNotification('other', false, { title: 'Different' }));
+    expect(service.toasts().length).toBe(2);
+  });
+
+  it('dismissTransient removes a transient toast', () => {
+    service.addTransient(makeNotification('t1', false));
+    service.dismissTransient('t1');
+    expect(service.toasts().length).toBe(0);
+  });
+
   it('setNotifications replaces the list', () => {
     service.addNotification(makeNotification('a', false));
     service.setNotifications([

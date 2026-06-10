@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   signal,
@@ -17,7 +18,7 @@ import {
 import { TimeSlot } from '../../../../../../core/models';
 import { TimeSlotPipe } from '../../../../../../shared/pipes/time-slot.pipe';
 import { DatePickerComponent } from '../../../../../../shared/components/date-picker/date-picker.component';
-import { toISODate } from '../../../../../../shared/utils/date.utils';
+import { isDateInPast, isToday, toISODate } from '../../../../../../shared/utils/date.utils';
 
 @Component({
   selector: 'app-step-select-slot',
@@ -35,9 +36,19 @@ export class StepSelectSlotComponent {
   protected readonly selectedDate = signal('');
   protected readonly today = toISODate(new Date());
 
-  protected readonly slots = toSignal(this.store.select(selectAvailableSlots), {
+  private readonly allSlots = toSignal(this.store.select(selectAvailableSlots), {
     initialValue: [] as TimeSlot[],
   });
+
+  /** Slots to show: on today, drop any whose start time has already passed; on a
+   *  future date, show them all. Prevents booking a slot in the past. */
+  protected readonly slots = computed<TimeSlot[]>(() => {
+    const list = this.allSlots();
+    const date = this.selectedDate();
+    if (!date || !isToday(date)) return list;
+    return list.filter((s) => !isDateInPast(s.startTime));
+  });
+
   protected readonly slotsLoading = toSignal(
     this.store.select(selectSlotsLoading),
     { initialValue: false },
