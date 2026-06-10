@@ -30,39 +30,40 @@ describe('ForgotPasswordComponent', () => {
     expect(fixture.nativeElement.querySelector('[data-cy="fp-email"]')).not.toBeNull();
   });
 
-  it('verifies the email then advances to the reset step', () => {
+  it('advances to the reset step with a dev token for an existing account', () => {
     fixture.componentInstance.emailForm.setValue({ email: 'patient@test.com' });
     fixture.componentInstance.submitEmail();
 
     const req = httpMock.expectOne(`${api}/auth/forgot-password`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body.email).toBe('patient@test.com');
-    req.flush({ email: 'patient@test.com', message: 'ok' });
+    req.flush({ message: 'sent', devToken: 'dev-token-123' });
     fixture.detectChanges();
 
     expect(fixture.componentInstance.step()).toBe('reset');
     expect(fixture.nativeElement.querySelector('[data-cy="fp-password"]')).not.toBeNull();
   });
 
-  it('shows an error when the email is not found', () => {
+  it('shows the generic "sent" state when no account exists (no enumeration)', () => {
     fixture.componentInstance.emailForm.setValue({ email: 'nobody@test.com' });
     fixture.componentInstance.submitEmail();
 
+    // Backend returns a uniform 200 with no devToken for unknown emails.
     const req = httpMock.expectOne(`${api}/auth/forgot-password`);
-    req.flush({ message: 'not found' }, { status: 404, statusText: 'Not Found' });
+    req.flush({ message: 'If an account exists for that email, a reset link has been sent.' });
     fixture.detectChanges();
 
-    expect(fixture.componentInstance.step()).toBe('email');
-    expect(fixture.componentInstance.error()).toContain('No account');
+    expect(fixture.componentInstance.step()).toBe('sent');
+    // It must NOT reveal that the account is missing.
+    expect(fixture.componentInstance.error()).toBe('');
   });
 
-  it('resets the password and reaches the done step', () => {
-    // advance to reset step
+  it('resets the password using the token and reaches the done step', () => {
     fixture.componentInstance.emailForm.setValue({ email: 'patient@test.com' });
     fixture.componentInstance.submitEmail();
     httpMock
       .expectOne(`${api}/auth/forgot-password`)
-      .flush({ email: 'patient@test.com', message: 'ok' });
+      .flush({ message: 'sent', devToken: 'dev-token-123' });
     fixture.detectChanges();
 
     fixture.componentInstance.resetForm.setValue({
@@ -73,7 +74,7 @@ describe('ForgotPasswordComponent', () => {
 
     const req = httpMock.expectOne(`${api}/auth/reset-password`);
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ email: 'patient@test.com', password: 'NewPass1!' });
+    expect(req.request.body).toEqual({ token: 'dev-token-123', password: 'NewPass1!' });
     req.flush({ message: 'updated' });
     fixture.detectChanges();
 

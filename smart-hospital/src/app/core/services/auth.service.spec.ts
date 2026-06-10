@@ -136,14 +136,14 @@ describe('AuthService', () => {
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/forgot-password`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ email: 'ada@example.com' });
-    req.flush({ email: 'ada@example.com', message: 'ok' });
+    req.flush({ message: 'sent', devToken: 'abc123' });
   });
 
-  it('resetPassword POSTs the email and new password', () => {
-    service.resetPassword('ada@example.com', 'NewPass1!').subscribe();
+  it('resetPassword POSTs the token and new password (not the email)', () => {
+    service.resetPassword('abc123', 'NewPass1!').subscribe();
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/reset-password`);
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ email: 'ada@example.com', password: 'NewPass1!' });
+    expect(req.request.body).toEqual({ token: 'abc123', password: 'NewPass1!' });
     req.flush({ message: 'updated' });
   });
 });

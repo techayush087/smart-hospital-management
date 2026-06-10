@@ -35,14 +35,19 @@ export class AuthService {
     this.currentUser.set(null);
   }
 
-  /** Step 1 of password reset — verify an account exists for the email. */
-  requestPasswordReset(email: string): Observable<{ email: string; message: string }> {
-    return this.api.post<{ email: string; message: string }>('/auth/forgot-password', { email });
+  /**
+   * Step 1 of password reset — request a reset. Always resolves the same way
+   * regardless of whether the account exists (no user enumeration). In this mock
+   * backend the response carries a dev-only `devToken` standing in for the link
+   * that a real backend would email out-of-band.
+   */
+  requestPasswordReset(email: string): Observable<{ message: string; devToken?: string }> {
+    return this.api.post<{ message: string; devToken?: string }>('/auth/forgot-password', { email });
   }
 
-  /** Step 2 of password reset — set a new password for the verified email. */
-  resetPassword(email: string, password: string): Observable<{ message: string }> {
-    return this.api.post<{ message: string }>('/auth/reset-password', { email, password });
+  /** Step 2 of password reset — set a new password using the single-use token. */
+  resetPassword(token: string, password: string): Observable<{ message: string }> {
+    return this.api.post<{ message: string }>('/auth/reset-password', { token, password });
   }
 
   hasRole(role: User['role']): boolean {

@@ -17,12 +17,31 @@
 const jsonServer = require('json-server');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, 'db.json');
 const SECRET = 'shapms-dev-secret-not-for-production';
 const PORT = 3000;
 const EXPIRES_IN = '1h';
+const RESET_TOKEN_TTL_MS = 15 * 60 * 1000; // 15 minutes
+
+/**
+ * In-memory store of password-reset tokens, keyed by the SHA-256 hash of the
+ * raw token (never the raw token). Each entry is single-use and time-limited.
+ * In a real backend this lives in the DB against the user row.
+ */
+const resetTokens = new Map(); // tokenHash -> { email, expiresAt }
+
+function hashToken(raw) {
+  return crypto.createHash('sha256').update(raw).digest('hex');
+}
+
+function timingSafeEqualHex(a, b) {
+  const bufA = Buffer.from(a, 'hex');
+  const bufB = Buffer.from(b, 'hex');
+  return bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB);
+}
 
 const server = jsonServer.create();
 const router = jsonServer.router(DB_PATH);
@@ -80,24 +99,51 @@ server.post('/api/auth/register', (req, res) => {
   return res.status(201).json({ accessToken: signToken(user), user: stripPassword(user) });
 });
 
-// --- Auth: forgot password (step 1) — verify the email exists ---
-// A real app would email a reset link; with no mail service we confirm the account
-// exists so the UI can move to the "set a new password" step.
+// --- Auth: forgot password (step 1) — issue a single-use reset token ---
+// Security model: possession of the TOKEN (not the email) authorizes the reset.
+// - Always returns a uniform 200 regardless of whether the account exists, so the
+//   endpoint can't be used to enumerate registered emails.
+// - A real backend would email the token link out-of-band. With no mail service in
+//   this mock, we return the token ONLY for an existing account, clearly labelled as
+//   a dev-only stand-in for the emailed link. Knowing an email is NOT enough to reset
+//   a password elsewhere — the caller still needs this server-issued token.
 server.post('/api/auth/forgot-password', (req, res) => {
   const { email } = req.body || {};
-  if (!email) return res.status(400).json({ message: 'Email is required.' });
+  const generic = { message: 'If an account exists for that email, a reset link has been sent.' };
+  if (!email) return res.status(200).json(generic);
+
   const user = db().get('users').find({ email }).value();
-  if (!user) return res.status(404).json({ message: 'No account found for that email.' });
-  return res.json({ email: user.email, message: 'Account verified. Set a new password.' });
+  if (!user) return res.status(200).json(generic); // uniform response — no enumeration
+
+  const rawToken = crypto.randomBytes(32).toString('hex');
+  resetTokens.set(hashToken(rawToken), { email: user.email, expiresAt: Date.now() + RESET_TOKEN_TTL_MS });
+
+  // devToken: stand-in for the link that would be emailed. Dev-only; never do this in prod.
+  return res.status(200).json({ ...generic, devToken: rawToken });
 });
 
-// --- Auth: reset password (step 2) — set the new password ---
+// --- Auth: reset password (step 2) — requires a valid token, not just an email ---
 server.post('/api/auth/reset-password', (req, res) => {
-  const { email, password } = req.body || {};
-  if (!email || !password) return res.status(400).json({ message: 'Email and new password are required.' });
-  const user = db().get('users').find({ email }).value();
-  if (!user) return res.status(404).json({ message: 'No account found for that email.' });
-  db().get('users').find({ email }).assign({ password: bcrypt.hashSync(password, 10) }).write();
+  const { token, password } = req.body || {};
+  if (!token || !password) return res.status(400).json({ message: 'Token and new password are required.' });
+
+  const tokenHash = hashToken(token);
+  let matched = null;
+  for (const [storedHash, entry] of resetTokens.entries()) {
+    if (timingSafeEqualHex(storedHash, tokenHash)) { matched = { storedHash, entry }; break; }
+  }
+  if (!matched) return res.status(400).json({ message: 'Invalid or expired reset token.' });
+
+  resetTokens.delete(matched.storedHash); // single-use: invalidate immediately
+  if (matched.entry.expiresAt < Date.now()) {
+    return res.status(400).json({ message: 'Invalid or expired reset token.' });
+  }
+
+  const user = db().get('users').find({ email: matched.entry.email }).value();
+  if (!user) return res.status(400).json({ message: 'Invalid or expired reset token.' });
+
+  db().get('users').find({ email: matched.entry.email })
+    .assign({ password: bcrypt.hashSync(password, 10) }).write();
   return res.json({ message: 'Password updated. You can now sign in.' });
 });
 

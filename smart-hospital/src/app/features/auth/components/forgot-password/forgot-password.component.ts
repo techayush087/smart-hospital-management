@@ -5,7 +5,7 @@ import { AppButtonComponent } from '../../../../shared/components/button/button.
 import { AuthService } from '../../../../core/services/auth.service';
 import { passwordMatchValidator } from '../../../../shared/validators/password-match.validator';
 
-type Step = 'email' | 'reset' | 'done';
+type Step = 'email' | 'sent' | 'reset' | 'done';
 
 @Component({
   selector: 'app-forgot-password',
@@ -24,8 +24,10 @@ export class ForgotPasswordComponent {
   readonly loading = signal(false);
   readonly error = signal('');
   readonly showPassword = signal(false);
+  /** Dev-only: surfaced because the mock backend can't email the link. */
+  readonly devNotice = signal(false);
 
-  private verifiedEmail = '';
+  private resetToken = '';
 
   readonly emailForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -51,15 +53,24 @@ export class ForgotPasswordComponent {
     }
     const email = this.emailForm.getRawValue().email ?? '';
     this.loading.set(true);
+    // The backend always responds the same way (no enumeration). When an account
+    // exists, the mock returns a dev-only token standing in for the emailed link.
     this.auth.requestPasswordReset(email).subscribe({
       next: (res) => {
         this.loading.set(false);
-        this.verifiedEmail = res.email;
-        this.step.set('reset');
+        if (res.devToken) {
+          this.resetToken = res.devToken;
+          this.devNotice.set(true);
+          this.step.set('reset');
+        } else {
+          // No account (or no token): show the generic "check your email" state so
+          // the UI never reveals whether the email is registered.
+          this.step.set('sent');
+        }
       },
       error: () => {
         this.loading.set(false);
-        this.error.set('No account found for that email.');
+        this.step.set('sent');
       },
     });
   }
@@ -72,14 +83,14 @@ export class ForgotPasswordComponent {
     }
     const password = this.resetForm.getRawValue().password ?? '';
     this.loading.set(true);
-    this.auth.resetPassword(this.verifiedEmail, password).subscribe({
+    this.auth.resetPassword(this.resetToken, password).subscribe({
       next: () => {
         this.loading.set(false);
         this.step.set('done');
       },
       error: () => {
         this.loading.set(false);
-        this.error.set('Something went wrong. Please try again.');
+        this.error.set('Your reset link is invalid or expired. Request a new one.');
       },
     });
   }
