@@ -47,3 +47,7 @@ Thumbs.db
 *.log
 api.log
 mock.log
+
+# Test files — kept locally, not published to the repo
+*.spec.ts
+/cypress
