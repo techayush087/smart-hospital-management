@@ -28,6 +28,20 @@
       "dateOfBirth": "1985-03-20",
       "phone": "+10987654321",
       "createdAt": "2026-01-05T09:00:00.000Z"
+    },
+    {
+      "id": "u1781157460057",
+      "firstName": "AYUSH",
+      "lastName": "CHAUDHARY",
+      "email": "chaudharyayush028@gmail.com",
+      "password": "$2a$10$GP7DoUwKsV2lXEi0fKU/IOhdkhUgWK8B5uTSZMc0ujfv3wvfcNqii",
+      "role": "customer",
+      "dateOfBirth": "2003-06-10",
+      "phone": "9892439588",
+      "bloodGroup": "O+",
+      "allergies": [],
+      "existingConditions": [],
+      "createdAt": "2026-06-11T05:57:40.162Z"
     }
   ],
   "doctors": [
@@ -193,6 +207,18 @@
       "notes": "Prescribed topical treatment.",
       "createdAt": "2026-03-01T08:00:00.000Z",
       "updatedAt": "2026-03-12T14:30:00.000Z"
+    },
+    {
+      "patientId": "u1781157460057",
+      "doctorId": "d1",
+      "scheduledAt": "2026-06-10T10:00:00.000Z",
+      "duration": 30,
+      "type": "virtual",
+      "status": "confirmed",
+      "reason": "Routine checkup",
+      "createdAt": "2026-06-11T05:58:18.514Z",
+      "updatedAt": "2026-06-11T05:59:14.712Z",
+      "id": "HwhWVxF"
     }
   ],
   "prescriptions": [
@@ -227,6 +253,25 @@
           "duration": "60 days"
         }
       ]
+    },
+    {
+      "appointmentId": "HwhWVxF",
+      "patientId": "u1781157460057",
+      "doctorId": "d1",
+      "doctorName": "Dr. Sarah Chen",
+      "specialization": "Cardiology",
+      "instructions": "Take pan dsr before food.",
+      "issuedAt": "2026-06-11T05:59:48.966Z",
+      "validUntil": "2026-06-17",
+      "medications": [
+        {
+          "name": "Pan dsr",
+          "dosage": "500",
+          "frequency": "1",
+          "duration": "5"
+        }
+      ],
+      "id": "qljvaWp"
     }
   ],
   "visits": [
@@ -285,6 +330,43 @@
       "read": true,
       "createdAt": "2026-05-20T09:35:00.000Z",
       "relatedEntityId": "a2"
+    },
+    {
+      "read": true,
+      "createdAt": "2026-06-11T05:58:18.536Z",
+      "userId": "u1781157460057",
+      "type": "reminder",
+      "title": "Appointment requested",
+      "message": "Your appointment request was submitted and is awaiting confirmation.",
+      "id": "DRIJ4cK"
+    },
+    {
+      "read": false,
+      "createdAt": "2026-06-11T05:58:18.544Z",
+      "userId": "u2",
+      "type": "admin-alert",
+      "title": "New appointment request",
+      "message": "A patient submitted an appointment request awaiting your confirmation.",
+      "relatedEntityId": "HwhWVxF",
+      "id": "z6qBxkc"
+    },
+    {
+      "read": false,
+      "createdAt": "2026-06-11T05:59:14.724Z",
+      "userId": "u1781157460057",
+      "type": "admin-alert",
+      "title": "Appointment updated",
+      "message": "Your appointment with Dr. Sarah Chen is now \"Confirmed\".",
+      "id": "vb9ewY6"
+    },
+    {
+      "read": false,
+      "createdAt": "2026-06-11T05:59:48.979Z",
+      "userId": "u1781157460057",
+      "type": "confirmation",
+      "title": "New prescription added",
+      "message": "A new prescription is available in your account.",
+      "id": "XDWYYcv"
     }
   ],
   "schedules": [
