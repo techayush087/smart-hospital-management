@@ -15,7 +15,7 @@ interface Preferences {
   imports: [ReactiveFormsModule, FormsModule, AppButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
+  styleUrl: './profile.component.css',
 })
 export class ProfileComponent {
   private fb = inject(FormBuilder);

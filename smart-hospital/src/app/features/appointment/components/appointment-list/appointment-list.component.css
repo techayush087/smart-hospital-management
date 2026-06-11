@@ -1,0 +1,92 @@
+:host {
+  display: block;
+}
+
+.appointment-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.appointment-list__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.appointment-list__heading {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.appointment-list__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.appointment-list__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4) var(--spacing-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--transition-fast);
+}
+
+.appointment-list__row:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.appointment-list__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  flex: 1 1 auto;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.appointment-list__when {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.appointment-list__date {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.appointment-list__reason {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.appointment-list__type {
+  font-size: var(--font-size-xs);
+  text-transform: capitalize;
+  color: var(--color-text-tertiary);
+}
+
+.appointment-list__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex: 0 0 auto;
+}

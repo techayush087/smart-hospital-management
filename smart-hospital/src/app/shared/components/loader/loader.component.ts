@@ -7,7 +7,7 @@ import { LottieComponent, AnimationOptions } from 'ngx-lottie';
   imports: [LottieComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './loader.component.html',
-  styleUrl: './loader.component.scss',
+  styleUrl: './loader.component.css',
 })
 export class AppLoaderComponent {
   fullscreen = input(false);

@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './badge.component.html',
-  styleUrl: './badge.component.scss',
+  styleUrl: './badge.component.css',
 })
 export class AppBadgeComponent {
   text = input('');

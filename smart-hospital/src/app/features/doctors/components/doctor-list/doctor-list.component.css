@@ -1,0 +1,50 @@
+:host {
+  display: block;
+}
+
+.doctor-list {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--spacing-6);
+  align-items: start;
+  padding: var(--spacing-6);
+}
+
+.doctor-list__sidebar {
+  position: sticky;
+  top: var(--spacing-6);
+}
+
+.doctor-list__results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  min-width: 0;
+}
+
+.doctor-list__search {
+  width: 100%;
+}
+
+.doctor-list__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.doctor-list__skeleton {
+  height: 132px;
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 768px) {
+  .doctor-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .doctor-list__sidebar {
+    position: static;
+  }
+}

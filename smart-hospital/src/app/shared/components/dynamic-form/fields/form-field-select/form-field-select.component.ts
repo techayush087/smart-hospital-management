@@ -7,7 +7,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   imports: [ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './form-field-select.component.html',
-  styleUrl: './form-field-select.component.scss',
+  styleUrl: './form-field-select.component.css',
 })
 export class FormFieldSelectComponent {
   readonly control = input.required<FormControl>();

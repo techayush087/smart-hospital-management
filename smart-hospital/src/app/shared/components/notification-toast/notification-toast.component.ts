@@ -17,7 +17,7 @@ const MAX_VISIBLE = 3;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './notification-toast.component.html',
-  styleUrl: './notification-toast.component.scss',
+  styleUrl: './notification-toast.component.css',
 })
 export class NotificationToastComponent {
   private readonly notificationService = inject(NotificationService);

@@ -35,7 +35,7 @@ import { minutesToDurationString } from '../../../../shared/utils/date.utils';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './appointment-detail.component.html',
-  styleUrl: './appointment-detail.component.scss',
+  styleUrl: './appointment-detail.component.css',
 })
 export class AppointmentDetailComponent implements OnInit {
   private readonly store = inject(Store);

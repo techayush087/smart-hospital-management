@@ -1,0 +1,70 @@
+:host {
+  display: inline-block;
+}
+
+:host(.app-button-host--block) {
+  display: block;
+  width: 100%;
+}
+
+:host(.app-button-host--block) .app-button {
+  width: 100%;
+}
+
+.app-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 var(--spacing-5);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.app-button--sm {
+  height: 32px;
+  font-size: var(--font-size-sm);
+}
+
+.app-button--lg {
+  height: 48px;
+  font-size: var(--font-size-base);
+}
+
+.app-button--primary {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.app-button--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.app-button--secondary {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.app-button--secondary:hover {
+  background: var(--color-surface-alt);
+}
+
+.app-button--danger {
+  background: var(--color-danger);
+  color: var(--color-text-inverse);
+}
+
+.app-button--ghost {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.app-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

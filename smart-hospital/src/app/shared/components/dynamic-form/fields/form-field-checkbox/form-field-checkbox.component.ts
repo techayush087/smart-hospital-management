@@ -7,7 +7,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   imports: [ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './form-field-checkbox.component.html',
-  styleUrl: './form-field-checkbox.component.scss',
+  styleUrl: './form-field-checkbox.component.css',
 })
 export class FormFieldCheckboxComponent {
   readonly control = input.required<FormControl>();

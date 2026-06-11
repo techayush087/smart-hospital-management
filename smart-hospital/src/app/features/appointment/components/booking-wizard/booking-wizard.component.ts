@@ -35,7 +35,7 @@ interface StepMeta {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './booking-wizard.component.html',
-  styleUrl: './booking-wizard.component.scss',
+  styleUrl: './booking-wizard.component.css',
 })
 export class BookingWizardComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

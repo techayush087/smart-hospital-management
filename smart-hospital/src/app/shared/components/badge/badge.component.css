@@ -1,0 +1,42 @@
+:host {
+  display: inline-block;
+}
+
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.app-badge--pending {
+  background: var(--color-warning-bg);
+  color: var(--color-status-pending);
+}
+
+.app-badge--confirmed {
+  background: var(--color-success-bg);
+  color: var(--color-status-confirmed);
+}
+
+.app-badge--completed {
+  background: var(--color-surface-alt);
+  color: var(--color-text-secondary);
+}
+
+.app-badge--cancelled {
+  background: var(--color-danger-bg);
+  color: var(--color-status-cancelled);
+}
+
+.app-badge--rescheduled {
+  background: var(--color-primary-light);
+  color: var(--color-status-rescheduled);
+}
+
+.app-badge--no-show {
+  background: var(--color-danger-bg);
+  color: var(--color-status-cancelled);
+}

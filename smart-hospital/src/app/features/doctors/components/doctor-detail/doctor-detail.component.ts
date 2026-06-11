@@ -34,7 +34,7 @@ import { toISODate } from '../../../../shared/utils/date.utils';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './doctor-detail.component.html',
-  styleUrl: './doctor-detail.component.scss',
+  styleUrl: './doctor-detail.component.css',
 })
 export class DoctorDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

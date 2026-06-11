@@ -29,7 +29,7 @@ import { toISODate } from '../../../../shared/utils/date.utils';
   imports: [ModalComponent, AppButtonComponent, TimeSlotPipe, DatePickerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './reschedule-modal.component.html',
-  styleUrl: './reschedule-modal.component.scss',
+  styleUrl: './reschedule-modal.component.css',
 })
 export class RescheduleModalComponent {
   private readonly store = inject(Store);

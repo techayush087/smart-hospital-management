@@ -18,7 +18,7 @@ const PADDING_Y = 12;
   imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './line-chart.component.html',
-  styleUrl: './line-chart.component.scss',
+  styleUrl: './line-chart.component.css',
 })
 export class LineChartComponent {
   data = input<{ date: string; count: number }[]>([]);

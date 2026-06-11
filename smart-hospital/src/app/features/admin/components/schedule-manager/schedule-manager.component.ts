@@ -34,7 +34,7 @@ import { Appointment, AppointmentSlot, Doctor, TimeSlot } from '../../../../core
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './schedule-manager.component.html',
-  styleUrl: './schedule-manager.component.scss',
+  styleUrl: './schedule-manager.component.css',
 })
 export class ScheduleManagerComponent implements OnInit {
   private adminService = inject(AdminService);

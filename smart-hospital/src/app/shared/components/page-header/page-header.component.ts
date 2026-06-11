@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './page-header.component.html',
-  styleUrl: './page-header.component.scss',
+  styleUrl: './page-header.component.css',
 })
 export class PageHeaderComponent {
   title = input('');

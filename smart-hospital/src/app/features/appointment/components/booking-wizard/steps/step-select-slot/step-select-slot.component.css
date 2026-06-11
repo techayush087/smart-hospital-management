@@ -1,0 +1,84 @@
+:host {
+  display: block;
+}
+
+.step-select-slot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.step-select-slot__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  max-width: 240px;
+}
+
+.step-select-slot__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.step-select-slot__date {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--spacing-3);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+}
+
+.step-select-slot__date:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-input-focus);
+}
+
+.step-select-slot__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--spacing-3);
+}
+
+.step-select-slot__slot {
+  height: 44px;
+  padding: 0 var(--spacing-3);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+}
+
+.step-select-slot__slot--available:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.step-select-slot__slot--selected {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.step-select-slot__slot--unavailable {
+  background: var(--color-surface-alt);
+  border-color: var(--color-divider);
+  color: var(--color-text-tertiary);
+  cursor: not-allowed;
+}
+
+.step-select-slot__empty {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}

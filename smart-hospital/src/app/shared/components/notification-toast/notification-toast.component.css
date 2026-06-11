@@ -1,0 +1,113 @@
+:host {
+  display: block;
+}
+
+@keyframes app-toast-progress {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+.app-notification-toast {
+  position: fixed;
+  right: var(--spacing-6);
+  bottom: var(--spacing-6);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  width: 22rem;
+  max-width: calc(100vw - var(--spacing-8));
+  pointer-events: none;
+}
+
+.app-notification-toast__item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--color-info);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  pointer-events: auto;
+  animation: slideInRight var(--transition-normal);
+}
+
+.app-notification-toast__item--success {
+  border-left-color: var(--color-success);
+}
+
+.app-notification-toast__item--danger {
+  border-left-color: var(--color-danger);
+}
+
+.app-notification-toast__item--primary {
+  border-left-color: var(--color-primary);
+}
+
+.app-notification-toast__item--warning {
+  border-left-color: var(--color-warning);
+}
+
+.app-notification-toast__item--info {
+  border-left-color: var(--color-info);
+}
+
+.app-notification-toast__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-notification-toast__title {
+  margin: 0 0 var(--spacing-1);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.app-notification-toast__message {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.app-notification-toast__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: var(--spacing-1);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.app-notification-toast__close:hover {
+  background: var(--color-surface-alt);
+  color: var(--color-text-primary);
+}
+
+.app-notification-toast__close:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.app-notification-toast__close .material-icons-round {
+  font-size: var(--font-size-md);
+}
+
+.app-notification-toast__progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  transform-origin: left;
+  background: var(--color-primary-light);
+  animation: app-toast-progress 4s linear forwards;
+}

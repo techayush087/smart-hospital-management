@@ -1,0 +1,43 @@
+:host {
+  display: block;
+}
+
+.app-card {
+  background: var(--gradient-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal), border-color var(--transition-normal);
+}
+
+.app-card--elevated {
+  box-shadow: var(--shadow-elevated);
+}
+
+.app-card--elevated:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+  border-color: var(--color-primary-light);
+}
+
+.app-card__header {
+  margin-bottom: var(--spacing-4);
+}
+
+.app-card__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.app-card__subtitle {
+  margin: var(--spacing-1) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.app-card__body {
+  color: var(--color-text-primary);
+}

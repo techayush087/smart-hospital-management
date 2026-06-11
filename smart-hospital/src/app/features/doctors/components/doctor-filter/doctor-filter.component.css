@@ -1,0 +1,108 @@
+:host {
+  display: block;
+}
+
+.doctor-filter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  padding: var(--spacing-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.doctor-filter__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.doctor-filter__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.doctor-filter__clear {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-link);
+  cursor: pointer;
+}
+
+.doctor-filter__clear:hover {
+  color: var(--color-text-link-hover);
+}
+
+.doctor-filter__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.doctor-filter__label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.doctor-filter__select,
+.doctor-filter__input {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--spacing-3);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.doctor-filter__select:focus,
+.doctor-filter__input:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-input-focus);
+}
+
+.doctor-filter__toggle {
+  display: flex;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.doctor-filter__toggle-btn {
+  flex: 1 1 0;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: none;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.doctor-filter__toggle-btn:last-child {
+  border-right: none;
+}
+
+.doctor-filter__toggle-btn:hover {
+  background: var(--color-surface-alt);
+}
+
+.doctor-filter__toggle-btn--active {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.doctor-filter__toggle-btn--active:hover {
+  background: var(--color-primary-hover);
+}

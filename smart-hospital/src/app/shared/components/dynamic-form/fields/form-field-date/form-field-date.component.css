@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+.form-field--date {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.form-field__label--static {
+  position: static;
+  transform: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.form-field__input {
+  height: 44px;
+  padding: 0 var(--spacing-4);
+}

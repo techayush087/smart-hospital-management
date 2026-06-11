@@ -34,7 +34,7 @@ import { AppointmentStatusPipe } from '../../../../shared/pipes/appointment-stat
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './patient-dashboard.component.html',
-  styleUrl: './patient-dashboard.component.scss',
+  styleUrl: './patient-dashboard.component.css',
 })
 export class PatientDashboardComponent implements OnInit {
   private readonly store = inject(Store);

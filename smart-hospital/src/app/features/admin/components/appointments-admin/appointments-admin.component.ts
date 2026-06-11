@@ -42,7 +42,7 @@ const STATUSES: AppointmentStatus[] = [
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './appointments-admin.component.html',
-  styleUrl: './appointments-admin.component.scss',
+  styleUrl: './appointments-admin.component.css',
 })
 export class AppointmentsAdminComponent implements OnInit {
   private adminService = inject(AdminService);

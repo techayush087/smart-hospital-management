@@ -21,7 +21,7 @@ import { ReportData } from '../../../../core/models';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './reports.component.html',
-  styleUrl: './reports.component.scss',
+  styleUrl: './reports.component.css',
 })
 export class ReportsComponent {
   private adminService = inject(AdminService);

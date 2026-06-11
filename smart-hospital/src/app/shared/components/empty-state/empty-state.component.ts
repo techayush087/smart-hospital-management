@@ -8,7 +8,7 @@ import { AppButtonComponent } from '../button/button.component';
   imports: [AppButtonComponent, LottieComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './empty-state.component.html',
-  styleUrl: './empty-state.component.scss',
+  styleUrl: './empty-state.component.css',
 })
 export class EmptyStateComponent {
   title = input('');

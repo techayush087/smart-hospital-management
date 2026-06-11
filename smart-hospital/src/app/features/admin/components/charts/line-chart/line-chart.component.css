@@ -1,0 +1,42 @@
+:host {
+  display: block;
+}
+
+.line-chart__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.line-chart__path {
+  stroke: var(--color-primary);
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.line-chart__dot {
+  fill: var(--color-primary);
+}
+
+.line-chart__labels {
+  display: flex;
+  justify-content: space-between;
+  margin: var(--spacing-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.line-chart__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.line-chart__empty {
+  margin: 0;
+  padding: var(--spacing-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+}

@@ -8,6 +8,6 @@ import { NotificationToastComponent } from './shared/components/notification-toa
   imports: [RouterOutlet, NotificationToastComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.css'
 })
 export class App {}

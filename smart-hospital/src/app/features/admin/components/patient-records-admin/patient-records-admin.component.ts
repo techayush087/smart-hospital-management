@@ -38,7 +38,7 @@ import {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './patient-records-admin.component.html',
-  styleUrl: './patient-records-admin.component.scss',
+  styleUrl: './patient-records-admin.component.css',
 })
 export class PatientRecordsAdminComponent implements OnInit {
   private adminService = inject(AdminService);

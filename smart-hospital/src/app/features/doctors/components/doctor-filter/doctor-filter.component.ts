@@ -8,7 +8,7 @@ type ConsultationToggle = 'all' | 'in-person' | 'virtual';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './doctor-filter.component.html',
-  styleUrl: './doctor-filter.component.scss',
+  styleUrl: './doctor-filter.component.css',
 })
 export class DoctorFilterComponent {
   specializations = input<string[]>([]);
