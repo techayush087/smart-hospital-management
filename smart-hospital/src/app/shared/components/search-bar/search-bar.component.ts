@@ -18,7 +18,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './search-bar.component.html',
-  styleUrl: './search-bar.component.scss',
+  styleUrl: './search-bar.component.css',
 })
 export class SearchBarComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);

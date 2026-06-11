@@ -13,7 +13,7 @@ type Step = 'email' | 'sent' | 'reset' | 'done';
   imports: [ReactiveFormsModule, RouterLink, AppButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './forgot-password.component.html',
-  styleUrl: './forgot-password.component.scss',
+  styleUrl: './forgot-password.component.css',
 })
 export class ForgotPasswordComponent {
   private fb = inject(FormBuilder);

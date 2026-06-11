@@ -43,7 +43,7 @@ const MONTHS_SHORT = [
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './date-picker.component.html',
-  styleUrl: './date-picker.component.scss',
+  styleUrl: './date-picker.component.css',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

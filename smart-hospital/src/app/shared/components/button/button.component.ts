@@ -7,7 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   imports: [MatProgressSpinnerModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './button.component.html',
-  styleUrl: './button.component.scss',
+  styleUrl: './button.component.css',
   host: {
     '[class.app-button-host--block]': 'fullWidth()',
   },

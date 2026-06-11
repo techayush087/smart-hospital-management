@@ -27,7 +27,7 @@ import { PaginatorComponent } from '../../../../shared/components/paginator/pagi
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './notification-list.component.html',
-  styleUrl: './notification-list.component.scss',
+  styleUrl: './notification-list.component.css',
 })
 export class NotificationListComponent implements OnInit {
   private readonly auth = inject(AuthService);

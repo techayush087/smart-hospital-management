@@ -19,7 +19,7 @@ import { APPOINTMENT_FORM_CONFIG } from '../../../../config/appointment-form.con
   imports: [DynamicFormComponent, TimeSlotPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './step-patient-details.component.html',
-  styleUrl: './step-patient-details.component.scss',
+  styleUrl: './step-patient-details.component.css',
 })
 export class StepPatientDetailsComponent {
   private readonly store = inject(Store);

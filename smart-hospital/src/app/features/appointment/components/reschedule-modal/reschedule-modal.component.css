@@ -1,0 +1,98 @@
+:host {
+  display: block;
+}
+
+.reschedule-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  min-width: 280px;
+}
+
+.reschedule-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  max-width: 240px;
+}
+
+.reschedule-modal__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.reschedule-modal__date {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--spacing-3);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+}
+
+.reschedule-modal__date:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-input-focus);
+}
+
+.reschedule-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--spacing-3);
+}
+
+.reschedule-modal__slot {
+  height: 44px;
+  padding: 0 var(--spacing-3);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: border-color var(--transition-fast),
+        background var(--transition-fast), color var(--transition-fast);
+}
+
+.reschedule-modal__slot--available:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.reschedule-modal__slot--selected {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.reschedule-modal__slot--unavailable {
+  background: var(--color-surface-alt);
+  border-color: var(--color-divider);
+  color: var(--color-text-tertiary);
+  cursor: not-allowed;
+}
+
+.reschedule-modal__slot--skeleton {
+  background: var(--color-surface-alt);
+  cursor: default;
+}
+
+.reschedule-modal__empty {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.reschedule-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  padding-top: var(--spacing-2);
+}

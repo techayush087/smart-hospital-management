@@ -11,7 +11,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "css"
         }
       },
       "root": "",
@@ -23,7 +23,7 @@
           "options": {
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
+            "inlineStyleLanguage": "css",
             "assets": [
               {
                 "glob": "**/*",
@@ -32,9 +32,9 @@
             ],
             "styles": [
               "src/styles/theme.css",
-              "src/styles/global.scss",
-              "src/styles/animations.scss",
-              "src/styles.scss"
+              "src/styles/global.css",
+              "src/styles/animations.css",
+              "src/styles.css"
             ]
           },
           "configurations": {

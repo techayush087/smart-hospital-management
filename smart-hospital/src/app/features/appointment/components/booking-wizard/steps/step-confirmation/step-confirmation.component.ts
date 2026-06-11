@@ -28,7 +28,7 @@ import { TimeSlotPipe } from '../../../../../../shared/pipes/time-slot.pipe';
   imports: [AppButtonComponent, TimeSlotPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './step-confirmation.component.html',
-  styleUrl: './step-confirmation.component.scss',
+  styleUrl: './step-confirmation.component.css',
 })
 export class StepConfirmationComponent {
   private readonly store = inject(Store);

@@ -12,7 +12,7 @@ import { AuthFormService } from '../../services/auth-form.service';
   imports: [ReactiveFormsModule, RouterLink, AppButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   private authForm = inject(AuthFormService);

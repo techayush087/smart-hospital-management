@@ -22,7 +22,7 @@ const ICON_BY_TYPE: Record<Notification['type'], string> = {
   imports: [RelativeDatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './notification-item.component.html',
-  styleUrl: './notification-item.component.scss',
+  styleUrl: './notification-item.component.css',
 })
 export class NotificationItemComponent {
   notification = input.required<Notification>();

@@ -14,7 +14,7 @@ import { AuthFormService } from '../../services/auth-form.service';
   imports: [ReactiveFormsModule, RouterLink, AppButtonComponent, DatePickerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss',
+  styleUrl: './register.component.css',
 })
 export class RegisterComponent {
   private authForm = inject(AuthFormService);

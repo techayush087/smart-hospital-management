@@ -31,7 +31,7 @@ const PAGE_SIZE = 10;
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './visit-history.component.html',
-  styleUrl: './visit-history.component.scss',
+  styleUrl: './visit-history.component.css',
 })
 export class VisitHistoryComponent implements OnInit {
   private readonly auth = inject(AuthService);

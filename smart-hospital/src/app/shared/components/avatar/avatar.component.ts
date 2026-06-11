@@ -6,7 +6,7 @@ import { initials } from '../../utils/string.utils';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './avatar.component.html',
-  styleUrl: './avatar.component.scss',
+  styleUrl: './avatar.component.css',
 })
 export class AppAvatarComponent {
   src = input<string | undefined>(undefined);

@@ -28,7 +28,7 @@ import { PaginatorComponent } from '../../../../shared/components/paginator/pagi
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './doctor-list.component.html',
-  styleUrl: './doctor-list.component.scss',
+  styleUrl: './doctor-list.component.css',
 })
 export class DoctorListComponent implements OnInit {
   private readonly doctorService = inject(DoctorService);

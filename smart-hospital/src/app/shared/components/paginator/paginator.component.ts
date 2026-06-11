@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './paginator.component.html',
-  styleUrl: './paginator.component.scss',
+  styleUrl: './paginator.component.css',
 })
 export class PaginatorComponent {
   /** Current 1-based page. */

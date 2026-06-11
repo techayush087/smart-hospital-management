@@ -31,7 +31,7 @@ import { PaginatorComponent } from '../../../../shared/components/paginator/pagi
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './prescription-view.component.html',
-  styleUrl: './prescription-view.component.scss',
+  styleUrl: './prescription-view.component.css',
 })
 export class PrescriptionViewComponent implements OnInit {
   private readonly auth = inject(AuthService);

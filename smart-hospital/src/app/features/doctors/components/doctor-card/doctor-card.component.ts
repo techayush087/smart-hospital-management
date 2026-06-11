@@ -10,7 +10,7 @@ import { Doctor } from '../../../../core/models';
   imports: [AppAvatarComponent, AppBadgeComponent, AppButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './doctor-card.component.html',
-  styleUrl: './doctor-card.component.scss',
+  styleUrl: './doctor-card.component.css',
 })
 export class DoctorCardComponent {
   doctor = input.required<Doctor>();

@@ -20,7 +20,7 @@ const PALETTE_SIZE = 5;
   imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './donut-chart.component.html',
-  styleUrl: './donut-chart.component.scss',
+  styleUrl: './donut-chart.component.css',
 })
 export class DonutChartComponent {
   data = input<{ specialization: string; count: number }[]>([]);

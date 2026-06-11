@@ -39,7 +39,7 @@ import { PaginatorComponent } from '../../../../shared/components/paginator/pagi
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './appointment-list.component.html',
-  styleUrl: './appointment-list.component.scss',
+  styleUrl: './appointment-list.component.css',
 })
 export class AppointmentListComponent implements OnInit {
   private readonly store = inject(Store);

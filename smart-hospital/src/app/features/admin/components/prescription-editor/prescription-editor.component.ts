@@ -23,7 +23,7 @@ import { toISODate } from '../../../../shared/utils/date.utils';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './prescription-editor.component.html',
-  styleUrl: './prescription-editor.component.scss',
+  styleUrl: './prescription-editor.component.css',
 })
 export class PrescriptionEditorComponent implements OnInit {
   private fb = inject(FormBuilder);

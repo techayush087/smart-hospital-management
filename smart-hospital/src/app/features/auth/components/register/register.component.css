@@ -1,0 +1,105 @@
+:host {
+  display: block;
+}
+
+.register {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--spacing-10) var(--spacing-4);
+  background: var(--color-background);
+}
+
+.register__card {
+  width: 100%;
+  max-width: 40rem;
+  padding: var(--spacing-10);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.register__header {
+  margin-bottom: var(--spacing-8);
+}
+
+.register__title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-2);
+}
+
+.register__subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.register__alert {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  margin-bottom: var(--spacing-5);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+}
+
+.register__section {
+  margin: 0 0 var(--spacing-6);
+  padding: 0;
+  border: none;
+}
+
+.register__legend {
+  padding: 0;
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-caps);
+  color: var(--color-text-tertiary);
+}
+
+.register__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4);
+}
+
+.register__submit {
+  display: block;
+  width: 100%;
+}
+
+.register__footer {
+  margin-top: var(--spacing-6);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.register__link {
+  color: var(--color-text-link);
+  font-weight: var(--font-weight-medium);
+}
+
+.register__link:hover {
+  color: var(--color-text-link-hover);
+}
+
+@media (max-width: 767px) {
+  .register__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .register__card {
+    padding: var(--spacing-6);
+  }
+}

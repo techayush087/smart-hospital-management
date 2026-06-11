@@ -26,7 +26,7 @@ import { isDateInPast, isToday, toISODate } from '../../../../../../shared/utils
   imports: [TimeSlotPipe, DatePickerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './step-select-slot.component.html',
-  styleUrl: './step-select-slot.component.scss',
+  styleUrl: './step-select-slot.component.css',
 })
 export class StepSelectSlotComponent {
   private readonly store = inject(Store);

@@ -43,7 +43,7 @@ const ADMIN_NAV: NavItem[] = [
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './shell.component.html',
-  styleUrl: './shell.component.scss',
+  styleUrl: './shell.component.css',
 })
 export class ShellComponent implements OnInit {
   private auth = inject(AuthService);

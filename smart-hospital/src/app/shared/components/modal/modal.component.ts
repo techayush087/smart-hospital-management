@@ -13,7 +13,7 @@ import { A11yModule } from '@angular/cdk/a11y';
   imports: [A11yModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './modal.component.html',
-  styleUrl: './modal.component.scss',
+  styleUrl: './modal.component.css',
 })
 export class ModalComponent {
   title = input('');

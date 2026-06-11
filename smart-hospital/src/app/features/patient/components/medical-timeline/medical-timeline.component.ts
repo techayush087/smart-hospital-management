@@ -29,7 +29,7 @@ import { PaginatorComponent } from '../../../../shared/components/paginator/pagi
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './medical-timeline.component.html',
-  styleUrl: './medical-timeline.component.scss',
+  styleUrl: './medical-timeline.component.css',
 })
 export class MedicalTimelineComponent implements OnInit {
   private readonly auth = inject(AuthService);

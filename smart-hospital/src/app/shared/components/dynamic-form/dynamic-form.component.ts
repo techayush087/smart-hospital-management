@@ -22,7 +22,7 @@ import { FormFieldCheckboxComponent } from './fields/form-field-checkbox/form-fi
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dynamic-form.component.html',
-  styleUrl: './dynamic-form.component.scss',
+  styleUrl: './dynamic-form.component.css',
 })
 export class DynamicFormComponent {
   readonly config = input.required<FormFieldConfig[]>();

@@ -8,7 +8,7 @@ import { DatePickerComponent } from '../../../date-picker/date-picker.component'
   imports: [ReactiveFormsModule, DatePickerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './form-field-date.component.html',
-  styleUrl: './form-field-date.component.scss',
+  styleUrl: './form-field-date.component.css',
 })
 export class FormFieldDateComponent {
   readonly control = input.required<FormControl>();
