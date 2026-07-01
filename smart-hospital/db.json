@@ -219,6 +219,18 @@
       "createdAt": "2026-06-11T05:58:18.514Z",
       "updatedAt": "2026-06-11T05:59:14.712Z",
       "id": "HwhWVxF"
+    },
+    {
+      "patientId": "u1781157460057",
+      "doctorId": "d3",
+      "scheduledAt": "2026-06-12T14:00:00.000Z",
+      "duration": 30,
+      "type": "in-person",
+      "status": "confirmed",
+      "reason": "routine checkup",
+      "createdAt": "2026-06-12T06:29:30.829Z",
+      "updatedAt": "2026-06-12T06:29:58.277Z",
+      "id": "hotyVhJ"
     }
   ],
   "prescriptions": [
@@ -367,6 +379,34 @@
       "title": "New prescription added",
       "message": "A new prescription is available in your account.",
       "id": "XDWYYcv"
+    },
+    {
+      "read": false,
+      "createdAt": "2026-06-12T06:29:30.850Z",
+      "userId": "u1781157460057",
+      "type": "reminder",
+      "title": "Appointment requested",
+      "message": "Your appointment request was submitted and is awaiting confirmation.",
+      "id": "YDgqTeE"
+    },
+    {
+      "read": false,
+      "createdAt": "2026-06-12T06:29:30.857Z",
+      "userId": "u2",
+      "type": "admin-alert",
+      "title": "New appointment request",
+      "message": "A patient submitted an appointment request awaiting your confirmation.",
+      "relatedEntityId": "hotyVhJ",
+      "id": "XP45NfS"
+    },
+    {
+      "read": false,
+      "createdAt": "2026-06-12T06:29:58.288Z",
+      "userId": "u1781157460057",
+      "type": "admin-alert",
+      "title": "Appointment updated",
+      "message": "Your appointment with Dr. Aiko Tanaka is now \"Confirmed\".",
+      "id": "GBRllg4"
     }
   ],
   "schedules": [
